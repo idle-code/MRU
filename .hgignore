@@ -1,0 +1,23 @@
+syntax: glob
+*.swp
+*.core
+*.stackdump
+*.dblite
+*.save
+*.cbTemp
+*.exe
+*~
+*.o
+*.a
+.todo.*
+.directory
+CMakeFiles
+CMakeCache.txt
+Makefile
+*.cmake
+*.make
+*.dir
+
+hello
+load_test
+
