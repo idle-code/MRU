@@ -1,24 +1,31 @@
 #ifndef PLUGIN_MANAGER
 #define PLUGIN_MANAGER
 
-#include <string>
+#include <data_tree/data_tree.hpp>
 
 namespace mru
 {
+template<typename PluginClass>
+class basic_plugin_manager;
 
 /* ------------------------------------------------------------------------- */
 
 template<typename PluginClass>
 class basic_plugin {
 public:
-  typedef basic_plugin self_type;
+  typedef PluginClass self_type;
+  typedef typename basic_plugin_manager<PluginClass>::data_tree data_tree;
+  typedef basic_plugin_manager<PluginClass> plugin_manager_type;
+  typedef typename data_tree::name_type name_type;
 public:
-  basic_plugin(void);
-  basic_plugin(const self_type &a_other);
-  virtual ~basic_plugin(void) = 0;
+  basic_plugin(const name_type &a_plugin_name);
+  virtual ~basic_plugin(void);
+
+  const name_type& name(void) const;
+  virtual bool register_plugin(data_tree &a_tree);
 
 protected:
-  /* data */
+  name_type m_name;
 };
 
 /* ------------------------------------------------------------------------- */
@@ -28,6 +35,8 @@ class basic_plugin_manager {
 public:
   typedef basic_plugin_manager self_type;
   typedef PluginClass plugin_type;
+  typedef data_tree::data_tree data_tree;
+  //typedef data_tree::name_type path_type;
   typedef std::string path_type;
 public:
   basic_plugin_manager(void);
@@ -36,8 +45,11 @@ public:
 
   plugin_type* load(const path_type &a_path);
   void unload(plugin_type *a_plugin);
+
+  const data_tree& tree(void) const;
 protected:
-  /* data */
+  typename data_tree::path_type m_plugins_prefix;
+  data_tree m_tree;
 };
 
 /* ------------------------------------------------------------------------- */

@@ -17,6 +17,7 @@ Makefile
 *.cmake
 *.make
 *.dir
+*.so
 
 hello
 load_test

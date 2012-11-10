@@ -7,10 +7,9 @@ class MyPlugin : public mru::basic_plugin<MyPlugin> {
 public:
   typedef MyPlugin self_type;
 public:
-  MyPlugin(void);
-  MyPlugin(const self_type &a_other);
-  virtual ~MyPlugin(void);
-
+  MyPlugin(const name_type &a_name)
+    : basic_plugin<MyPlugin>(a_name)
+  { }
   virtual void say_hello(void) = 0;
 };
 
