@@ -25,8 +25,7 @@ main(int argc, char const *argv[])
   my_plugin_manager pm;
   print_tree(pm.tree());
 
-  MyPlugin *module_1 = pm.load("test_module1.so");  
-  MyPlugin *module_2 = pm.load("test_module1");  
+  MyPlugin *module_1 = pm.load("./test_module1");
   //MyPlugin *module_1 = pm.load("libtest_module1.so");  
 
   if(module_1 == NULL) {
@@ -34,6 +33,7 @@ main(int argc, char const *argv[])
     return 1;
   }
   MSG("-----------------------------------------");
+  return 0;
   module_1->say_hello();
   print_tree(pm.tree());
 
