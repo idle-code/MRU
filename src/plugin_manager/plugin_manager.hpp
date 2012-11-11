@@ -5,6 +5,7 @@
 
 namespace mru
 {
+
 template<typename PluginClass>
 class basic_plugin_manager;
 
@@ -48,8 +49,9 @@ public:
 
   const data_tree& tree(void) const;
 protected:
-  typename data_tree::path_type m_plugins_prefix;
+  typename data_tree::path_type m_tree_prefix;
   data_tree m_tree;
+  path_type m_plugins_directory;
 };
 
 /* ------------------------------------------------------------------------- */

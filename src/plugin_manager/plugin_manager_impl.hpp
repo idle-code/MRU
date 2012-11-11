@@ -3,7 +3,7 @@
 #else
 
 #include <debug_l.h>
-#include <dlfcn.h>
+#include <dynamic_module.hpp>
 
 namespace mru
 {
@@ -40,18 +40,18 @@ basic_plugin<PluginClass>::register_plugin(data_tree &a_tree)
 
 template<typename PluginClass>
 basic_plugin_manager<PluginClass>::basic_plugin_manager(void)
-  : m_plugins_prefix(".plugins")
+  : m_tree_prefix(".plugins")
 {
   FO("basic_plugin_manager<PluginClass>::basic_plugin_manager(void)");
-  m_tree.add_sub(m_plugins_prefix);
+  m_tree.add_sub(m_tree_prefix);
 }
 
 template<typename PluginClass>
 basic_plugin_manager<PluginClass>::basic_plugin_manager(const self_type &a_other)
-  : m_plugins_prefix(".plugins")
+  : m_tree_prefix(".plugins")
 {
   FO("basic_plugin_manager<PluginClass>::basic_plugin_manager(const self_type &a_other)");
-  m_tree.add_sub(m_plugins_prefix);
+  m_tree.add_sub(m_tree_prefix);
 }
 
 template<typename PluginClass>
@@ -67,31 +67,31 @@ basic_plugin_manager<PluginClass>::load(const path_type &a_path)
   FO("load(const path_type &a_path)");
   VAL(a_path);
 
-  void *library_handle = dlopen(a_path.c_str(), RTLD_NOW);
-  VAL(library_handle);
-  if(library_handle == NULL) {
-    ERR("Error while loading library: " << dlerror());
+  dynamic_module *module = dynamic_module::load(a_path);
+
+  VAL(module);
+  if(module == NULL) {
     return NULL;
   } 
 
   MSG("Loading 'create' symbol...");
-  void *create_handle = dlsym(library_handle, "create");
+  void *create_handle = module->get_symbol("create");
   VAL(create_handle);
   if(create_handle == NULL) {
-    ERR("Error while loading 'create' symbol from library: " << dlerror());
+    ERR("Couldn't load 'create' symbol");
     return NULL;
   }
 
   MSG("Loading 'destroy' symbol...");
-  void *destroy_handle = dlsym(library_handle, "destroy");
+  void *destroy_handle = module->get_symbol("destroy");
   VAL(destroy_handle);
   if(destroy_handle == NULL) {
-    ERR("Error while loading 'destroy' symbol from library: " << dlerror());
+    ERR("Couldn't load 'destroy' symbol");
     return NULL;
   }
   
-  plugin_type* plugin = reinterpret_cast<plugin_type* (*)(void)>(create_handle)(); 
-  typename data_tree::path_type plugin_path = m_plugins_prefix / plugin->name();
+  plugin_type* plugin = reinterpret_cast<plugin_type* (*)(void)>(create_handle)(); // plugin = create();
+  typename data_tree::path_type plugin_path = m_tree_prefix / plugin->name();
   if(m_tree.exists(plugin_path)) {
     ERR("Plugin named '" << static_cast<data_tree::path_type::value_type>(plugin_path) << "' already exists");
     return NULL;
@@ -117,7 +117,7 @@ basic_plugin_manager<PluginClass>::unload(plugin_type *a_plugin)
   FO("basic_plugin_manager<PluginClass>::unload(plugin_type *a_plugin)");
   if(a_plugin == NULL)
     return;
-  data_tree::path_type plugin_path = m_plugins_prefix / a_plugin->name();
+  data_tree::path_type plugin_path = m_tree_prefix / a_plugin->name();
   if(!m_tree.exists(plugin_path)) {
     WARN("Plugin '" << a_plugin->name() << "' not loaded");
     return;
