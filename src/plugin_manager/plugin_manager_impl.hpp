@@ -91,6 +91,7 @@ basic_plugin_manager<PluginClass>::load(const path_type &a_path)
   // register module:
   MSG("Registering module...");
   data_tree &mod_node =  m_tree[module_path].create_sub("", module); //create unnamed sub
+  mod_node.create("file", module->filepath());
   mod_node.create("create_handle", create_handle);
   mod_node.create("destroy_handle", destroy_handle);
  
@@ -208,6 +209,35 @@ const typename basic_plugin_manager<PluginClass>::data_tree &
 basic_plugin_manager<PluginClass>::tree(void) const
 {
   return m_tree;
+}
+
+template<typename PluginClass>
+typename basic_plugin_manager<PluginClass>::plugin_sygnature_type 
+basic_plugin_manager<PluginClass>::entrypoint(const data_tree::path_type &a_path)
+{
+  return reinterpret_cast<typename basic_plugin_manager<PluginClass>::plugin_sygnature_type>(m_tree[entrypoint_path].get_or(a_path, reinterpret_cast<void*>(&empty_callback)).template get<void*>());
+}
+
+template<typename PluginClass>
+void
+basic_plugin_manager<PluginClass>::add_callback(const data_tree::path_type &a_path, plugin_sygnature_type a_callback)
+{
+  m_tree[entrypoint_path].set(a_path, reinterpret_cast<void*>(a_callback));
+}
+
+template<typename PluginClass>
+void
+basic_plugin_manager<PluginClass>::set_callback(const data_tree::path_type &a_path, plugin_sygnature_type a_callback)
+{
+  m_tree[entrypoint_path].set(a_path, reinterpret_cast<void*>(a_callback));
+}
+
+template<typename PluginClass>
+bool
+basic_plugin_manager<PluginClass>::empty_callback(const typename data_tree::value_type &a_value)
+{
+  FO("empty_callback()");
+  return true;
 }
 
 

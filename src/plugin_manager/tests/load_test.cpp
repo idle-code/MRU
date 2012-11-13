@@ -31,28 +31,33 @@ main(int argc, char const *argv[])
   if(plugin_1 == NULL) {
     ERR("No plugin named TestPlugin1 found");
     return 1;
-  }
+  } else
+    plugin_1->say_hello();
   VAL(plugin_2);
   if(plugin_2 == NULL) {
     ERR("No plugin named TestPlugin2 found");
     //return 2;
-  }
+  } else
+    plugin_2->say_hello();
   VAL(plugin_3);
   if(plugin_3 == NULL) {
     ERR("No plugin named TestPlugin3 found");
     //return 3;
-  }
+  } else
+    plugin_3->say_hello();
 
 
   MSG("-----------------------------------------");
 
-  if(plugin_1)
-    plugin_1->say_hello();
-  if(plugin_2)
-    plugin_2->say_hello();
-  if(plugin_3)
-    plugin_3->say_hello();
+  pm.entrypoint("main.after_init")(123); 
+  //ENTRYPOINT(pm, "main.after_init", 
 
+  MSG("-----------------------------------------");
+
+  {
+    FO("main::before_exit");
+    pm.entrypoint("main.before_exit")("Exiting...");
+  }
   data_tree::print_tree(pm.tree());
 
   return 0;

@@ -21,4 +21,5 @@ Makefile
 
 hello
 load_test
+dt_test
 
