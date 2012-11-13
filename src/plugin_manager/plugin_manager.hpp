@@ -39,7 +39,7 @@ public:
   typedef data_tree::name_type name_type;
   typedef std::string path_type;
 
-  static const data_tree::path_type plugin_path;
+  static data_tree::path_type plugin_path;
   static const data_tree::path_type module_path;
   static const data_tree::path_type entrypoint_path;
 
