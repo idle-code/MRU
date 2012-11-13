@@ -39,6 +39,8 @@ public:
   typedef data_tree::name_type name_type;
   typedef std::string path_type;
 
+  typedef bool (*plugin_sygnature_type)(const data_tree::value_type &a_node);
+
   static data_tree::path_type plugin_path;
   static const data_tree::path_type module_path;
   static const data_tree::path_type entrypoint_path;
@@ -61,9 +63,15 @@ public:
   void unregister_all(void);
 
   const data_tree& tree(void) const;
+
+  plugin_sygnature_type entrypoint(const data_tree::path_type &a_path);
+  void add_callback(const data_tree::path_type &a_path, plugin_sygnature_type a_callback);
+  void set_callback(const data_tree::path_type &a_path, plugin_sygnature_type a_callback);
 protected:
   data_tree m_tree;
   path_type m_plugins_directory;
+
+  static bool empty_callback(const data_tree::value_type &a_value);
 };
 
 /* ------------------------------------------------------------------------- */

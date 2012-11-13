@@ -30,6 +30,14 @@ public:
 extern "C"
 {
 
+bool
+my_callback(const MyPluginManager::data_tree::value_type &a_value)
+{
+  FO("my_callback(const data_tree::value_type &a_value)");
+  VAL(a_value.get<std::string>());
+  return true;
+}
+
 void
 create(MyPluginManager *a_manager)
 {
@@ -38,6 +46,8 @@ create(MyPluginManager *a_manager)
   a_manager->register_plugin(test_plugin_1);
   MyPlugin *test_plugin_2 = new TestPlugin2();
   a_manager->register_plugin(test_plugin_2);
+
+  a_manager->set_callback("main.after_init", my_callback);
 }
 
 void
