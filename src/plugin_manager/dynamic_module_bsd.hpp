@@ -11,9 +11,10 @@ public:
   dynamic_module_bsd(const name_type &a_file_path);
   ~dynamic_module_bsd(void);
 
+  bool is_loaded(void) const;
   void* get_symbol(const name_type &a_symbol);
-  const name_type& filename_prefix(void) const;
-  const name_type& filename_postfix(void) const;
+  const name_type filename_prefix(void) const;
+  const name_type filename_postfix(void) const;
 private:
   void *m_module_handle;
   static const name_type m_prefix;

@@ -8,12 +8,12 @@ public:
   typedef MyPlugin self_type;
 public:
   MyPlugin(const name_type &a_name)
-    : basic_plugin<MyPlugin>(a_name)
+    : mru::basic_plugin<MyPlugin>(a_name)
   { }
   virtual void say_hello(void) = 0;
 };
 
-typedef mru::basic_plugin_manager<MyPlugin> my_plugin_manager;
+typedef mru::basic_plugin_manager<MyPlugin> MyPluginManager;
 
 #endif /* TEST_MODULE_HPP */
 

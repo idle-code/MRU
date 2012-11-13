@@ -2,6 +2,7 @@
 #define PLUGIN_MANAGER
 
 #include <data_tree/data_tree.hpp>
+#include <dynamic_module.hpp>
 
 namespace mru
 {
@@ -23,8 +24,6 @@ public:
   virtual ~basic_plugin(void);
 
   const name_type& name(void) const;
-  virtual bool register_plugin(data_tree &a_tree);
-
 protected:
   name_type m_name;
 };
@@ -37,19 +36,32 @@ public:
   typedef basic_plugin_manager self_type;
   typedef PluginClass plugin_type;
   typedef data_tree::data_tree data_tree;
-  //typedef data_tree::name_type path_type;
+  typedef data_tree::name_type name_type;
   typedef std::string path_type;
+
+  static const data_tree::path_type plugin_path;
+  static const data_tree::path_type module_path;
+  static const data_tree::path_type entrypoint_path;
+
 public:
   basic_plugin_manager(void);
   basic_plugin_manager(const self_type &a_other);
   ~basic_plugin_manager(void);
 
-  plugin_type* load(const path_type &a_path);
-  void unload(plugin_type *a_plugin);
+  const path_type& directory_prefix(void) const;
+  void directory_prefix(const path_type &a_path);
+
+  int load(const path_type &a_path);
+  void unload(data_tree &a_module_node); //FIXME: protected?
+  void unload_all(void);
+
+  plugin_type* get_plugin(const name_type &a_plugin_name);
+  bool register_plugin(plugin_type *a_plugin);
+  void unregister_plugin(const name_type &a_plugin_name);
+  void unregister_all(void);
 
   const data_tree& tree(void) const;
 protected:
-  typename data_tree::path_type m_tree_prefix;
   data_tree m_tree;
   path_type m_plugins_directory;
 };

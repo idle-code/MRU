@@ -13,3 +13,6 @@ add_subdirectory ("data_tree")
 add_subdirectory ("plugin_manager")
 add_subdirectory ("plugins")
 
+add_executable (dt_test "dt_test.cpp")
+target_link_libraries (dt_test debug_l data_tree)
+
