@@ -13,18 +13,18 @@ const dynamic_module_bsd::name_type dynamic_module_bsd::m_postfix = ".so";
 dynamic_module_bsd::dynamic_module_bsd(const name_type &a_file_path)
   : dynamic_module(a_file_path)
 {
-  FO("dynamic_module_bsd::dynamic_module_bsd(const name_type &a_file_path)");
-  VAL(a_file_path);
+  //FO("dynamic_module_bsd::dynamic_module_bsd(const name_type &a_file_path)");
+  //VAL(a_file_path);
   name_type path = dirname(a_file_path.c_str());
-  VAL(path);
+  //VAL(path);
   name_type filename = basename(a_file_path.c_str());
-  VAL(filename);
+  //VAL(filename);
   if(filename.substr(0, m_prefix.length()) != m_prefix)
     filename = m_prefix + filename;
   if(filename.substr(filename.length() - m_prefix.length()) != m_postfix)
     filename += m_postfix;
   name_type full_name = path + "/" + filename;
-  VAL(full_name);
+  //VAL(full_name);
   m_module_handle = dlopen(full_name.c_str(), RTLD_NOW);
   if(m_module_handle == NULL) {
     ERR("Error while loading dynamic module (bsd): " << dlerror());
@@ -33,7 +33,7 @@ dynamic_module_bsd::dynamic_module_bsd(const name_type &a_file_path)
 
 dynamic_module_bsd::~dynamic_module_bsd(void)
 {
-  FO("dynamic_module_bsd::~dynamic_module_bsd(void)");
+  //FO("dynamic_module_bsd::~dynamic_module_bsd(void)");
   if(m_module_handle != NULL) {
     if(0 != dlclose(m_module_handle)) {
       ERR("Error while closing dynamic module (bsd): " << dlerror());
@@ -42,10 +42,16 @@ dynamic_module_bsd::~dynamic_module_bsd(void)
   }
 }
 
+bool
+dynamic_module_bsd::is_loaded(void) const
+{
+  return m_module_handle != NULL;
+}
+
 void*
 dynamic_module_bsd::get_symbol(const name_type &a_symbol)
 {
-  FO("dynamic_module_bsd::get_symbol(const name_type &a_symbol)");
+  //FO("dynamic_module_bsd::get_symbol(const name_type &a_symbol)");
   if(m_module_handle == NULL) {
     ERR("Error while importing symbol from dynamic module (bsd): Module not loaded");
     return NULL;
@@ -53,13 +59,13 @@ dynamic_module_bsd::get_symbol(const name_type &a_symbol)
   return dlsym(m_module_handle, a_symbol.c_str());
 }
 
-const dynamic_module_bsd::name_type &
+const dynamic_module_bsd::name_type
 dynamic_module_bsd::filename_prefix(void) const
 {
   return m_prefix;
 }
 
-const dynamic_module_bsd::name_type &
+const dynamic_module_bsd::name_type
 dynamic_module_bsd::filename_postfix(void) const
 {
   return m_postfix;

@@ -10,6 +10,12 @@ dynamic_module::load(const name_type &a_file_path)
   //TODO: add some #ifdef for working on windows
   return new dynamic_module_bsd(a_file_path);
 }
+void
+dynamic_module::unload(dynamic_module *a_module)
+{
+  //TODO: add some #ifdef for working on windows
+  delete a_module;
+}
 
 /* ------------------------------------------------------------------------- */
 
@@ -26,13 +32,13 @@ dynamic_module::filepath(void) const
   return m_file_path;
 }
 
-const dynamic_module::name_type &
+const dynamic_module::name_type
 dynamic_module::filename_prefix(void) const
 {
   return "";
 }
 
-const dynamic_module::name_type &
+const dynamic_module::name_type
 dynamic_module::filename_postfix(void) const
 {
   return "";

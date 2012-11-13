@@ -4,7 +4,7 @@
 class TestPlugin1 : public MyPlugin { 
 public:
   TestPlugin1(void)
-    : MyPlugin("test_plugin1")
+    : MyPlugin("TestPlugin1")
   { }
 
   void say_hello(void)
@@ -17,16 +17,24 @@ public:
 extern "C"
 {
 
-TestPlugin1* create(void)
+void
+create(MyPluginManager *a_manager)
 {
-  FO("test_module1::create()");
-  return new TestPlugin1();
+  FO("create(MyPluginManager *a_manager)");
+  MyPlugin *test_plugin_1 = new TestPlugin1();
+  a_manager->register_plugin(test_plugin_1);
+  data_tree::print_tree(a_manager->tree());
+  VAL(test_plugin_1);
+  VAL(a_manager->get_plugin(test_plugin_1->name()));
 }
 
-void destroy(TestPlugin1 *a_plugin)
+void
+destroy(MyPluginManager *a_manager)
 {
-  FO("test_module1::destroy()");
-  delete a_plugin;
+  FO("destroy(MyPluginManager *a_manager)");
+  MyPlugin* test_plugin_1 = a_manager->get_plugin("TestPlugin1");
+  a_manager->unregister_plugin("TestPlugin1");
+  delete test_plugin_1;
 }
 
 }
