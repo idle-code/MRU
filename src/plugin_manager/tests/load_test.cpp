@@ -46,7 +46,13 @@ main(int argc, char const *argv[])
 
   MSG("-----------------------------------------");
 
-  plugin_1->say_hello();
+  if(plugin_1)
+    plugin_1->say_hello();
+  if(plugin_2)
+    plugin_2->say_hello();
+  if(plugin_3)
+    plugin_3->say_hello();
+
   data_tree::print_tree(pm.tree());
 
   return 0;

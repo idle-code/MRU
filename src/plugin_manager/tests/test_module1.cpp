@@ -14,6 +14,19 @@ public:
   }
 };
 
+class TestPlugin2 : public MyPlugin { 
+public:
+  TestPlugin2(void)
+    : MyPlugin("TestPlugin2")
+  { }
+
+  void say_hello(void)
+  {
+    FO("TestPlugin2::say_hello()");
+    MSG("Hello from second plugin!");
+  }
+};
+
 extern "C"
 {
 
@@ -23,9 +36,8 @@ create(MyPluginManager *a_manager)
   FO("create(MyPluginManager *a_manager)");
   MyPlugin *test_plugin_1 = new TestPlugin1();
   a_manager->register_plugin(test_plugin_1);
-  data_tree::print_tree(a_manager->tree());
-  VAL(test_plugin_1);
-  VAL(a_manager->get_plugin(test_plugin_1->name()));
+  MyPlugin *test_plugin_2 = new TestPlugin2();
+  a_manager->register_plugin(test_plugin_2);
 }
 
 void
@@ -35,6 +47,10 @@ destroy(MyPluginManager *a_manager)
   MyPlugin* test_plugin_1 = a_manager->get_plugin("TestPlugin1");
   a_manager->unregister_plugin("TestPlugin1");
   delete test_plugin_1;
+
+  MyPlugin* test_plugin_2 = a_manager->get_plugin("TestPlugin2");
+  a_manager->unregister_plugin("TestPlugin2");
+  delete test_plugin_2;
 }
 
 }

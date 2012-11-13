@@ -29,7 +29,7 @@ basic_plugin<PluginClass>::name(void) const
 /* ------------------------------------------------------------------------- */
 
 template<typename PluginClass>
-const typename basic_plugin_manager<PluginClass>::data_tree::path_type
+typename basic_plugin_manager<PluginClass>::data_tree::path_type
 basic_plugin_manager<PluginClass>::plugin_path = ".plugin";
 
 template<typename PluginClass>
@@ -135,7 +135,7 @@ void
 basic_plugin_manager<PluginClass>::unload_all(void)
 {
   FO("basic_plugin_manager<PluginClass>::unload_all(void)");
-  unregister_all();
+  //unregister_all();
   data_tree::node_iterator ni = m_tree[module_path].begin();
   data_tree::node_iterator ni_end = m_tree[module_path].end();
   for(; ni != ni_end; ++ni) {
@@ -169,7 +169,8 @@ basic_plugin_manager<PluginClass>::register_plugin(plugin_type *a_plugin)
     return false;
   }
   MSG("Adding plugin: " << std::string(plugin_path / a_plugin->name()));
-  m_tree.set(plugin_path / a_plugin->name(), static_cast<void*>(a_plugin)); // create ".plugins.<plugin_name>" branch
+  m_tree[plugin_path].create_sub(a_plugin->name(), static_cast<void*>(a_plugin)); // create ".plugins.<plugin_name>" branch
+  //m_tree.set(plugin_path / a_plugin->name(), static_cast<void*>(a_plugin)); // create ".plugins.<plugin_name>" branch
 
   return true;
 }
