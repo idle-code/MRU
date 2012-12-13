@@ -15,6 +15,7 @@ main(int argc, char const *argv[])
     ERR("No module named test_module1 found");
     return 1;
   }
+  data_tree::print_tree(pm.tree());
 
   if(0 == pm.load("./test_module2")) {
     ERR("No module named test_module2 found");

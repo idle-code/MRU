@@ -7,13 +7,22 @@
 namespace mru
 {
 
-const dynamic_module_bsd::name_type dynamic_module_bsd::m_prefix = "lib";
-const dynamic_module_bsd::name_type dynamic_module_bsd::m_postfix = ".so";
+const filename_type dynamic_module_bsd::m_prefix = "lib";
+const filename_type dynamic_module_bsd::m_postfix = ".so";
 
-dynamic_module_bsd::dynamic_module_bsd(const name_type &a_file_path)
-  : dynamic_module(a_file_path)
+dynamic_module_bsd::dynamic_module_bsd(void)
+  : dynamic_module()
 {
-  //FO("dynamic_module_bsd::dynamic_module_bsd(const name_type &a_file_path)");
+}
+
+dynamic_module_bsd::~dynamic_module_bsd(void)
+{
+  unload();
+}
+
+bool
+dynamic_module_bsd::load(const filepath_type &a_file_path)
+{
   //VAL(a_file_path);
   name_type path = dirname(a_file_path.c_str());
   //VAL(path);
@@ -28,18 +37,23 @@ dynamic_module_bsd::dynamic_module_bsd(const name_type &a_file_path)
   m_module_handle = dlopen(full_name.c_str(), RTLD_NOW);
   if(m_module_handle == NULL) {
     ERR("Error while loading dynamic module (bsd): " << dlerror());
+    return false;
   }
+  return true;
 }
 
-dynamic_module_bsd::~dynamic_module_bsd(void)
+bool
+dynamic_module_bsd::unload(void)
 {
-  //FO("dynamic_module_bsd::~dynamic_module_bsd(void)");
   if(m_module_handle != NULL) {
     if(0 != dlclose(m_module_handle)) {
       ERR("Error while closing dynamic module (bsd): " << dlerror());
+      m_module_handle = NULL;
+      return false;
     }
     m_module_handle = NULL;
   }
+  return true;
 }
 
 bool
@@ -59,13 +73,13 @@ dynamic_module_bsd::get_symbol(const name_type &a_symbol)
   return dlsym(m_module_handle, a_symbol.c_str());
 }
 
-const dynamic_module_bsd::name_type
+const filename_type
 dynamic_module_bsd::filename_prefix(void) const
 {
   return m_prefix;
 }
 
-const dynamic_module_bsd::name_type
+const filename_type
 dynamic_module_bsd::filename_postfix(void) const
 {
   return m_postfix;

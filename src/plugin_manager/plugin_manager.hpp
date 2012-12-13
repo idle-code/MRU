@@ -1,7 +1,7 @@
 #ifndef PLUGIN_MANAGER
 #define PLUGIN_MANAGER
 
-#include <data_tree/data_tree.hpp>
+#include <data_tree/registry.hpp>
 #include <dynamic_module.hpp>
 
 namespace mru
@@ -16,9 +16,9 @@ template<typename PluginClass>
 class basic_plugin {
 public:
   typedef PluginClass self_type;
-  typedef typename basic_plugin_manager<PluginClass>::data_tree data_tree;
+  typedef typename basic_plugin_manager<PluginClass>::registry registry;
   typedef basic_plugin_manager<PluginClass> plugin_manager_type;
-  typedef typename data_tree::name_type name_type;
+  typedef typename registry::name_type name_type;
 public:
   basic_plugin(const name_type &a_plugin_name);
   virtual ~basic_plugin(void);
@@ -35,15 +35,15 @@ class basic_plugin_manager {
 public:
   typedef basic_plugin_manager self_type;
   typedef PluginClass plugin_type;
-  typedef data_tree::data_tree data_tree;
-  typedef data_tree::name_type name_type;
+  typedef data_tree::registry registry;
+  typedef registry::name_type name_type;
   typedef std::string path_type;
 
-  typedef bool (*plugin_sygnature_type)(const data_tree::value_type &a_node);
+  typedef bool (*plugin_sygnature_type)(const registry::value_type &a_node);
 
-  static data_tree::path_type plugin_path;
-  static const data_tree::path_type module_path;
-  static const data_tree::path_type entrypoint_path;
+  static registry::path_type plugin_path;
+  static const registry::path_type module_path;
+  static const registry::path_type entrypoint_path;
 
 public:
   basic_plugin_manager(void);
@@ -54,7 +54,7 @@ public:
   void directory_prefix(const path_type &a_path);
 
   int load(const path_type &a_path);
-  void unload(data_tree &a_module_node); //FIXME: protected?
+  void unload(registry a_module_node); //FIXME: protected?
   void unload_all(void);
 
   plugin_type* get_plugin(const name_type &a_plugin_name);
@@ -62,22 +62,21 @@ public:
   void unregister_plugin(const name_type &a_plugin_name);
   void unregister_all(void);
 
-  const data_tree& tree(void) const;
+  const registry& tree(void) const;
 
-  plugin_sygnature_type entrypoint(const data_tree::path_type &a_path);
-  void add_callback(const data_tree::path_type &a_path, plugin_sygnature_type a_callback);
-  void set_callback(const data_tree::path_type &a_path, plugin_sygnature_type a_callback);
+  plugin_sygnature_type entrypoint(const registry::path_type &a_path);
+  void add_callback(const registry::path_type &a_path, plugin_sygnature_type a_callback);
+  void set_callback(const registry::path_type &a_path, plugin_sygnature_type a_callback);
 protected:
-  data_tree m_tree;
+  registry m_tree;
   path_type m_plugins_directory;
 
-  static bool empty_callback(const data_tree::value_type &a_value);
+  static bool empty_callback(const registry::value_type &a_value);
 };
 
 /* ------------------------------------------------------------------------- */
 
 } /* namespace mru */
-
 
 #define PLUGIN_MANAGER_IMPL_HPP
 #include "plugin_manager_impl.hpp"

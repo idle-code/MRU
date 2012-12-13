@@ -18,9 +18,9 @@ extern "C"
 {
 
 bool
-my_other_callback(const MyPluginManager::data_tree::value_type &a_value)
+my_other_callback(const MyPluginManager::registry::value_type &a_value)
 {
-  FO("my_other_callback(const data_tree::value_type &a_value)");
+  FO("my_other_callback(const registry::value_type &a_value)");
   MSG("Some code will work here...");
   VAL(a_value.get<std::string>());
   return true;
