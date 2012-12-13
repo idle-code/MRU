@@ -31,7 +31,7 @@ extern "C"
 {
 
 bool
-my_callback(const MyPluginManager::data_tree::value_type &a_value)
+my_callback(const MyPluginManager::registry::value_type &a_value)
 {
   FO("my_callback(const data_tree::value_type &a_value)");
   VAL(a_value.get<std::string>());

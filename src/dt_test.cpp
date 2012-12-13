@@ -1,4 +1,4 @@
-#include <data_tree.hpp>
+#include <registry.hpp>
 #include <debug_l.h>
 
 int
@@ -6,10 +6,10 @@ main(int argc, char const *argv[])
 {
   FO("main()");
 
-  data_tree::data_tree dtree;
+  data_tree::registry dtree;
 
   int a = 3;
-  data_tree::data_tree::path_type path = "root";
+  data_tree::registry::path_type path = "root";
   //VAL(std::string(path));
   dtree.set(path/"a", static_cast<void*>(&a));
   dtree.set(path/"a"/"b", static_cast<void*>(NULL));
