@@ -34,6 +34,7 @@ protected:
 class dynamic_module_manager : public singleton<dynamic_module_manager> {
 public:
   typedef dynamic_module_manager self_type;
+  friend class singleton<dynamic_module_manager>; 
 public:
   dynamic_module* load(const filepath_type &a_file_path);
   void unload(dynamic_module *&a_module);

@@ -8,8 +8,8 @@ target_link_libraries (load_test plugin_manager debug_l)
 target_link_libraries (test_module1 plugin_manager debug_l)
 target_link_libraries (test_module2 plugin_manager debug_l)
 
-add_library (hello_plugin MODULE "hello_plugin.cpp")
-add_executable (hello_host "hello_host.cpp")
-target_link_libraries (hello_plugin registry plugin_manager debug_l)
-target_link_libraries (hello_host registry plugin_manager debug_l)
+#add_library (hello_plugin MODULE "hello_plugin.cpp")
+#add_executable (hello_host "hello_host.cpp")
+#target_link_libraries (hello_plugin registry plugin_manager debug_l)
+#target_link_libraries (hello_host registry plugin_manager debug_l)
 
