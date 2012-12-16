@@ -3,8 +3,9 @@
 
 class MPlg2 : public MyPlugin { 
 public:
+  PLUGIN_NAME("MPlg2")
   MPlg2(void)
-    : MyPlugin("MPlg2") { } 
+    : MyPlugin(static_implementation_name()) { } 
   void say_hello(void)
   {
     FO("void MPlg2::say_hello(void)");
@@ -13,6 +14,6 @@ public:
 };
 
 EXPORT_START
-  EXPORT_PLUGIN(MPlg2, "MyPlugin")
+  EXPORT_PLUGIN(MPlg2)
 EXPORT_END
 
