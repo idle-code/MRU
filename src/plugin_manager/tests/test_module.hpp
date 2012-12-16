@@ -3,17 +3,25 @@
 
 #include <plugin_manager.hpp>
 
-class MyPlugin : public mru::basic_plugin<MyPlugin> {
+class MyPlugin : public mru::plugin<MyPlugin> {
 public:
-  typedef MyPlugin self_type;
-public:
-  MyPlugin(const name_type &a_name)
-    : mru::basic_plugin<MyPlugin>(a_name)
+  MyPlugin(const mru::name_type &a_name)
+    : mru::plugin<MyPlugin>("MyPlugin", a_name)
   { }
   virtual void say_hello(void) = 0;
 };
 
-typedef mru::basic_plugin_manager<MyPlugin> MyPluginManager;
+typedef mru::plugin_manager<MyPlugin> MyPluginManager;
+
+class YourPlugin : public mru::plugin<YourPlugin> {
+public:
+  YourPlugin(const mru::name_type &a_name)
+    : mru::plugin<YourPlugin>("YourPlugin", a_name)
+  { }
+  virtual void say_goodbye(void) = 0;
+};
+
+typedef mru::plugin_manager<YourPlugin> YourPluginManager;
 
 #endif /* TEST_MODULE_HPP */
 

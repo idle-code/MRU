@@ -34,6 +34,12 @@ dynamic_module::filename_postfix(void) const
 
 /* ------------------------------------------------------------------------- */
 
+dynamic_module_manager::dynamic_module_manager(void)
+{ }
+
+dynamic_module_manager::~dynamic_module_manager(void)
+{ }
+
 dynamic_module *
 dynamic_module_manager::load(const name_type &a_file_path)
 {
@@ -66,5 +72,13 @@ dynamic_module_manager::unload(dynamic_module *&a_module)
   a_module = NULL;
 }
 
+void
+dynamic_module_manager::unload_all(void)
+{
+  for(std::map<name_type, dynamic_module*>::iterator i = m_loaded_modules.begin(); i != m_loaded_modules.end(); ++i) {
+    unload((*i).second);
+  }
+  m_loaded_modules.clear();
+}
 
 } /* namespace mru */

@@ -16,8 +16,11 @@
         </note>
         <note priority="high" time="1355391080">
             plugin_manager
-            <note priority="high" time="1355391098">
+            <note priority="high" time="1355391098" done="1355397782">
                 dynamic_module_manager
+                <comment>
+                    dynamic_module_manager along with dynamic_module classes seem to work;
+                </comment>
             </note>
         </note>
         <note priority="high" time="1355391143">
@@ -35,5 +38,8 @@
     </note>
     <note priority="medium" time="1349595750">
         Poprawki
+        <note priority="medium" time="1355658843">
+            Is 'name' property of basic_plugin_info really needed?
+        </note>
     </note>
 </todo>
