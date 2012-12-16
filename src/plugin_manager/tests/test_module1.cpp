@@ -3,8 +3,9 @@
 
 class MPlg1 : public MyPlugin { 
 public:
+  PLUGIN_NAME("MPlg1");
   MPlg1(void)
-    : MyPlugin("MPlg1") { } 
+    : MyPlugin(static_implementation_name()) { } 
 
   void say_hello(void)
   {
@@ -15,18 +16,24 @@ public:
 
 class YPlg : public YourPlugin { 
 public:
+  PLUGIN_NAME("YPlg");
   YPlg(void)
-    : YourPlugin("YPlg") { }
+    : YourPlugin(static_implementation_name()) { }
 
   void say_goodbye(void)
   {
     FO("void Yplg::say_goodbye(void)");
     MSG("Goodbye from YPlg plugin!");
+    VAL(++counter);
   }
+  static int counter;
 };
 
+int
+YPlg::counter = 0;
+
 EXPORT_START
-  EXPORT_PLUGIN(MPlg1, "MyPlugin")
-  EXPORT_PLUGIN(YPlg, "YourPlugin")
+  EXPORT_PLUGIN(MPlg1)
+  EXPORT_PLUGIN(YPlg)
 EXPORT_END
 

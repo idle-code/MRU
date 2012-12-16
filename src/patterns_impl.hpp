@@ -7,6 +7,41 @@ namespace mru
 
 template<typename Derived>
 Derived *
+custom_singleton<Derived>::m_instance = NULL;
+
+template<typename Derived>
+bool
+custom_singleton<Derived>::set_instance(Derived *a_instance)
+{
+  if(m_instance != NULL && a_instance != NULL) {
+    ERR("Singleton is already initialized");
+    return false;
+  }
+  m_instance = a_instance;
+  return true;
+}
+
+template<typename Derived>
+Derived *
+custom_singleton<Derived>::get_instance(void)
+{
+  return m_instance;
+}
+
+template<typename Derived>
+void
+custom_singleton<Derived>::destroy_instance(void)
+{
+  if(m_instance != NULL) {
+    delete m_instance;
+    m_instance = NULL;
+  }
+}
+
+
+
+template<typename Derived>
+Derived *
 singleton<Derived>::m_instance = NULL;
 
 template<typename Derived>
@@ -17,6 +52,18 @@ singleton<Derived>::get_instance(void)
     m_instance = new Derived();
   return m_instance;
 }
+
+template<typename Derived>
+void
+singleton<Derived>::destroy_instance(void)
+{
+  if(m_instance != NULL) {
+    delete m_instance;
+    m_instance = NULL;
+  }
+}
+
+
 
 template<typename Derived, typename ArgType1>
 Derived *
@@ -36,6 +83,48 @@ singleton1<Derived, ArgType1>::get_instance(ArgType1 a_arg1)
   if(m_instance == NULL)
     m_instance = new Derived(a_arg1);
   return m_instance;
+}
+
+template<typename Derived, typename ArgType1>
+void
+singleton1<Derived, ArgType1>::destroy_instance(void)
+{
+  if(m_instance != NULL) {
+    delete m_instance;
+    m_instance = NULL;
+  }
+}
+
+
+
+template<typename Derived, typename ArgType1, typename ArgType2>
+Derived *
+singleton2<Derived, ArgType1, ArgType2>::m_instance = NULL;
+
+template<typename Derived, typename ArgType1, typename ArgType2>
+Derived *
+singleton2<Derived, ArgType1, ArgType2>::get_instance(void)
+{
+  return m_instance;
+}
+
+template<typename Derived, typename ArgType1, typename ArgType2>
+Derived *
+singleton2<Derived, ArgType1, ArgType2>::get_instance(ArgType1 a_arg1, ArgType2 a_arg2)
+{
+  if(m_instance == NULL)
+    m_instance = new Derived(a_arg1, a_arg2);
+  return m_instance;
+}
+
+template<typename Derived, typename ArgType1, typename ArgType2>
+void
+singleton2<Derived, ArgType1, ArgType2>::destroy_instance(void)
+{
+  if(m_instance != NULL) {
+    delete m_instance;
+    m_instance = NULL;
+  }
 }
 
 /* ------------------------------------------------------------------------- */

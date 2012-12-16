@@ -67,6 +67,7 @@ badd +1 patterns.hpp
 badd +26 patterns_impl.hpp
 badd +1 types.hpp
 badd +0 plugin_manager/tests/test_module2.cpp
+badd +54 ~/projects/debug_l/debug_l.h
 silent! argdel *
 edit plugin_manager/plugin_manager_impl.hpp
 set splitbelow splitright
@@ -185,34 +186,106 @@ setlocal nowinfixwidth
 set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
-10
+11
+normal zo
+81
+normal zo
+116
+normal zo
+154
+normal zo
+168
+normal zo
+182
+normal zo
+195
+normal zo
+223
+normal zo
+244
+normal zo
+96
 normal zo
 109
 normal zo
-147
+122
+normal zo
+160
+normal zo
+174
+normal zo
+190
+normal zo
+203
+normal zo
+232
+normal zo
+253
+normal zo
+104
+normal zo
+110
+normal zo
+123
 normal zo
 161
 normal zo
-175
+176
 normal zo
-202
+192
 normal zo
-223
+205
+normal zo
+234
+normal zo
+255
+normal zo
+110
+normal zo
+123
 normal zo
 161
 normal zo
-175
+176
 normal zo
-202
+192
 normal zo
-223
+205
 normal zo
-let s:l = 169 - ((25 * winheight(0) + 24) / 48)
+234
+normal zo
+255
+normal zo
+123
+normal zo
+161
+normal zo
+176
+normal zo
+192
+normal zo
+205
+normal zo
+230
+normal zo
+247
+normal zo
+268
+normal zo
+286
+normal zo
+247
+normal zo
+268
+normal zo
+286
+normal zo
+let s:l = 260 - ((1 * winheight(0) + 24) / 48)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-169
-normal! 020l
+260
+normal! 052l
 wincmd w
 argglobal
 edit plugin_manager/plugin_manager.hpp
@@ -324,19 +397,149 @@ setlocal wrapmargin=0
 normal zo
 48
 normal zo
-117
+118
 normal zo
-117
+61
 normal zo
-let s:l = 54 - ((20 * winheight(0) + 24) / 48)
+127
+normal zo
+102
+normal zo
+130
+normal zo
+130
+normal zo
+let s:l = 71 - ((10 * winheight(0) + 24) / 48)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-54
-normal! 039l
+71
+let s:c = 67 - ((63 * winwidth(0) + 52) / 105)
+if s:c > 0
+  exe 'normal! 0' . s:c . 'lzs' . (67 - s:c) . 'l'
+else
+  normal! 067l
+endif
 wincmd w
 exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
 exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
+tabedit plugin_manager/plugin_manager_impl.hpp
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winheight=1 winwidth=1
+argglobal
+setlocal keymap=
+setlocal noarabic
+setlocal noautoindent
+setlocal balloonexpr=
+setlocal nobinary
+setlocal bufhidden=
+setlocal buflisted
+setlocal buftype=
+setlocal cindent
+setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
+setlocal cinoptions=
+setlocal cinwords=if,else,while,do,for,switch
+setlocal colorcolumn=
+setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
+setlocal commentstring=/*%s*/
+setlocal complete=.,w,b,u,t,i
+setlocal concealcursor=
+setlocal conceallevel=0
+setlocal completefunc=
+setlocal nocopyindent
+setlocal cryptmethod=
+setlocal nocursorbind
+setlocal nocursorcolumn
+set cursorline
+setlocal cursorline
+setlocal define=
+setlocal dictionary=
+setlocal nodiff
+setlocal equalprg=
+setlocal errorformat=
+setlocal expandtab
+if &filetype != 'cpp'
+setlocal filetype=cpp
+endif
+setlocal foldcolumn=0
+setlocal foldenable
+setlocal foldexpr=0
+setlocal foldignore=#
+setlocal foldlevel=3
+setlocal foldmarker={{{,}}}
+set foldmethod=syntax
+setlocal foldmethod=syntax
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldtext=foldtext()
+setlocal formatexpr=
+setlocal formatoptions=croql
+setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
+setlocal grepprg=
+setlocal iminsert=2
+setlocal imsearch=2
+setlocal include=
+setlocal includeexpr=
+setlocal indentexpr=
+setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
+setlocal noinfercase
+setlocal iskeyword=@,48-57,_,192-255
+setlocal keywordprg=
+setlocal nolinebreak
+setlocal nolisp
+setlocal nolist
+setlocal makeprg=
+setlocal matchpairs=(:),{:},[:]
+setlocal modeline
+setlocal modifiable
+setlocal nrformats=octal,hex
+set number
+setlocal number
+setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
+setlocal path=
+setlocal nopreserveindent
+setlocal nopreviewwindow
+setlocal quoteescape=\\
+setlocal noreadonly
+setlocal norelativenumber
+setlocal norightleft
+setlocal rightleftcmd=search
+setlocal noscrollbind
+setlocal shiftwidth=2
+setlocal noshortname
+setlocal nosmartindent
+setlocal softtabstop=0
+setlocal nospell
+setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
+setlocal spellfile=
+setlocal spelllang=en
+setlocal statusline=
+setlocal suffixesadd=
+setlocal swapfile
+setlocal synmaxcol=3000
+if &syntax != 'cpp'
+setlocal syntax=cpp
+endif
+setlocal tabstop=2
+setlocal tags=
+setlocal textwidth=0
+setlocal thesaurus=
+setlocal noundofile
+setlocal nowinfixheight
+setlocal nowinfixwidth
+set nowrap
+setlocal nowrap
+setlocal wrapmargin=0
+let s:l = 5 - ((4 * winheight(0) + 24) / 49)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+5
+normal! 0
 tabedit types.hpp
 set splitbelow splitright
 set nosplitbelow
@@ -573,12 +776,56 @@ setlocal nowrap
 setlocal wrapmargin=0
 6
 normal zo
-let s:l = 23 - ((16 * winheight(0) + 24) / 48)
+15
+normal zo
+16
+normal zo
+33
+normal zo
+58
+normal zo
+90
+normal zo
+122
+normal zo
+34
+normal zo
+35
+normal zo
+59
+normal zo
+60
+normal zo
+91
+normal zo
+92
+normal zo
+123
+normal zo
+124
+normal zo
+34
+normal zo
+35
+normal zo
+59
+normal zo
+60
+normal zo
+91
+normal zo
+92
+normal zo
+123
+normal zo
+124
+normal zo
+let s:l = 16 - ((15 * winheight(0) + 24) / 48)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-23
-normal! 045l
+16
+normal! 044l
 wincmd w
 argglobal
 edit patterns.hpp
@@ -688,14 +935,14 @@ setlocal nowrap
 setlocal wrapmargin=0
 5
 normal zo
-17
+8
 normal zo
-let s:l = 19 - ((18 * winheight(0) + 24) / 48)
+let s:l = 40 - ((36 * winheight(0) + 24) / 48)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-19
-normal! 034l
+40
+normal! 056l
 wincmd w
 exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
 exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
@@ -1472,7 +1719,7 @@ setlocal foldcolumn=0
 setlocal foldenable
 setlocal foldexpr=0
 setlocal foldignore=#
-setlocal foldlevel=0
+setlocal foldlevel=4
 setlocal foldmarker={{{,}}}
 set foldmethod=syntax
 setlocal foldmethod=syntax
@@ -1538,20 +1785,6 @@ setlocal nowinfixwidth
 set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
-8
-normal zo
-15
-normal zo
-25
-normal zo
-38
-normal zo
-47
-normal zo
-48
-normal zo
-67
-normal zo
 let s:l = 57 - ((24 * winheight(0) + 24) / 48)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
@@ -1696,11 +1929,11 @@ set nosplitright
 wincmd t
 set winheight=1 winwidth=1
 exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
-exe '2resize ' . ((&lines * 16 + 25) / 51)
+exe '2resize ' . ((&lines * 10 + 25) / 51)
 exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
-exe '3resize ' . ((&lines * 15 + 25) / 51)
+exe '3resize ' . ((&lines * 13 + 25) / 51)
 exe 'vert 3resize ' . ((&columns * 105 + 105) / 211)
-exe '4resize ' . ((&lines * 15 + 25) / 51)
+exe '4resize ' . ((&lines * 23 + 25) / 51)
 exe 'vert 4resize ' . ((&columns * 105 + 105) / 211)
 argglobal
 setlocal keymap=
@@ -1807,14 +2040,14 @@ setlocal nowinfixwidth
 set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
-7
+8
 normal zo
-let s:l = 40 - ((39 * winheight(0) + 24) / 48)
+let s:l = 14 - ((10 * winheight(0) + 24) / 48)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-40
-normal! 020l
+14
+normal! 070l
 wincmd w
 argglobal
 edit plugin_manager/tests/test_module2.cpp
@@ -1922,12 +2155,14 @@ setlocal nowinfixwidth
 set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
-let s:l = 16 - ((13 * winheight(0) + 8) / 16)
+4
+normal zo
+let s:l = 11 - ((7 * winheight(0) + 5) / 10)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-16
-normal! 032l
+11
+normal! 037l
 wincmd w
 argglobal
 edit plugin_manager/tests/test_module1.cpp
@@ -2037,14 +2272,16 @@ setlocal nowrap
 setlocal wrapmargin=0
 4
 normal zo
-16
+17
 normal zo
-let s:l = 18 - ((5 * winheight(0) + 7) / 15)
+17
+normal zo
+let s:l = 18 - ((3 * winheight(0) + 6) / 13)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 18
-normal! 011l
+normal! 06l
 wincmd w
 argglobal
 edit plugin_manager/tests/test_module.hpp
@@ -2152,21 +2389,23 @@ setlocal nowinfixwidth
 set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
-let s:l = 5 - ((2 * winheight(0) + 7) / 15)
+8
+normal zo
+let s:l = 22 - ((21 * winheight(0) + 11) / 23)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-5
-normal! 0
+22
+normal! 04l
 wincmd w
 exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
-exe '2resize ' . ((&lines * 16 + 25) / 51)
+exe '2resize ' . ((&lines * 10 + 25) / 51)
 exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
-exe '3resize ' . ((&lines * 15 + 25) / 51)
+exe '3resize ' . ((&lines * 13 + 25) / 51)
 exe 'vert 3resize ' . ((&columns * 105 + 105) / 211)
-exe '4resize ' . ((&lines * 15 + 25) / 51)
+exe '4resize ' . ((&lines * 23 + 25) / 51)
 exe 'vert 4resize ' . ((&columns * 105 + 105) / 211)
-tabnext 8
+tabnext 4
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
 endif
