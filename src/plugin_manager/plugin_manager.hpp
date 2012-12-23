@@ -76,6 +76,7 @@ public:
   typedef data_tree::registry registry;
 
 public:
+  plugin_manager(const name_type &a_interface, const registry &a_reg);
   plugin_manager(const name_type &a_interface);
   using generic_plugin_manager::destroy;
   void destroy(void);
@@ -91,6 +92,7 @@ public:
   plugin_type* create_plugin(const name_type &a_name);
   void destroy_plugin(plugin_type *&a_instance);
 
+  void tree(const registry &a_tree);
   const registry& tree(void) const;
 protected:
   registry m_tree;

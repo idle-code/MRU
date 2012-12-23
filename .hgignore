@@ -19,7 +19,10 @@ Makefile
 *.dir
 *.so
 
+src/.todo
+mru
 hello
+hello_host
 load_test
 dt_test
 

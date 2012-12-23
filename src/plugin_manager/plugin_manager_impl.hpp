@@ -91,10 +91,18 @@ generic_plugin_manager::generic_plugin_manager(const name_type &a_interface)
 /* ------------------------------------------------------------------------- */
 
 template<typename PluginClass>
+plugin_manager<PluginClass>::plugin_manager(const name_type &a_interface, const registry &a_reg)
+  : generic_plugin_manager(a_interface), m_tree(a_reg)
+{
+  FO("plugin_manager<PluginClass>::plugin_manager(const name_type &a_interface, registery *a_reg)");
+  plugin_factory_distributor::get_instance()->register_manager(this);
+}
+
+template<typename PluginClass>
 plugin_manager<PluginClass>::plugin_manager(const name_type &a_interface)
   : generic_plugin_manager(a_interface)
 {
-  FO("plugin_manager<PluginClass>::plugin_manager(void)");
+  FO("plugin_manager<PluginClass>::plugin_manager(const name_type &a_interface)");
   plugin_factory_distributor::get_instance()->register_manager(this);
 }
 
@@ -212,6 +220,13 @@ plugin_manager<PluginClass>::destroy_plugin(plugin_type *&a_instance)
   }
   m_factories[a_instance->implementation_name()]->destroy(a_instance);
   a_instance = NULL;
+}
+
+template<typename PluginClass>
+void
+plugin_manager<PluginClass>::tree(const registry &a_tree)
+{
+  m_tree = a_tree;
 }
 
 template<typename PluginClass>

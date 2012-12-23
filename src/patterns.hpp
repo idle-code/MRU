@@ -9,6 +9,7 @@ class custom_singleton {
 public:
   static bool set_instance(Derived *a_instance);
   static Derived* get_instance(void);
+  static Derived& get_reference(void);
   static void destroy_instance(void);
 private:
   static Derived *m_instance;
@@ -18,6 +19,7 @@ template<typename Derived>
 class singleton {
 public:
   static Derived* get_instance(void);
+  static Derived& get_reference(void);
   static void destroy_instance(void);
 private:
   static Derived *m_instance;
@@ -27,6 +29,7 @@ template<typename Derived, typename ArgType1>
 class singleton1 {
 public:
   static Derived* get_instance(void);
+  static Derived& get_reference(void);
   static Derived* get_instance(ArgType1 a_arg1);
   static void destroy_instance(void);
 private:
@@ -37,6 +40,7 @@ template<typename Derived, typename ArgType1, typename ArgType2>
 class singleton2 {
 public:
   static Derived* get_instance(void);
+  static Derived& get_reference(void);
   static Derived* get_instance(ArgType1 a_arg1, ArgType2 a_arg2);
   static void destroy_instance(void);
 private:
