@@ -22,6 +22,13 @@ custom_singleton<Derived>::set_instance(Derived *a_instance)
 }
 
 template<typename Derived>
+Derived &
+custom_singleton<Derived>::get_reference(void)
+{
+  return *m_instance;
+}
+
+template<typename Derived>
 Derived *
 custom_singleton<Derived>::get_instance(void)
 {
@@ -54,6 +61,15 @@ singleton<Derived>::get_instance(void)
 }
 
 template<typename Derived>
+Derived &
+singleton<Derived>::get_reference(void)
+{
+  if(m_instance == NULL)
+    m_instance = new Derived();
+  return *m_instance;
+}
+
+template<typename Derived>
 void
 singleton<Derived>::destroy_instance(void)
 {
@@ -68,6 +84,13 @@ singleton<Derived>::destroy_instance(void)
 template<typename Derived, typename ArgType1>
 Derived *
 singleton1<Derived, ArgType1>::m_instance = NULL;
+
+template<typename Derived, typename ArgType1>
+Derived &
+singleton1<Derived, ArgType1>::get_reference(void)
+{
+  return *m_instance;
+}
 
 template<typename Derived, typename ArgType1>
 Derived *
@@ -106,6 +129,13 @@ Derived *
 singleton2<Derived, ArgType1, ArgType2>::get_instance(void)
 {
   return m_instance;
+}
+
+template<typename Derived, typename ArgType1, typename ArgType2>
+Derived &
+singleton2<Derived, ArgType1, ArgType2>::get_reference(void)
+{
+  return *m_instance;
 }
 
 template<typename Derived, typename ArgType1, typename ArgType2>
@@ -176,3 +206,4 @@ factory_function<Object>::destroy(Object *&a_object) const
 } /* namespace mru */
 
 #endif /* PATTERNS_IMPL_HPP */
+
