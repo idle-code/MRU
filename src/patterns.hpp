@@ -1,6 +1,8 @@
 #ifndef PATTERNS_HPP
 #define PATTERNS_HPP
 
+#include <cstddef>
+
 namespace mru
 {
 
