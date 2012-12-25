@@ -14,7 +14,7 @@ bool
 custom_singleton<Derived>::set_instance(Derived *a_instance)
 {
   if(m_instance != NULL && a_instance != NULL) {
-    ERR("Singleton is already initialized");
+    //ERR("Singleton is already initialized");
     return false;
   }
   m_instance = a_instance;

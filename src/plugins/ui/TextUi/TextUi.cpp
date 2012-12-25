@@ -6,7 +6,7 @@ namespace mru
 {
 
 TextUi::TextUi(void)
-  : UiPlugin("TextUi")
+  : UiPlugin(static_implementation_name())
 { }
 
 TextUi::~TextUi(void)
