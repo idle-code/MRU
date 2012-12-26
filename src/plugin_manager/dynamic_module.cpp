@@ -66,7 +66,10 @@ dynamic_module_manager::unload(dynamic_module *&a_module)
 {
   if(a_module == NULL)
     return;
-  m_loaded_modules.erase(m_loaded_modules.find(a_module->filepath()));
+  std::map<name_type, dynamic_module*>::iterator to_remove = m_loaded_modules.find(a_module->filepath());
+  if(to_remove == m_loaded_modules.end())
+    return;
+  m_loaded_modules.erase(to_remove);
   a_module->unload();
   delete a_module;
   a_module = NULL;

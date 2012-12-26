@@ -3,6 +3,7 @@
 
 #include "patterns.hpp"
 #include <plugins/ui_plugin.hpp>
+#include <plugins/filesystem_plugin.hpp>
 #include <sigc++/trackable.h>
 
 namespace mru
@@ -26,6 +27,7 @@ public:
   void load_modules(void);
 protected:
   UiPlugin *m_ui;
+  FilesystemPlugin *m_fs_driver;
 };
 
 } /* namespace mru */
