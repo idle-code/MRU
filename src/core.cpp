@@ -1,6 +1,7 @@
 #define PLUGIN_HOST
 #include "core.hpp"
 #include "types.hpp"
+#include <plugins/ui_plugin.hpp>
 #include <plugins/filesystem_plugin.hpp>
 #include <plugins/tag_plugin.hpp>
 #undef NDEBUG_L
@@ -10,7 +11,7 @@ namespace mru
 {
 
 Core::Core(void)
-  : m_ui(NULL)
+  : m_ui(NULL), m_fs_driver(NULL)
 {
   FO("Core::Core(void)");
   prepare_registry();
@@ -49,8 +50,9 @@ Core::start(int a_argc, char **a_argv)
     ERR("Couldn't initialize UI plugin");
     return 1;
   }
+  int result = m_ui->start(a_argc, a_argv);
   data_tree::print_tree(reg); 
-  return 0;
+  return result;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -145,7 +147,9 @@ Core::load_configuration(void)
   FO("load_configuration(void)");
   registry reg = reg::get_reference(); 
   
-  reg[".config"].set("ui", reg.get_or(".arguments.ui", "TextUi"));
+  reg[".config"].set("ui", reg.get_or(".arguments.ui", "wxWidgetsUi"));
+  //reg[".config"].set("ui", reg.get_or(".arguments.ui", "TextUi"));
+  reg[".config"].set("fs_driver", reg.get_or(".arguments.fs_driver", "GenericBoostFSDriver"));
 
 }
 
@@ -155,6 +159,7 @@ Core::load_modules(void)
   FO("load_modules(void)");
   UiPluginManager *ui_manager = UiPluginManager::get_instance();
   ui_manager->load_module("plugins/ui/TextUi/TextUi");
+  ui_manager->load_module("plugins/ui/wxWidgetsUi/wxWidgetsUi");
 
   FilesystemPluginManager *fs_manager = FilesystemPluginManager::get_instance();
   fs_manager->load_module("plugins/filesystem/GenericBoostFSDriver/GenericBoostFSDriver");
