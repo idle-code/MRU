@@ -46,9 +46,11 @@ bool
 wxWidgetsUiApp::OnInit(void)
 {
   FO("wxWidgetsUiApp::OnInit(void)");
+
   MainWindow *main_window = new MainWindow();
   main_window->Show(true);
   SetTopWindow(main_window);
+
   return true;
 }
 

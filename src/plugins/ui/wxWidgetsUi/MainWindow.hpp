@@ -13,8 +13,6 @@ public:
   MainWindow(void);
   ~MainWindow(void);
 
-  bool OnInit(void);
-
   DECLARE_EVENT_TABLE()
 };
 
