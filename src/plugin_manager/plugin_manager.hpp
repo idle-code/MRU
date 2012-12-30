@@ -3,7 +3,7 @@
 
 #include <data_tree/registry.hpp>
 #include <dynamic_module.hpp>
-#include <types.hpp>
+#include "types.hpp"
 #include <map>
 
 namespace mru

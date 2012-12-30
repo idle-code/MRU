@@ -22,7 +22,7 @@ wxWidgetsUi::start(int a_argc, char *a_argv[])
   
   //TODO: start main window
   
-  detail::wxWidgetsUiApp *app = new detail::wxWidgetsUiApp;
+  detail::wxWidgetsUiApp *app = new detail::wxWidgetsUiApp(core());
   wxApp::SetInstance(app);
   int result = wxEntry(a_argc, a_argv);
   delete app;
@@ -35,8 +35,8 @@ wxWidgetsUi::start(int a_argc, char *a_argv[])
 namespace detail
 {
 
-wxWidgetsUiApp::wxWidgetsUiApp(void)
-  : wxApp()
+wxWidgetsUiApp::wxWidgetsUiApp(Core *a_mru_core)
+  : wxApp(), m_core(a_mru_core)
 { }
 
 wxWidgetsUiApp::~wxWidgetsUiApp(void)
@@ -47,7 +47,7 @@ wxWidgetsUiApp::OnInit(void)
 {
   FO("wxWidgetsUiApp::OnInit(void)");
 
-  MainWindow *main_window = new MainWindow();
+  MainWindow *main_window = new MainWindow(m_core);
   main_window->Show(true);
   SetTopWindow(main_window);
 

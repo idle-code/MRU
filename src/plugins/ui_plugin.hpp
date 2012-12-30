@@ -1,18 +1,19 @@
 #ifndef UI_PLUGIN_HPP
 #define UI_PLUGIN_HPP
 
-#include <plugin_manager.hpp>
+#include "plugins/MruPlugin.hpp"
+#include "plugin_manager.hpp"
 
 namespace mru
 {
 
-class UiPlugin : public plugin<UiPlugin> {
+class UiPlugin : public MruPlugin {
 public:
   typedef UiPlugin self_type;
 public:
   PLUGIN_INTERFACE("UiPlugin")
   UiPlugin(const name_type &a_name)
-    : plugin<UiPlugin>(static_interface_name(), a_name)
+    : MruPlugin(static_interface_name(), a_name)
   { }
   virtual ~UiPlugin(void)
   { }

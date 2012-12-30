@@ -1,7 +1,8 @@
 #ifndef WXWIDGETSUI_HPP
 #define WXWIDGETSUI_HPP
 
-#include <plugins/ui_plugin.hpp>
+#include "core.hpp"
+#include "plugins/ui_plugin.hpp"
 #include <wx/app.h>
 
 namespace mru
@@ -12,11 +13,13 @@ namespace detail
 
 class wxWidgetsUiApp : public wxApp {
 public:
-  wxWidgetsUiApp(void);
+  wxWidgetsUiApp(Core *a_mru_core);
   ~wxWidgetsUiApp(void);
 
   bool OnInit(void);
   //int OnRun(void);
+private:
+  Core* m_core;
 };
 
 }

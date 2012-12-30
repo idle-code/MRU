@@ -2,8 +2,8 @@
 #define TYPES_HPP
 
 #include <string>
-#include <registry.hpp>
-#include <patterns.hpp>
+#include <data_tree/registry.hpp>
+#include "patterns.hpp"
 #include <unicode/unistr.h> //for ICU UnicodeString
 //#include <boost/locale.hpp>
 

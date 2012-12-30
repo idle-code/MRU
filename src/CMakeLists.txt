@@ -10,10 +10,11 @@ find_package (ICU 4.8 COMPONENTS uc REQUIRED)
 include_directories (${ICU_INCLUDE_DIRS})
 set (LIBS ${LIBS} ${ICU_LIBRARIES})
 
-find_package (wxWidgets COMPONENTS core base REQUIRED)
+find_package (wxWidgets 2.9 COMPONENTS core base REQUIRED)
 include_directories (${wxWidgets_INCLUDE_DIRS})
 set (LIBS ${LIBS} ${wxWidgets_LIBRARIES})
 include ("${wxWidgets_USE_FILE}")
+message (STATUS ${wxWidgets_INCLUDE_DIRS})
 
 find_package (SigC++ 2.2 REQUIRED)
 include_directories (${SigC++_INCLUDE_DIRS})
@@ -47,4 +48,5 @@ target_link_libraries (dt_test ${LIBS})
 
 add_executable (mru "main.cpp" "core.cpp")
 target_link_libraries (mru ${LIBS})
+set_target_properties (mru PROPERTIES ENABLE_EXPORTS TRUE)
 

@@ -33,6 +33,12 @@ Core::~Core(void)
   UiPluginManager::destroy_instance();
 }
 
+registry
+Core::get_registry(void)
+{
+  return reg::get_reference();
+}
+
 int
 Core::start(int a_argc, char **a_argv)
 {
@@ -91,11 +97,11 @@ parse_argument(char *a_string)
   } else if(arg.startsWith(UNICODE_STRING_SIMPLE("-"))) {
     arg.remove(0, 1); //FIXME: differently treat options shortcuts?
   }
-
   if(arg.length() < 1)
+
     return;
 
-  uint32_t equal_sign_index = arg.indexOf('=');
+  int32_t equal_sign_index = arg.indexOf('=');
   if(equal_sign_index != -1) { //key=value syntax
     mru::string_type key = arg.tempSubString(0, equal_sign_index); 
     mru::string_type value = arg.tempSubString(equal_sign_index + 1); 
