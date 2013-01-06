@@ -2,11 +2,11 @@ let SessionLoad = 1
 if &cp | set nocp | endif
 let s:cpo_save=&cpo
 set cpo&vim
-inoremap <silent> <Plug>(neocomplcache_start_omni_complete) 
-inoremap <silent> <Plug>(neocomplcache_start_auto_complete_no_select) 
-inoremap <silent> <Plug>(neocomplcache_start_auto_complete) =neocomplcache#popup_post()
-inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_quick_match) unite#sources#neocomplcache#start_quick_match()
 inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_complete) unite#sources#neocomplcache#start_complete()
+inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_quick_match) unite#sources#neocomplcache#start_quick_match()
+inoremap <silent> <Plug>(neocomplcache_start_auto_complete) =neocomplcache#popup_post()
+inoremap <silent> <Plug>(neocomplcache_start_auto_complete_no_select) 
+inoremap <silent> <Plug>(neocomplcache_start_omni_complete) 
 inoremap <silent> <C-Tab> =UltiSnips_ListSnippets()
 xnoremap 	 :call UltiSnips_SaveLastVisualSelection()gvs
 snoremap <silent> 	 :call UltiSnips_ExpandSnippet()
@@ -57,7 +57,7 @@ badd +1 plugin_manager/tests/test_module.hpp
 badd +8 plugin_manager/module_loader.hpp
 badd +15 plugin_manager/dynamic_module.hpp
 badd +72 plugin_manager/dynamic_module.cpp
-badd +17 plugin_manager/dynamic_module_bsd.hpp
+badd +1 plugin_manager/dynamic_module_bsd.hpp
 badd +57 plugin_manager/dynamic_module_bsd.cpp
 badd +1 status_value.hpp
 badd +1 status_value_impl.hpp
@@ -82,14 +82,14 @@ badd +10 plugins/ui/tui/TextUi.cpp
 badd +1 plugins/ui/tui/TextUi.hpp
 badd +14 plugins/ui/TextUi/TextUi.cpp
 badd +13 plugins/ui/TextUi/TextUi.hpp
-badd +5 plugins/filesystem_plugin.hpp
+badd +29 plugins/filesystem_plugin.hpp
 badd +16 plugins/filesystem/GenericBoostFSDriver/GenericBoostFSDriver.cpp
-badd +21 plugins/filesystem/GenericBoostFSDriver/GenericBoostFSDriver.hpp
+badd +12 plugins/filesystem/GenericBoostFSDriver/GenericBoostFSDriver.hpp
 badd +1 plugins/tag_plugin.hpp
 badd +16 plugins/tags/StandardTags/StandardTags.cpp
 badd +1 plugins/tags/StandardTags/StandardTags.hpp
 badd +1 core.hpp
-badd +53 core.cpp
+badd +14 core.cpp
 badd +19 plugins/ui/wxWidgetsUi/wxWidgetsUi.hpp
 badd +32 plugins/ui/wxWidgetsUi/wxWidgetsUi.cpp
 badd +12 MainWindow.hpp
@@ -98,8 +98,12 @@ badd +22 plugins/ui/wxWidgetsUi/MainWindow.hpp
 badd +14 plugins/ui/wxWidgetsUi/MainWindow.cpp
 badd +22 plugins/ui/wxWidgetsUi/TreeFrame.hpp
 badd +10 plugins/ui/wxWidgetsUi/TreeFrame.cpp
-badd +0 plugins/MruPlugin.hpp
-badd +0 plugins/MruPlugin.cpp
+badd +1 plugins/MruPlugin.hpp
+badd +2 plugins/MruPlugin.cpp
+badd +0 types.cpp
+badd +0 plugins/output_plugin.hpp
+badd +0 plugins/output/GenericBoost/GenericBoost.cpp
+badd +0 plugins/output/GenericBoost/GenericBoost.hpp
 silent! argdel *
 edit plugin_manager/plugin_manager.cpp
 set splitbelow splitright
@@ -115,9 +119,9 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe '1resize ' . ((&lines * 25 + 25) / 50)
+exe '1resize ' . ((&lines * 26 + 25) / 50)
 exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
-exe '2resize ' . ((&lines * 21 + 25) / 50)
+exe '2resize ' . ((&lines * 20 + 25) / 50)
 exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
 exe 'vert 3resize ' . ((&columns * 105 + 105) / 211)
 argglobal
@@ -227,12 +231,12 @@ setlocal nowrap
 setlocal wrapmargin=0
 5
 normal zo
-let s:l = 36 - ((14 * winheight(0) + 12) / 25)
+let s:l = 36 - ((15 * winheight(0) + 13) / 26)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 36
-normal! 0
+normal! 052l
 wincmd w
 argglobal
 edit plugin_manager/plugin_manager_impl.hpp
@@ -354,12 +358,12 @@ normal zo
 normal zo
 173
 normal zo
-let s:l = 12 - ((8 * winheight(0) + 10) / 21)
+let s:l = 97 - ((9 * winheight(0) + 10) / 20)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-12
-normal! 0
+97
+normal! 02l
 wincmd w
 argglobal
 edit plugin_manager/plugin_manager.hpp
@@ -471,25 +475,153 @@ setlocal wrapmargin=0
 normal zo
 132
 normal zo
-let s:l = 25 - ((13 * winheight(0) + 23) / 47)
+let s:l = 5 - ((4 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-25
-normal! 036l
+5
+normal! 010l
 wincmd w
-exe '1resize ' . ((&lines * 25 + 25) / 50)
+exe '1resize ' . ((&lines * 26 + 25) / 50)
 exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
-exe '2resize ' . ((&lines * 21 + 25) / 50)
+exe '2resize ' . ((&lines * 20 + 25) / 50)
 exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
 exe 'vert 3resize ' . ((&columns * 105 + 105) / 211)
-tabedit types.hpp
+tabedit types.cpp
 set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
 set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
+exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
+exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
 argglobal
+setlocal keymap=
+setlocal noarabic
+setlocal noautoindent
+setlocal balloonexpr=
+setlocal nobinary
+setlocal bufhidden=
+setlocal buflisted
+setlocal buftype=
+setlocal cindent
+setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
+setlocal cinoptions=
+setlocal cinwords=if,else,while,do,for,switch
+setlocal colorcolumn=
+setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
+setlocal commentstring=/*%s*/
+setlocal complete=.,w,b,u,t,i
+setlocal concealcursor=
+setlocal conceallevel=0
+setlocal completefunc=neocomplcache#auto_complete
+setlocal nocopyindent
+setlocal cryptmethod=
+setlocal nocursorbind
+setlocal nocursorcolumn
+set cursorline
+setlocal cursorline
+setlocal define=
+setlocal dictionary=
+setlocal nodiff
+setlocal equalprg=
+setlocal errorformat=
+setlocal expandtab
+if &filetype != 'cpp'
+setlocal filetype=cpp
+endif
+setlocal foldcolumn=0
+setlocal foldenable
+setlocal foldexpr=0
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldmarker={{{,}}}
+set foldmethod=syntax
+setlocal foldmethod=syntax
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldtext=foldtext()
+setlocal formatexpr=
+setlocal formatoptions=croql
+setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
+setlocal grepprg=
+setlocal iminsert=2
+setlocal imsearch=2
+setlocal include=
+setlocal includeexpr=
+setlocal indentexpr=
+setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
+setlocal noinfercase
+setlocal iskeyword=@,48-57,_,192-255
+setlocal keywordprg=
+setlocal nolinebreak
+setlocal nolisp
+setlocal nolist
+setlocal makeprg=
+setlocal matchpairs=(:),{:},[:]
+setlocal modeline
+setlocal modifiable
+setlocal nrformats=octal,hex
+set number
+setlocal number
+setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
+setlocal path=
+setlocal nopreserveindent
+setlocal nopreviewwindow
+setlocal quoteescape=\\
+setlocal noreadonly
+setlocal norelativenumber
+setlocal norightleft
+setlocal rightleftcmd=search
+setlocal noscrollbind
+setlocal shiftwidth=2
+setlocal noshortname
+setlocal nosmartindent
+setlocal softtabstop=0
+setlocal nospell
+setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
+setlocal spellfile=
+setlocal spelllang=en
+setlocal statusline=
+setlocal suffixesadd=
+setlocal swapfile
+setlocal synmaxcol=3000
+if &syntax != 'cpp'
+setlocal syntax=cpp
+endif
+setlocal tabstop=2
+setlocal tags=
+setlocal textwidth=0
+setlocal thesaurus=
+setlocal noundofile
+setlocal nowinfixheight
+setlocal nowinfixwidth
+set nowrap
+setlocal nowrap
+setlocal wrapmargin=0
+4
+normal zo
+8
+normal zo
+15
+normal zo
+15
+normal zo
+let s:l = 10 - ((9 * winheight(0) + 23) / 47)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+10
+normal! 038l
+lcd ~/projects/mru/src
+wincmd w
+argglobal
+edit ~/projects/mru/src/types.hpp
 setlocal keymap=
 setlocal noarabic
 setlocal noautoindent
@@ -594,13 +726,16 @@ setlocal nowinfixwidth
 set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
-let s:l = 5 - ((4 * winheight(0) + 24) / 48)
+let s:l = 20 - ((19 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-5
-normal! 018l
-tabedit patterns_impl.hpp
+20
+normal! 0
+wincmd w
+exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
+exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
+tabedit ~/projects/mru/src/patterns_impl.hpp
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -739,15 +874,15 @@ normal zo
 normal zo
 154
 normal zo
-let s:l = 17 - ((16 * winheight(0) + 23) / 47)
+let s:l = 9 - ((1 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-17
-normal! 05l
+9
+normal! 0
 wincmd w
 argglobal
-edit patterns.hpp
+edit ~/projects/mru/src/patterns.hpp
 setlocal keymap=
 setlocal noarabic
 setlocal noautoindent
@@ -863,7 +998,7 @@ normal! 0
 wincmd w
 exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
 exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
-tabedit main.cpp
+tabedit ~/projects/mru/src/main.cpp
 set splitbelow splitright
 set nosplitbelow
 set nosplitright
@@ -976,13 +1111,13 @@ setlocal nowrap
 setlocal wrapmargin=0
 8
 normal zo
-let s:l = 10 - ((9 * winheight(0) + 24) / 48)
+let s:l = 12 - ((11 * winheight(0) + 24) / 48)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-10
-normal! 02l
-tabedit plugins/MruPlugin.cpp
+12
+normal! 03l
+tabedit ~/projects/mru/src/plugins/MruPlugin.cpp
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -1223,12 +1358,12 @@ setlocal nowrap
 setlocal wrapmargin=0
 7
 normal zo
-let s:l = 10 - ((9 * winheight(0) + 23) / 47)
+let s:l = 23 - ((22 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-10
-normal! 010l
+23
+normal! 0
 lcd ~/projects/mru/src
 wincmd w
 exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
@@ -1352,7 +1487,19 @@ setlocal nowrap
 setlocal wrapmargin=0
 11
 normal zo
-38
+15
+normal zo
+44
+normal zo
+84
+normal zo
+88
+normal zo
+105
+normal zo
+132
+normal zo
+27
 normal zo
 44
 normal zo
@@ -1374,12 +1521,13 @@ normal zo
 normal zo
 132
 normal zo
-let s:l = 14 - ((1 * winheight(0) + 23) / 47)
+let s:l = 170 - ((38 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-14
-normal! 032l
+170
+normal! 020l
+lcd ~/projects/mru/src
 wincmd w
 argglobal
 edit ~/projects/mru/src/core.hpp
@@ -1489,12 +1637,13 @@ setlocal nowrap
 setlocal wrapmargin=0
 9
 normal zo
-let s:l = 4 - ((3 * winheight(0) + 23) / 47)
+let s:l = 16 - ((15 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-4
-normal! 019l
+16
+normal! 033l
+lcd ~/projects/mru/src
 wincmd w
 exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
 exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
@@ -1529,7 +1678,7 @@ setlocal commentstring=/*%s*/
 setlocal complete=.,w,b,u,t,i
 setlocal concealcursor=
 setlocal conceallevel=0
-setlocal completefunc=
+setlocal completefunc=neocomplcache#auto_complete
 setlocal nocopyindent
 setlocal cryptmethod=
 setlocal nocursorbind
@@ -1617,14 +1766,21 @@ setlocal nowrap
 setlocal wrapmargin=0
 6
 normal zo
+45
+normal zo
+49
+normal zo
 80
 normal zo
-let s:l = 72 - ((26 * winheight(0) + 23) / 47)
+80
+normal zo
+let s:l = 29 - ((1 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-72
-normal! 034l
+29
+normal! 0
+lcd ~/projects/mru/src
 wincmd w
 argglobal
 edit ~/projects/mru/src/plugin_manager/dynamic_module.hpp
@@ -1734,21 +1890,28 @@ setlocal nowrap
 setlocal wrapmargin=0
 10
 normal zo
-let s:l = 47 - ((40 * winheight(0) + 23) / 47)
+let s:l = 26 - ((19 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-47
+26
 normal! 02l
+lcd ~/projects/mru/src
 wincmd w
 exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
 exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
-tabedit ~/projects/mru/src/plugin_manager/dynamic_module_bsd.cpp
+tabedit ~/projects/mru/src/plugin_manager/dynamic_module_bsd.hpp
 set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
 set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
+exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
+exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
 argglobal
 setlocal keymap=
 setlocal noarabic
@@ -1769,6 +1932,120 @@ setlocal complete=.,w,b,u,t,i
 setlocal concealcursor=
 setlocal conceallevel=0
 setlocal completefunc=neocomplcache#manual_complete
+setlocal nocopyindent
+setlocal cryptmethod=
+setlocal nocursorbind
+setlocal nocursorcolumn
+set cursorline
+setlocal cursorline
+setlocal define=
+setlocal dictionary=
+setlocal nodiff
+setlocal equalprg=
+setlocal errorformat=
+setlocal expandtab
+if &filetype != 'cpp'
+setlocal filetype=cpp
+endif
+setlocal foldcolumn=0
+setlocal foldenable
+setlocal foldexpr=0
+setlocal foldignore=#
+setlocal foldlevel=2
+setlocal foldmarker={{{,}}}
+set foldmethod=syntax
+setlocal foldmethod=syntax
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldtext=foldtext()
+setlocal formatexpr=
+setlocal formatoptions=croql
+setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
+setlocal grepprg=
+setlocal iminsert=2
+setlocal imsearch=2
+setlocal include=
+setlocal includeexpr=
+setlocal indentexpr=
+setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
+setlocal noinfercase
+setlocal iskeyword=@,48-57,_,192-255
+setlocal keywordprg=
+setlocal nolinebreak
+setlocal nolisp
+setlocal nolist
+setlocal makeprg=
+setlocal matchpairs=(:),{:},[:]
+setlocal modeline
+setlocal modifiable
+setlocal nrformats=octal,hex
+set number
+setlocal number
+setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
+setlocal path=
+setlocal nopreserveindent
+setlocal nopreviewwindow
+setlocal quoteescape=\\
+setlocal noreadonly
+setlocal norelativenumber
+setlocal norightleft
+setlocal rightleftcmd=search
+setlocal noscrollbind
+setlocal shiftwidth=2
+setlocal noshortname
+setlocal nosmartindent
+setlocal softtabstop=0
+setlocal nospell
+setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
+setlocal spellfile=
+setlocal spelllang=en
+setlocal statusline=
+setlocal suffixesadd=
+setlocal swapfile
+setlocal synmaxcol=3000
+if &syntax != 'cpp'
+setlocal syntax=cpp
+endif
+setlocal tabstop=2
+setlocal tags=
+setlocal textwidth=0
+setlocal thesaurus=
+setlocal noundofile
+setlocal nowinfixheight
+setlocal nowinfixwidth
+set nowrap
+setlocal nowrap
+setlocal wrapmargin=0
+let s:l = 24 - ((23 * winheight(0) + 23) / 47)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+24
+normal! 02l
+lcd ~/projects/mru/src
+wincmd w
+argglobal
+edit ~/projects/mru/src/plugin_manager/dynamic_module_bsd.cpp
+setlocal keymap=
+setlocal noarabic
+setlocal noautoindent
+setlocal balloonexpr=
+setlocal nobinary
+setlocal bufhidden=
+setlocal buflisted
+setlocal buftype=
+setlocal cindent
+setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
+setlocal cinoptions=
+setlocal cinwords=if,else,while,do,for,switch
+setlocal colorcolumn=
+setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
+setlocal commentstring=/*%s*/
+setlocal complete=.,w,b,u,t,i
+setlocal concealcursor=
+setlocal conceallevel=0
+setlocal completefunc=neocomplcache#auto_complete
 setlocal nocopyindent
 setlocal cryptmethod=
 setlocal nocursorbind
@@ -1856,14 +2133,30 @@ setlocal nowrap
 setlocal wrapmargin=0
 8
 normal zo
-25
+26
 normal zo
-let s:l = 37 - ((22 * winheight(0) + 24) / 48)
+48
+normal zo
+49
+normal zo
+68
+normal zo
+48
+normal zo
+49
+normal zo
+68
+normal zo
+let s:l = 83 - ((45 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-37
-normal! 020l
+83
+normal! 0
+lcd ~/projects/mru/src
+wincmd w
+exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
+exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
 tabedit ~/projects/mru/src/plugins/tags/StandardTags/StandardTags.cpp
 set splitbelow splitright
 wincmd _ | wincmd |
@@ -1996,6 +2289,7 @@ exe s:l
 normal! zt
 16
 normal! 020l
+lcd ~/projects/mru/src
 wincmd w
 argglobal
 edit ~/projects/mru/src/plugins/tags/StandardTags/StandardTags.hpp
@@ -2017,7 +2311,7 @@ setlocal commentstring=/*%s*/
 setlocal complete=.,w,b,u,t,i
 setlocal concealcursor=
 setlocal conceallevel=0
-setlocal completefunc=
+setlocal completefunc=neocomplcache#manual_complete
 setlocal nocopyindent
 setlocal cryptmethod=
 setlocal nocursorbind
@@ -2113,6 +2407,7 @@ exe s:l
 normal! zt
 3
 normal! 0
+lcd ~/projects/mru/src
 wincmd w
 argglobal
 edit ~/projects/mru/src/plugins/tag_plugin.hpp
@@ -2230,18 +2525,32 @@ exe s:l
 normal! zt
 5
 normal! 028l
+lcd ~/projects/mru/src
 wincmd w
 exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
 exe '2resize ' . ((&lines * 20 + 25) / 50)
 exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
 exe '3resize ' . ((&lines * 26 + 25) / 50)
 exe 'vert 3resize ' . ((&columns * 105 + 105) / 211)
-tabedit ~/projects/mru/src/plugins/filesystem_plugin.hpp
+tabedit ~/projects/mru/src/plugins/output/GenericBoost/GenericBoost.hpp
 set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd _ | wincmd |
+split
+1wincmd k
+wincmd w
+wincmd w
 set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
+exe '1resize ' . ((&lines * 23 + 25) / 50)
+exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
+exe '2resize ' . ((&lines * 23 + 25) / 50)
+exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
+exe 'vert 3resize ' . ((&columns * 105 + 105) / 211)
 argglobal
 setlocal keymap=
 setlocal noarabic
@@ -2347,15 +2656,262 @@ setlocal nowinfixwidth
 set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
-8
+7
 normal zo
-let s:l = 4 - ((3 * winheight(0) + 24) / 48)
+let s:l = 17 - ((16 * winheight(0) + 11) / 23)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-4
-normal! 017l
+17
+normal! 021l
 lcd ~/projects/mru/src
+wincmd w
+argglobal
+edit ~/projects/mru/src/plugins/output/GenericBoost/GenericBoost.cpp
+setlocal keymap=
+setlocal noarabic
+setlocal noautoindent
+setlocal balloonexpr=
+setlocal nobinary
+setlocal bufhidden=
+setlocal buflisted
+setlocal buftype=
+setlocal cindent
+setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
+setlocal cinoptions=
+setlocal cinwords=if,else,while,do,for,switch
+setlocal colorcolumn=
+setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
+setlocal commentstring=/*%s*/
+setlocal complete=.,w,b,u,t,i
+setlocal concealcursor=
+setlocal conceallevel=0
+setlocal completefunc=neocomplcache#auto_complete
+setlocal nocopyindent
+setlocal cryptmethod=
+setlocal nocursorbind
+setlocal nocursorcolumn
+set cursorline
+setlocal cursorline
+setlocal define=
+setlocal dictionary=
+setlocal nodiff
+setlocal equalprg=
+setlocal errorformat=
+setlocal expandtab
+if &filetype != 'cpp'
+setlocal filetype=cpp
+endif
+setlocal foldcolumn=0
+setlocal foldenable
+setlocal foldexpr=0
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldmarker={{{,}}}
+set foldmethod=syntax
+setlocal foldmethod=syntax
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldtext=foldtext()
+setlocal formatexpr=
+setlocal formatoptions=croql
+setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
+setlocal grepprg=
+setlocal iminsert=2
+setlocal imsearch=2
+setlocal include=
+setlocal includeexpr=
+setlocal indentexpr=
+setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
+setlocal noinfercase
+setlocal iskeyword=@,48-57,_,192-255
+setlocal keywordprg=
+setlocal nolinebreak
+setlocal nolisp
+setlocal nolist
+setlocal makeprg=
+setlocal matchpairs=(:),{:},[:]
+setlocal modeline
+setlocal modifiable
+setlocal nrformats=octal,hex
+set number
+setlocal number
+setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
+setlocal path=
+setlocal nopreserveindent
+setlocal nopreviewwindow
+setlocal quoteescape=\\
+setlocal noreadonly
+setlocal norelativenumber
+setlocal norightleft
+setlocal rightleftcmd=search
+setlocal noscrollbind
+setlocal shiftwidth=2
+setlocal noshortname
+setlocal nosmartindent
+setlocal softtabstop=0
+setlocal nospell
+setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
+setlocal spellfile=
+setlocal spelllang=en
+setlocal statusline=
+setlocal suffixesadd=
+setlocal swapfile
+setlocal synmaxcol=3000
+if &syntax != 'cpp'
+setlocal syntax=cpp
+endif
+setlocal tabstop=2
+setlocal tags=
+setlocal textwidth=0
+setlocal thesaurus=
+setlocal noundofile
+setlocal nowinfixheight
+setlocal nowinfixwidth
+set nowrap
+setlocal nowrap
+setlocal wrapmargin=0
+4
+normal zo
+15
+normal zo
+23
+normal zo
+23
+normal zo
+let s:l = 12 - ((11 * winheight(0) + 11) / 23)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+12
+normal! 0
+lcd ~/projects/mru/src
+wincmd w
+argglobal
+edit ~/projects/mru/src/plugins/output_plugin.hpp
+setlocal keymap=
+setlocal noarabic
+setlocal noautoindent
+setlocal balloonexpr=
+setlocal nobinary
+setlocal bufhidden=
+setlocal buflisted
+setlocal buftype=
+setlocal cindent
+setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
+setlocal cinoptions=
+setlocal cinwords=if,else,while,do,for,switch
+setlocal colorcolumn=
+setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
+setlocal commentstring=/*%s*/
+setlocal complete=.,w,b,u,t,i
+setlocal concealcursor=
+setlocal conceallevel=0
+setlocal completefunc=neocomplcache#auto_complete
+setlocal nocopyindent
+setlocal cryptmethod=
+setlocal nocursorbind
+setlocal nocursorcolumn
+set cursorline
+setlocal cursorline
+setlocal define=
+setlocal dictionary=
+setlocal nodiff
+setlocal equalprg=
+setlocal errorformat=
+setlocal expandtab
+if &filetype != 'cpp'
+setlocal filetype=cpp
+endif
+setlocal foldcolumn=0
+setlocal foldenable
+setlocal foldexpr=0
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldmarker={{{,}}}
+set foldmethod=syntax
+setlocal foldmethod=syntax
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldtext=foldtext()
+setlocal formatexpr=
+setlocal formatoptions=croql
+setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
+setlocal grepprg=
+setlocal iminsert=2
+setlocal imsearch=2
+setlocal include=
+setlocal includeexpr=
+setlocal indentexpr=
+setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
+setlocal noinfercase
+setlocal iskeyword=@,48-57,_,192-255
+setlocal keywordprg=
+setlocal nolinebreak
+setlocal nolisp
+setlocal nolist
+setlocal makeprg=
+setlocal matchpairs=(:),{:},[:]
+setlocal modeline
+setlocal modifiable
+setlocal nrformats=octal,hex
+set number
+setlocal number
+setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
+setlocal path=
+setlocal nopreserveindent
+setlocal nopreviewwindow
+setlocal quoteescape=\\
+setlocal noreadonly
+setlocal norelativenumber
+setlocal norightleft
+setlocal rightleftcmd=search
+setlocal noscrollbind
+setlocal shiftwidth=2
+setlocal noshortname
+setlocal nosmartindent
+setlocal softtabstop=0
+setlocal nospell
+setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
+setlocal spellfile=
+setlocal spelllang=en
+setlocal statusline=
+setlocal suffixesadd=
+setlocal swapfile
+setlocal synmaxcol=3000
+if &syntax != 'cpp'
+setlocal syntax=cpp
+endif
+setlocal tabstop=2
+setlocal tags=
+setlocal textwidth=0
+setlocal thesaurus=
+setlocal noundofile
+setlocal nowinfixheight
+setlocal nowinfixwidth
+set nowrap
+setlocal nowrap
+setlocal wrapmargin=0
+10
+normal zo
+10
+normal zo
+let s:l = 8 - ((7 * winheight(0) + 23) / 47)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+8
+normal! 0
+lcd ~/projects/mru/src
+wincmd w
+2wincmd w
+exe '1resize ' . ((&lines * 23 + 25) / 50)
+exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
+exe '2resize ' . ((&lines * 23 + 25) / 50)
+exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
+exe 'vert 3resize ' . ((&columns * 105 + 105) / 211)
 tabedit ~/projects/mru/src/plugin_manager/tests/load_test.cpp
 set splitbelow splitright
 wincmd _ | wincmd |
@@ -2493,6 +3049,7 @@ exe s:l
 normal! zt
 28
 normal! 045l
+lcd ~/projects/mru/src
 wincmd w
 argglobal
 edit ~/projects/mru/src/plugin_manager/tests/test_module2.cpp
@@ -2608,6 +3165,7 @@ exe s:l
 normal! zt
 11
 normal! 037l
+lcd ~/projects/mru/src
 wincmd w
 argglobal
 edit ~/projects/mru/src/plugin_manager/tests/test_module1.cpp
@@ -2725,6 +3283,7 @@ exe s:l
 normal! zt
 35
 normal! 0
+lcd ~/projects/mru/src
 wincmd w
 argglobal
 edit ~/projects/mru/src/plugin_manager/tests/test_module.hpp
@@ -2838,7 +3397,9 @@ exe s:l
 normal! zt
 20
 normal! 06l
+lcd ~/projects/mru/src
 wincmd w
+2wincmd w
 exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
 exe '2resize ' . ((&lines * 10 + 25) / 50)
 exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
@@ -2846,7 +3407,7 @@ exe '3resize ' . ((&lines * 12 + 25) / 50)
 exe 'vert 3resize ' . ((&columns * 105 + 105) / 211)
 exe '4resize ' . ((&lines * 23 + 25) / 50)
 exe 'vert 4resize ' . ((&columns * 105 + 105) / 211)
-tabnext 6
+tabnext 10
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
 endif

@@ -10,12 +10,16 @@
 namespace mru
 {
 
-typedef std::string filepath_type;
-typedef std::string filename_type;
+//typedef std::string filename_type;
+//typedef std::string filepath_type;
 typedef data_tree::registry registry;
 typedef data_tree::registry::name_type name_type; 
 typedef icu::UnicodeString string_type;
 typedef icu::UnicodeString UnicodeString;
+typedef icu::UnicodeString filepath_type;
+
+std::string UnicodeString2STLString(const UnicodeString &a_string);
+UnicodeString STLString2UnicodeString(const std::string &a_string);
 
 typedef singleton<registry> reg;
 

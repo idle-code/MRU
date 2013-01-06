@@ -31,6 +31,9 @@ if (NOT TARGET debug_l)
   set (LIBS ${LIBS} debug_l)
 endif()
 
+add_library (types "types.cpp")
+set (LIBS ${LIBS} types)
+
 #TODO: make registry library
 add_subdirectory ("data_tree")
 include_directories ("data_tree")
@@ -45,6 +48,7 @@ include_directories ("plugins")
 
 add_executable (dt_test "dt_test.cpp")
 target_link_libraries (dt_test ${LIBS}) 
+
 
 add_executable (mru "main.cpp" "core.cpp")
 target_link_libraries (mru ${LIBS})

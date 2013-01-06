@@ -1,9 +1,9 @@
 #define PLUGIN_HOST
 #include "core.hpp"
 #include "types.hpp"
-#include <plugins/ui_plugin.hpp>
-#include <plugins/filesystem_plugin.hpp>
-#include <plugins/tag_plugin.hpp>
+#include "plugins/ui_plugin.hpp"
+#include "plugins/output_plugin.hpp"
+#include "plugins/tag_plugin.hpp"
 #undef NDEBUG_L
 #include <debug_l.h>
 
@@ -11,7 +11,7 @@ namespace mru
 {
 
 Core::Core(void)
-  : m_ui(NULL), m_fs_driver(NULL)
+  : m_ui(NULL), m_out_driver(NULL)
 {
   FO("Core::Core(void)");
   prepare_registry();
@@ -19,7 +19,7 @@ Core::Core(void)
 
   // create all managers (it is need to be done before any dynamic module could be loaded):
   UiPluginManager::set_instance(new UiPluginManager("UiPlugin", reg["plugins.ui"]));
-  FilesystemPluginManager::set_instance(new FilesystemPluginManager("FilesystemPlugin", reg["plugins.filesystem"]));
+  OutputPluginManager::set_instance(new OutputPluginManager("OutputPlugin", reg["plugins.output"]));
   TagPluginManager::set_instance(new TagPluginManager("TagPlugin", reg["plugins.tags"]));
 }
 
@@ -29,7 +29,7 @@ Core::~Core(void)
 
   // destroy all managers (it's not mandatory (imo) becouse we are exiting anyway...): 
   TagPluginManager::destroy_instance();
-  FilesystemPluginManager::destroy_instance();
+  OutputPluginManager::destroy_instance();
   UiPluginManager::destroy_instance();
 }
 
@@ -72,7 +72,7 @@ Core::prepare_registry(void)
   reg.create(".config");
   reg.create(".plugins");
   reg.create(".plugins.ui");
-  reg.create(".plugins.filesystem");
+  reg.create(".plugins.output");
   reg.create(".plugins.tags");
   //reg.create(".reg");
   //reg.create(".reg._info";
@@ -155,7 +155,7 @@ Core::load_configuration(void)
   
   reg[".config"].set("ui", reg.get_or(".arguments.ui", "wxWidgetsUi"));
   //reg[".config"].set("ui", reg.get_or(".arguments.ui", "TextUi"));
-  reg[".config"].set("fs_driver", reg.get_or(".arguments.fs_driver", "GenericBoostFSDriver"));
+  reg[".config"].set("output_driver", reg.get_or(".arguments.output_driver", "GenericBoost"));
 
 }
 
@@ -167,8 +167,8 @@ Core::load_modules(void)
   ui_manager->load_module("plugins/ui/TextUi/TextUi");
   ui_manager->load_module("plugins/ui/wxWidgetsUi/wxWidgetsUi");
 
-  FilesystemPluginManager *fs_manager = FilesystemPluginManager::get_instance();
-  fs_manager->load_module("plugins/filesystem/GenericBoostFSDriver/GenericBoostFSDriver");
+  OutputPluginManager *output_manager = OutputPluginManager::get_instance();
+  output_manager->load_module("plugins/output/GenericBoost/GenericBoost");
 
   TagPluginManager *tag_manager = TagPluginManager::get_instance();
   tag_manager->load_module("plugins/tags/StandardTags/StandardTags");
