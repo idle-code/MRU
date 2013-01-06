@@ -11,7 +11,7 @@ namespace mru
 
 // forward declarations:
 class UiPlugin;
-class FilesystemPlugin;
+class OutputPlugin;
 
 class Core : public singleton<Core> {
 public:
@@ -32,9 +32,12 @@ public:
   void parse_command_line(int a_argc, char **a_argv);
   void load_modules(void);
 
+  //set_source_directory(const filepath_type &a_directory);
+
+
 protected:
   UiPlugin *m_ui;
-  FilesystemPlugin *m_fs_driver;
+  OutputPlugin *m_out_driver;
 };
 
 } /* namespace mru */

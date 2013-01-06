@@ -135,7 +135,7 @@ MainWindow::fill_filelist(void)
 {
   FO("MainWindow::fill_filelist(void)");
 
-  
+  //m_core->set_source_directory( 
 }
 
 /* ------------------------------------------------------------------------- */

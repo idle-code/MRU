@@ -22,8 +22,8 @@ public:
   virtual void* get_symbol(const name_type &a_symbol) = 0;
 
   const filepath_type&        filepath(void) const;
-  virtual const filename_type filename_prefix(void) const;
-  virtual const filename_type filename_postfix(void) const;
+  virtual const filepath_type filename_prefix(void) const;
+  virtual const filepath_type filename_postfix(void) const;
 protected:
   dynamic_module(void);
   virtual ~dynamic_module(void);

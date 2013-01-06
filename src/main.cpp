@@ -7,6 +7,10 @@ int
 main(int a_argc, char **a_argv)
 {
   FO("main(int a_argc, char **a_argv)");
+  
+  //MSG(UnicodeString2STLString(UNICODE_STRING_SIMPLE("/some/path.to_file")));
+  //return 0;
+
   Core *core = Core::get_instance();
 
   int result = 0;

@@ -2,11 +2,11 @@ let SessionLoad = 1
 if &cp | set nocp | endif
 let s:cpo_save=&cpo
 set cpo&vim
-inoremap <silent> <Plug>(neocomplcache_start_omni_complete) 
-inoremap <silent> <Plug>(neocomplcache_start_auto_complete_no_select) 
-inoremap <silent> <Plug>(neocomplcache_start_auto_complete) =neocomplcache#popup_post()
-inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_quick_match) unite#sources#neocomplcache#start_quick_match()
 inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_complete) unite#sources#neocomplcache#start_complete()
+inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_quick_match) unite#sources#neocomplcache#start_quick_match()
+inoremap <silent> <Plug>(neocomplcache_start_auto_complete) =neocomplcache#popup_post()
+inoremap <silent> <Plug>(neocomplcache_start_auto_complete_no_select) 
+inoremap <silent> <Plug>(neocomplcache_start_omni_complete) 
 inoremap <silent> <C-Tab> =UltiSnips_ListSnippets()
 xnoremap 	 :call UltiSnips_SaveLastVisualSelection()gvs
 snoremap <silent> 	 :call UltiSnips_ExpandSnippet()
@@ -50,11 +50,11 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
 endif
 set shortmess=aoO
 badd +1 MainWindow.hpp
-badd +83 MainWindow.cpp
+badd +162 MainWindow.cpp
 badd +8 TreeFrame.cpp
 badd +16 TreeFrame.hpp
 badd +1 wxWidgetsUi.hpp
-badd +51 wxWidgetsUi.cpp
+badd +49 wxWidgetsUi.cpp
 badd +14 FileList.hpp
 badd +19 FileList.cpp
 badd +19 FileListFrame.cpp
@@ -65,7 +65,7 @@ badd +19 FileListStaticBox.cpp
 badd +10 FileListStaticBox.hpp
 badd +14 SettingsStaticBox.hpp
 badd +14 SettingsStaticBox.cpp
-badd +0 ~/projects/mru/src/plugins/ui_plugin.hpp
+badd +1 ~/projects/mru/src/plugins/ui_plugin.hpp
 silent! argdel *
 edit wxWidgetsUi.cpp
 set splitbelow splitright
@@ -186,13 +186,9 @@ setlocal nowrap
 setlocal wrapmargin=0
 9
 normal zo
-20
-normal zo
 36
 normal zo
-36
-normal zo
-let s:l = 49 - ((39 * winheight(0) + 23) / 47)
+let s:l = 49 - ((40 * winheight(0) + 24) / 48)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -309,7 +305,7 @@ setlocal wrapmargin=0
 normal zo
 12
 normal zo
-let s:l = 22 - ((20 * winheight(0) + 23) / 47)
+let s:l = 22 - ((20 * winheight(0) + 24) / 48)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -560,13 +556,9 @@ setlocal wrapmargin=0
 normal zo
 15
 normal zo
-26
-normal zo
-34
-normal zo
 135
 normal zo
-let s:l = 137 - ((14 * winheight(0) + 23) / 47)
+let s:l = 137 - ((39 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt

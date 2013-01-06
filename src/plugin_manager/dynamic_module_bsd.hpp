@@ -16,12 +16,12 @@ public:
   void* get_symbol(const name_type &a_symbol);
 
   const filepath_type&        filepath(void) const;
-  const filename_type filename_prefix(void) const;
-  const filename_type filename_postfix(void) const;
+  const filepath_type filename_prefix(void) const;
+  const filepath_type filename_postfix(void) const;
 protected:
   void *m_module_handle;
-  static const filename_type m_prefix;
-  static const filename_type m_postfix;
+  static const filepath_type m_prefix;
+  static const filepath_type m_postfix;
 };
 
 } /* namespace mru */
