@@ -7,8 +7,8 @@
 namespace mru
 {
 
-const filepath_type dynamic_module_bsd::m_prefix = "lib";
-const filepath_type dynamic_module_bsd::m_postfix = ".so";
+const filepath_type::string_type dynamic_module_bsd::m_prefix = "lib";
+const filepath_type::string_type dynamic_module_bsd::m_postfix = ".so";
 
 dynamic_module_bsd::dynamic_module_bsd(void)
   : dynamic_module()
@@ -25,17 +25,17 @@ bool
 dynamic_module_bsd::load(const filepath_type &a_file_path)
 {
   //VAL(a_file_path);
-  filepath_type path = dirname(UnicodeString2STLString(a_file_path).c_str());
+  filepath_type path = a_file_path.parent_path();
   //VAL(path);
-  filepath_type filename = basename(UnicodeString2STLString(a_file_path).c_str());
+  filepath_type::string_type filename = a_file_path.filename().string(); 
   //VAL(filename);
-  if(filename.tempSubString(0, m_prefix.length()) != m_prefix)
+  if(filename.substr(0, m_prefix.length()) != m_prefix)
     filename = m_prefix + filename;
-  if(filename.tempSubString(filename.length() - m_prefix.length()) != m_postfix)
+  if(filename.substr(filename.length() - m_prefix.length()) != m_postfix)
     filename += m_postfix;
-  filepath_type full_name = path + "/" + filename;
+  filepath_type full_name = path / filename;
   //VAL(full_name);
-  m_module_handle = dlopen(UnicodeString2STLString(full_name).c_str(), RTLD_NOW);
+  m_module_handle = dlopen(full_name.c_str(), RTLD_NOW);
   if(m_module_handle == NULL) {
     ERR("Error while loading dynamic module (bsd): " << dlerror());
     return false;

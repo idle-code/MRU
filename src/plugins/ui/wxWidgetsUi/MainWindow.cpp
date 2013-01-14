@@ -13,6 +13,10 @@ namespace mru
 MainWindow::MainWindow(Core *a_mru_core)
   : wxFrame(NULL, wxID_ANY, wxT("MRU - Multifile Renaming Utility"), wxPoint(-1, -1), wxSize(840, 520)), m_core(a_mru_core)
 {
+  if(m_core == NULL) {
+    ERR("There is no valid MRU Core class instance passed to GUI");
+    return;
+  }
 
   wxColour red, green, blue, dark_blue;
   red.Set(wxT("#ff0000"));
@@ -35,7 +39,7 @@ MainWindow::MainWindow(Core *a_mru_core)
     wxBoxSizer *source_directory_sizer = new wxBoxSizer(wxHORIZONTAL);
 
     wxStaticText *source_directory_label = new wxStaticText(this, wxID_ANY, wxT("Source directory:"));
-    m_source_directory_textctrl = new wxTextCtrl(this, wxID_ANY, wxT("/"));
+    m_source_directory_textctrl = new wxTextCtrl(this, wxID_ANY, Filepath2wxString(m_core->get_base_directory()));
     m_source_directory_button = new wxButton(this, wxID_ANY, wxT("..."));
     m_source_directory_button->SetMinSize(wxSize(30, 20));
     wxStaticText *source_directory_mask_label = new wxStaticText(this, wxID_ANY, wxT("File mask:"));
@@ -103,20 +107,21 @@ MainWindow::MainWindow(Core *a_mru_core)
     wxSpinCtrl *preview_size_spinctrl = new wxSpinCtrl(this, wxID_ANY);
     preview_size_spinctrl->SetRange(1, 1000);
     preview_size_spinctrl->SetValue(10);
-    wxCheckBox *auto_preview_checkbox = new wxCheckBox(this, wxID_ANY, wxT("Automatically update preview list"));
-    wxButton *preview_button = new wxButton(this, wxID_ANY, wxT("Preview"));
+    m_auto_preview_checkbox = new wxCheckBox(this, wxID_ANY, wxT("Automatically update preview list"));
+    m_preview_button = new wxButton(this, wxID_ANY, wxT("Preview"));
     wxButton *start_button = new wxButton(this, wxID_ANY, wxT("Start"));
 
     bottom_hsizer->Add(preview_size_label,    0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxRIGHT, 3);
     bottom_hsizer->Add(preview_size_spinctrl, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxRIGHT, 3);
     bottom_hsizer->AddStretchSpacer();
-    bottom_hsizer->Add(auto_preview_checkbox, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT | wxRIGHT, 3);
-    bottom_hsizer->Add(preview_button,        0, wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT | wxRIGHT, 3);
+    bottom_hsizer->Add(m_auto_preview_checkbox, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT | wxRIGHT, 3);
+    bottom_hsizer->Add(m_preview_button,        0, wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT | wxRIGHT, 3);
     bottom_hsizer->Add(start_button,          0, wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT, 0);
     
     vsizer->Add(bottom_hsizer, 0, wxEXPAND | wxALL, 5);
 
-    Connect(preview_button->GetId(), wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainWindow::OnPreviewButtonClick));
+    Connect(m_auto_preview_checkbox->GetId(), wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(MainWindow::OnAutoPreviewCheckboxClick));
+    Connect(m_preview_button->GetId(), wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainWindow::OnPreviewButtonClick));
     Connect(start_button->GetId(), wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainWindow::OnStartButtonClick));
   }
 
@@ -174,6 +179,14 @@ MainWindow::OnMetatagTextCtrlChange(wxCommandEvent &a_evt)
 {
   FO("MainWindow::OnMetatagTextCtrlChange(wxCommandEvent &a_evt)");
 
+}
+
+void
+MainWindow::OnAutoPreviewCheckboxClick(wxCommandEvent &a_evt)
+{
+  FO("MainWindow::OnAutoPreviewCheckboxClick(wxCommandEvent &a_evt)");
+
+  m_preview_button->Enable(!m_auto_preview_checkbox->GetValue());
 }
 
 void

@@ -17,5 +17,31 @@ STLString2UnicodeString(const std::string &a_string)
 
 }
 
+wxString
+UnicodeString2wxString(const UnicodeString &a_string)
+{
+  std::string result;
+  return wxString(a_string.toUTF8String(result).c_str(), wxConvUTF8);
+}
+
+UnicodeString
+wxString2UnicodeString(const wxString &a_string)
+{
+  wxCharBuffer buff = a_string.utf8_str(); 
+  return UnicodeString(buff, a_string.Length());
+}
+
+wxString
+Filepath2wxString(const filepath_type &a_path)
+{
+  return wxString(a_path.c_str(), wxConvUTF8);
+}
+
+filepath_type
+wxString2Filepath(const wxString &a_path)
+{
+  return filepath_type(a_path.mb_str());
+}
+
 } /* namespace mru */
 

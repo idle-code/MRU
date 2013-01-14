@@ -2,11 +2,11 @@ let SessionLoad = 1
 if &cp | set nocp | endif
 let s:cpo_save=&cpo
 set cpo&vim
-inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_complete) unite#sources#neocomplcache#start_complete()
-inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_quick_match) unite#sources#neocomplcache#start_quick_match()
-inoremap <silent> <Plug>(neocomplcache_start_auto_complete) =neocomplcache#popup_post()
-inoremap <silent> <Plug>(neocomplcache_start_auto_complete_no_select) 
 inoremap <silent> <Plug>(neocomplcache_start_omni_complete) 
+inoremap <silent> <Plug>(neocomplcache_start_auto_complete_no_select) 
+inoremap <silent> <Plug>(neocomplcache_start_auto_complete) =neocomplcache#popup_post()
+inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_quick_match) unite#sources#neocomplcache#start_quick_match()
+inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_complete) unite#sources#neocomplcache#start_complete()
 inoremap <silent> <C-Tab> =UltiSnips_ListSnippets()
 xnoremap 	 :call UltiSnips_SaveLastVisualSelection()gvs
 snoremap <silent> 	 :call UltiSnips_ExpandSnippet()
@@ -50,7 +50,7 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
 endif
 set shortmess=aoO
 badd +1 MainWindow.hpp
-badd +162 MainWindow.cpp
+badd +136 MainWindow.cpp
 badd +8 TreeFrame.cpp
 badd +16 TreeFrame.hpp
 badd +1 wxWidgetsUi.hpp
@@ -188,12 +188,12 @@ setlocal wrapmargin=0
 normal zo
 36
 normal zo
-let s:l = 49 - ((40 * winheight(0) + 24) / 48)
+let s:l = 38 - ((37 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-49
-normal! 0
+38
+normal! 021l
 wincmd w
 argglobal
 edit wxWidgetsUi.hpp
@@ -305,7 +305,7 @@ setlocal wrapmargin=0
 normal zo
 12
 normal zo
-let s:l = 22 - ((20 * winheight(0) + 24) / 48)
+let s:l = 22 - ((20 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -428,11 +428,11 @@ setlocal nowrap
 setlocal wrapmargin=0
 8
 normal zo
-let s:l = 4 - ((3 * winheight(0) + 24) / 48)
+let s:l = 3 - ((2 * winheight(0) + 24) / 48)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-4
+3
 normal! 0
 lcd ~/projects/mru/src/plugins/ui/wxWidgetsUi
 tabedit ~/projects/mru/src/plugins/ui/wxWidgetsUi/MainWindow.cpp
@@ -556,14 +556,14 @@ setlocal wrapmargin=0
 normal zo
 15
 normal zo
-135
+16
 normal zo
-let s:l = 137 - ((39 * winheight(0) + 23) / 47)
+let s:l = 43 - ((33 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-137
-normal! 0
+43
+normal! 072l
 lcd ~/projects/mru/src/plugins/ui/wxWidgetsUi
 wincmd w
 argglobal
@@ -674,12 +674,12 @@ setlocal nowrap
 setlocal wrapmargin=0
 8
 normal zo
-let s:l = 17 - ((16 * winheight(0) + 23) / 47)
+let s:l = 18 - ((17 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-17
-normal! 026l
+18
+normal! 01l
 lcd ~/projects/mru/src/plugins/ui/wxWidgetsUi
 wincmd w
 exe 'vert 1resize ' . ((&columns * 138 + 105) / 211)

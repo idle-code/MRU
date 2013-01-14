@@ -43,10 +43,10 @@ dynamic_module_manager::~dynamic_module_manager(void)
 dynamic_module *
 dynamic_module_manager::load(const filepath_type &a_file_path)
 {
-  if(a_file_path.length() < 1)
+  if(a_file_path.empty())
     return NULL;
   dynamic_module* new_module = NULL;
-  if(m_loaded_modules.find(UnicodeString2STLString(a_file_path)) == m_loaded_modules.end()) {
+  if(m_loaded_modules.find(a_file_path.string()) == m_loaded_modules.end()) {
     new_module = new dynamic_module_bsd();
     if(new_module == NULL)
       return NULL;
@@ -54,9 +54,9 @@ dynamic_module_manager::load(const filepath_type &a_file_path)
       delete new_module;
       return NULL;
     }
-    m_loaded_modules.insert(std::make_pair(UnicodeString2STLString(a_file_path), new_module));
+    m_loaded_modules.insert(std::make_pair(a_file_path.string(), new_module));
   } else {
-    new_module = m_loaded_modules[UnicodeString2STLString(a_file_path)];
+    new_module = m_loaded_modules[a_file_path.string()];
   } 
   return new_module;
 }
@@ -66,7 +66,7 @@ dynamic_module_manager::unload(dynamic_module *&a_module)
 {
   if(a_module == NULL)
     return;
-  std::map<name_type, dynamic_module*>::iterator to_remove = m_loaded_modules.find(UnicodeString2STLString(a_module->filepath()));
+  std::map<name_type, dynamic_module*>::iterator to_remove = m_loaded_modules.find(a_module->filepath().string());
   if(to_remove == m_loaded_modules.end())
     return;
   m_loaded_modules.erase(to_remove);

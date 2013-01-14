@@ -11,7 +11,7 @@ namespace mru
 {
 
 Core::Core(void)
-  : m_ui(NULL), m_out_driver(NULL)
+  : m_ui(NULL), m_out_driver(NULL), m_base_directory("/"), m_current_directory(m_base_directory)
 {
   FO("Core::Core(void)");
   prepare_registry();
@@ -46,11 +46,12 @@ Core::start(int a_argc, char **a_argv)
 
   parse_command_line(a_argc, a_argv);
   load_configuration();
-  load_modules();
+  load_default_modules();
 
   registry reg = reg::get_reference(); 
   UiPluginManager *ui_manager = UiPluginManager::get_instance();
   m_ui = ui_manager->create_plugin(reg[".config"].get("ui"));
+  m_ui->Init(this);
 
   if(m_ui == NULL) {
     ERR("Couldn't initialize UI plugin");
@@ -147,31 +148,94 @@ Core::parse_command_line(int a_argc, char **a_argv)
   }
 }
 
-void
-Core::load_configuration(void)
+bool
+Core::load_configuration(const filepath_type &a_file)
 {
-  FO("load_configuration(void)");
+  FO("load_configuration(const filepath_type &a_file)");
   registry reg = reg::get_reference(); 
   
   reg[".config"].set("ui", reg.get_or(".arguments.ui", "wxWidgetsUi"));
   //reg[".config"].set("ui", reg.get_or(".arguments.ui", "TextUi"));
   reg[".config"].set("output_driver", reg.get_or(".arguments.output_driver", "GenericBoost"));
 
+  return true;
 }
 
-void
-Core::load_modules(void)
+int
+Core::load_default_modules(void)
 {
   FO("load_modules(void)");
+
+  int modules_loaded = 0;
   UiPluginManager *ui_manager = UiPluginManager::get_instance();
-  ui_manager->load_module("plugins/ui/TextUi/TextUi");
-  ui_manager->load_module("plugins/ui/wxWidgetsUi/wxWidgetsUi");
+  modules_loaded += ui_manager->load_module("plugins/ui/TextUi/TextUi");
+  modules_loaded += ui_manager->load_module("plugins/ui/wxWidgetsUi/wxWidgetsUi");
 
   OutputPluginManager *output_manager = OutputPluginManager::get_instance();
-  output_manager->load_module("plugins/output/GenericBoost/GenericBoost");
+  modules_loaded += output_manager->load_module("plugins/output/GenericBoost/GenericBoost");
 
   TagPluginManager *tag_manager = TagPluginManager::get_instance();
-  tag_manager->load_module("plugins/tags/StandardTags/StandardTags");
+  modules_loaded += tag_manager->load_module("plugins/tags/StandardTags/StandardTags");
+
+  return modules_loaded;
+}
+
+/* ------------------------------------------------------------------------- */
+
+bool
+Core::set_base_directory(const filepath_type &a_directory)
+{
+  if(bfs::exists(a_directory))
+    return false; //TODO: signal error
+  m_base_directory = a_directory;
+  return true;
+}
+
+const filepath_type &
+Core::get_base_directory(void) const
+{
+  return m_base_directory;
+}
+
+bool
+Core::start_rename(void)
+{
+
+  return false;
+}
+
+bool
+Core::pause_rename(void)
+{
+
+  return false;
+}
+
+bool
+Core::stop_rename(void)
+{
+
+  return false;
+}
+
+bfs::directory_iterator
+Core::get_directory_iterator(const filepath_type &a_directory)
+{
+  return bfs::directory_iterator(a_directory);
+}
+
+/* ------------------------------------------------------------------------- */
+
+UiPlugin *
+Core::get_ui_plugin(void)
+{
+  return m_ui;
+}
+
+OutputPlugin *
+Core::get_output_plugin(void)
+{
+  return m_out_driver;
 }
 
 } /* namespace mru */

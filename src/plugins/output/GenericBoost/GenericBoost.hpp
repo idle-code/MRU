@@ -6,7 +6,7 @@
 namespace GenericBoost_OutputPlugin
 {
 
-using namespace mru;
+using mru::filepath_type;
 
 class GenericBoost : public mru::OutputPlugin {
 public:
@@ -16,11 +16,12 @@ public:
   GenericBoost(void);
   ~GenericBoost(void);
 
+  filepath_type get_directory(void);
   bool change_directory(const filepath_type &a_path);
   bool rename(const filepath_type &a_name, const filepath_type &a_new_name);
 
 protected:
-  /* data */
+  filepath_type m_current_directory;
 };
 
 } /* namespace GenericBoost_OutputPlugin */

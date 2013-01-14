@@ -21,13 +21,18 @@ private:
   
   wxTextCtrl *m_source_directory_textctrl;
   void OnSourceDirectoryTextCtrlChange(wxCommandEvent &a_evt);
+
   wxButton *m_source_directory_button;
   void OnSourceDirectoryButtonClick(wxCommandEvent &a_evt);
+
   wxTextCtrl *m_source_directory_mask_textctrl;
 
   void OnMetatagTextCtrlChange(wxCommandEvent &a_evt);
   void OnMetatagLoadTemplateButtonClick(wxCommandEvent &a_evt);
 
+  wxCheckBox *m_auto_preview_checkbox;
+  void OnAutoPreviewCheckboxClick(wxCommandEvent &a_evt);
+  wxButton *m_preview_button;
   void OnPreviewButtonClick(wxCommandEvent &a_evt);
   void OnStartButtonClick(wxCommandEvent &a_evt);
 

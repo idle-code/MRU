@@ -20,8 +20,8 @@ public:
   const filepath_type filename_postfix(void) const;
 protected:
   void *m_module_handle;
-  static const filepath_type m_prefix;
-  static const filepath_type m_postfix;
+  static const filepath_type::string_type m_prefix;
+  static const filepath_type::string_type m_postfix;
 };
 
 } /* namespace mru */
