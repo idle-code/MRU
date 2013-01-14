@@ -18,6 +18,7 @@ public:
   virtual ~OutputPlugin(void)
   { }
 
+  virtual filepath_type get_directory(void) = 0;
   virtual bool change_directory(const filepath_type &a_path) = 0;
   virtual bool rename(const filepath_type &a_name, const filepath_type &a_new_name) = 0;
   //virtual bool move(const filepath_type &a_location, const filepath_type &a_new_location) = 0;

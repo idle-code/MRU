@@ -4,11 +4,18 @@ namespace GenericBoost_OutputPlugin
 {
 
 GenericBoost::GenericBoost(void)
-  : mru::OutputPlugin(static_implementation_name())
+  : mru::OutputPlugin(static_implementation_name()), m_current_directory("/")
 { }
 
 GenericBoost::~GenericBoost(void)
 { }
+
+filepath_type
+GenericBoost::get_directory(void)
+{
+  //FO("GenericBoost::get_directory(void)");
+  return m_current_directory;
+}
 
 bool
 GenericBoost::change_directory(const filepath_type &a_path)
