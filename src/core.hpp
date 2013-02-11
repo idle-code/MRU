@@ -41,6 +41,9 @@ public:
 
   bool set_base_directory(const filepath_type &a_directory);
   const filepath_type& get_base_directory(void) const;
+  
+  bool set_current_directory(const filepath_type &a_directory);
+  const filepath_type& get_current_directory(void) const;
 
   bool set_file_filter(const UnicodeString &a_filter);
   const UnicodeString& get_file_filter(void);
