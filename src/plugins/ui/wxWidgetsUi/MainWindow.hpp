@@ -2,6 +2,7 @@
 #define MAINWINDOW_HPP
 
 #include <wx/wx.h>
+#include <wx/spinctrl.h>
 #include <core.hpp>
 
 namespace mru
@@ -19,6 +20,7 @@ public:
 private:
   void OnClose(wxCommandEvent &a_evt);
   
+  filepath_type m_source_directory;
   wxTextCtrl *m_source_directory_textctrl;
   void OnSourceDirectoryTextCtrlChange(wxCommandEvent &a_evt);
 
@@ -35,9 +37,13 @@ private:
   wxButton *m_preview_button;
   void OnPreviewButtonClick(wxCommandEvent &a_evt);
   void OnStartButtonClick(wxCommandEvent &a_evt);
+  wxSpinCtrl *m_preview_size_spinctrl;
+  void OnPreviewSizeSpinCtrlSpin(wxCommandEvent &a_evt);
 
+  wxListCtrl *m_file_listctrl;
 private:
   Core* m_core;
+  int m_preview_size;
 };
 
 } /* namespace mru */

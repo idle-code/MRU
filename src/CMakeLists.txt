@@ -31,9 +31,6 @@ if (NOT TARGET debug_l)
   set (LIBS ${LIBS} debug_l)
 endif()
 
-add_library (types "types.cpp")
-set (LIBS ${LIBS} types)
-
 #TODO: make registry library
 add_subdirectory ("data_tree")
 include_directories ("data_tree")

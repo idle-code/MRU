@@ -185,9 +185,10 @@ Core::load_default_modules(void)
 bool
 Core::set_base_directory(const filepath_type &a_directory)
 {
-  if(bfs::exists(a_directory))
+  if(!bfs::exists(a_directory) || !bfs::is_directory(a_directory))
     return false; //TODO: signal error
   m_base_directory = a_directory;
+  set_current_directory(a_directory);
   return true;
 }
 
@@ -196,6 +197,22 @@ Core::get_base_directory(void) const
 {
   return m_base_directory;
 }
+
+bool
+Core::set_current_directory(const filepath_type &a_directory)
+{
+  if(!bfs::exists(a_directory) || !bfs::is_directory(a_directory))
+    return false; //TODO: signal error
+  m_current_directory = a_directory;
+  return true;
+}
+
+const filepath_type &
+Core::get_current_directory(void) const
+{
+  return m_current_directory;
+}
+
 
 bool
 Core::start_rename(void)

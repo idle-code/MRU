@@ -21,15 +21,6 @@ typedef icu::UnicodeString UnicodeString;
 //typedef icu::UnicodeString filepath_type;
 typedef boost::filesystem::path filepath_type;
 
-std::string UnicodeString2STLString(const UnicodeString &a_string);
-UnicodeString STLString2UnicodeString(const std::string &a_string);
-
-wxString UnicodeString2wxString(const UnicodeString &a_string);
-UnicodeString wxString2UnicodeString(const wxString &a_string);
-
-wxString Filepath2wxString(const filepath_type &a_path);
-filepath_type wxString2Filepath(const wxString &a_path);
-
 typedef singleton<registry> reg;
 
 } /* namespace mru */
