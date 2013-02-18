@@ -137,8 +137,8 @@ MainWindow::fill_filelist(void)
 {
   FO("MainWindow::fill_filelist(void)");
 
-  bfs::directory_iterator dir_iter = m_core->get_directory_iterator(m_core->get_current_directory());
-  bfs::directory_iterator dir_end;
+  FileIterator dir_iter = m_core->get_directory_iterator(m_core->get_current_directory());
+  FileIterator dir_end;
 
   m_file_listctrl->ClearAll();
 
@@ -155,11 +155,12 @@ MainWindow::fill_filelist(void)
 
   for(int i = 0; (i < m_preview_size || m_preview_size == 0) && dir_iter != dir_end; ++i, ++dir_iter)
   {
-    VAL(*dir_iter); 
+    VAL(dir_iter.directory());
+    VAL(glue_cast<std::string>(dir_iter.filename()));
     wxListItem file_entry;
     file_entry.SetId(i);
     file_entry.SetColumn(0);
-    file_entry.SetText(glue_cast<wxString>(dir_iter->path()));
+    file_entry.SetText(glue_cast<wxString>(dir_iter.filename()));
     m_file_listctrl->InsertItem(file_entry);
     //m_file_listctrl->InsertItem(i, wxT("TEST"));
   }

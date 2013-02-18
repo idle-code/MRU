@@ -3,6 +3,7 @@
 
 #include "types.hpp"
 #include "patterns.hpp"
+#include "file_iterator.hpp"
 #include <sigc++/trackable.h>
 #include <boost/filesystem.hpp>
 
@@ -55,7 +56,7 @@ public:
   bool pause_rename(void);
   bool stop_rename(void);
 
-  bfs::directory_iterator get_directory_iterator(const filepath_type &a_directory);
+  FileIterator get_directory_iterator(const filepath_type &a_directory);
 
 
   UiPlugin* get_ui_plugin(void);

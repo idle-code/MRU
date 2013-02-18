@@ -6,7 +6,7 @@ include_directories ("./")
 include_directories ("/usr/local/include")
 link_directories ("/usr/local/lib")
 
-find_package (ICU 4.8 COMPONENTS uc REQUIRED)
+find_package (ICU 50.1 COMPONENTS uc REQUIRED)
 include_directories (${ICU_INCLUDE_DIRS})
 set (LIBS ${LIBS} ${ICU_LIBRARIES})
 
@@ -40,14 +40,16 @@ add_subdirectory ("plugin_manager")
 include_directories ("plugin_manager")
 set (LIBS ${LIBS} plugin_manager)
 
-add_subdirectory ("plugins")
-include_directories ("plugins")
-
 add_executable (dt_test "dt_test.cpp")
 target_link_libraries (dt_test ${LIBS}) 
 
+add_subdirectory ("plugins")
+include_directories ("plugins")
 
-add_executable (mru "main.cpp" "core.cpp")
+add_executable (mru "main.cpp" "core.cpp" "file_iterator.cpp")
 target_link_libraries (mru ${LIBS})
 set_target_properties (mru PROPERTIES ENABLE_EXPORTS TRUE)
+
+add_executable (metatag_test "metatag_test.cpp" "metatag.cpp")
+target_link_libraries (metatag_test ${LIBS})
 
