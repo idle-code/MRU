@@ -20,6 +20,7 @@ typedef icu::UnicodeString string_type;
 typedef icu::UnicodeString UnicodeString;
 //typedef icu::UnicodeString filepath_type;
 typedef boost::filesystem::path filepath_type;
+typedef boost::filesystem::directory_iterator bfs_iterator_type;
 
 typedef singleton<registry> reg;
 

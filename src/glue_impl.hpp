@@ -70,6 +70,24 @@ glue_cast<std::string, wxString>(const wxString &a_value)
   return std::string(a_value.mb_str());
 }
 
+/* ------------------------------------------------------------------------- */
+
+template<> inline
+UnicodeString
+glue_cast<UnicodeString, filepath_type>(const filepath_type &a_value)
+{
+  std::string path_repr = a_value.generic_string();
+  wxCharBuffer buff = path_repr.c_str(); 
+  return UnicodeString(buff, path_repr.length());
+}
+
+template<> inline
+filepath_type
+glue_cast<filepath_type, UnicodeString>(const UnicodeString &a_value)
+{
+  return filepath_type(glue_cast<std::string>(a_value));
+}
+
 } /* namespace mru */
 
 #endif

@@ -235,10 +235,10 @@ Core::stop_rename(void)
   return false;
 }
 
-bfs::directory_iterator
+FileIterator
 Core::get_directory_iterator(const filepath_type &a_directory)
 {
-  return bfs::directory_iterator(a_directory);
+  return FileIterator(a_directory);
 }
 
 /* ------------------------------------------------------------------------- */
