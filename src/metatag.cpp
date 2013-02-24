@@ -9,7 +9,8 @@ namespace mru
 {
 
 MetatagException::MetatagException(const UnicodeString &a_message, const UnicodeString &a_expression, int a_start, int a_length) throw()
-  : std::runtime_error(glue_cast<std::string>(a_message).c_str()), m_message(a_message), m_expression(a_expression), m_range_start(a_start), m_range_length(a_length)
+  : std::runtime_error(glue_cast<std::string>(a_message).c_str()), m_message(a_message), 
+    m_expression(a_expression), m_range_start(a_start), m_range_length(a_length)
 { } 
 
 MetatagException::~MetatagException(void) throw()
@@ -30,12 +31,28 @@ MetatagException::what(void) const throw()
   if(m_range_start == -1)
     ss << message << " (in \'" << expression << "\')";
   else //if(m_range_length == 0)
-    ss << message << " (at position " << m_range_start << " in \'" << expression << "\')";
+    ss << message << " (at column " << m_range_start << " in \'" << expression << "\')";
   //else
   //  ss << message << ":" << m_range_start << ": \'" << expression.substr(m_range_start, m_range_length) << "\' in \'" << expression << "\'";
 
   return ss.str().c_str();
 }
+
+/* ------------------------------------------------------------------------- */
+
+Metatag::Metatag(const UnicodeString &a_name)
+  : m_name(a_name)
+{ }
+
+Metatag::~Metatag(void)
+{ } 
+
+const UnicodeString &
+Metatag::name(void) const
+{
+  return m_name;
+}
+
 
 /* ------------------------------------------------------------------------- */
 
@@ -84,6 +101,8 @@ MetatagExpression::build_tree(const UnicodeString &a_expression)
 {
   FO("MetatagExpression::build_tree(const UnicodeString &a_expression)");
   data_tree::basic_tree<token> parse_tree_root;
+  parse_tree_root.value().type = token::name;
+  parse_tree_root.push_back(token(0, UnicodeString(), token::args));
   std::stack<data_tree::basic_tree<token>*> node_stack;
   node_stack.push(&parse_tree_root);
 
@@ -114,6 +133,7 @@ MetatagExpression::build_tree(const UnicodeString &a_expression)
             node_stack.top()->push_back(token(pos, value, area));
             value.remove();
           }
+          node_stack.push(get_inserted_node(node_stack.top()));
           area = token::args;
         } else if(!u_isUWhiteSpace(c) && u_isalnum(c))
           value.append(c);
@@ -123,17 +143,15 @@ MetatagExpression::build_tree(const UnicodeString &a_expression)
 
       case token::args:
         if(!escape_sequence && c == UChar32(')')) {
-          if(value.length() > 0) {
-            VAL(glue_cast<std::string>(value));
-            node_stack.top()->push_back(token(pos, value, area));
-            value.remove();
-          }
+          VAL(glue_cast<std::string>(value));
+          node_stack.top()->push_back(token(pos, value, area));
+          value.remove();
           
           c = i.next();
-          if(c == UChar32('{')) {
-            node_stack.push(get_inserted_node(node_stack.top()));
-          } else
+          if(c != UChar32('{')) {
+            node_stack.pop();
             i.previous();
+          }
 
           area = token::text;
         } else
@@ -178,7 +196,6 @@ MetatagExpression::build_tree(const UnicodeString &a_expression)
     value.remove();
   }
 
-
   m_parse_tree = parse_tree_root;
 }
 
@@ -188,12 +205,33 @@ MetatagExpression::execute(const data_tree::basic_tree<token> &a_branch, bool a_
   FO("MetatagExpression::execute(const data_tree::basic_tree<token> &a_branch)");
   VAL(a_branch.value().type);
   VAL(glue_cast<std::string>(a_branch.value().value));
-  data_tree::basic_tree<token>::const_node_iterator i = a_branch.begin();
-  for(; i != a_branch.end(); ++i) {
-    execute(*i, a_prepare);
-  }
-  if(a_branch.value().type == token::text)
+
+  if(a_branch.value().type == token::text) {
     return a_branch.value().value;
+  } else if(a_branch.value().type == token::name) {
+    std::map<UnicodeString, Metatag*>::const_iterator tag_callback = m_bindings.find(a_branch.value().value);
+    if(tag_callback == m_bindings.end())
+      throw MetatagException(glue_cast<UnicodeString>("Unknown tagname: \'") + a_branch.value().value + "\'", "", 0); //FIXME: add proper position and expression
+
+    data_tree::basic_tree<token>::const_node_iterator i = a_branch.begin();
+    UnicodeString area_of_effect;
+    for(; i != a_branch.end(); ++i) {
+      area_of_effect += execute(*i, a_prepare);
+    }
+
+    if(a_prepare) {
+      i = a_branch.begin();
+      if(i->value().type != token::args)
+        throw MetatagException(glue_cast<UnicodeString>("No arguments for tag: \'") + i->value().value + "\'", "", 0); //FIXME: add proper position and expression
+      (*tag_callback).second->Initialize(i->value().value);
+    } else {
+      //if(area_of_effect.length() == 0)
+      if(a_branch.size() == 1)
+        return (*(*tag_callback).second)();
+      else
+        return (*(*tag_callback).second)(area_of_effect);
+    }
+  }
   return UnicodeString();
 }
 

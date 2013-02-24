@@ -29,8 +29,10 @@ public:
   Metatag(const UnicodeString &a_name);
   virtual ~Metatag(void);
 
-  virtual UnicodeString operator()(void);
-  virtual UnicodeString operator()(const UnicodeString &a_arguments);
+  virtual bool Initialize(const UnicodeString &a_arguments) = 0;
+
+  virtual UnicodeString operator()(void) = 0;
+  virtual UnicodeString operator()(const UnicodeString &a_text) = 0;
 
   const UnicodeString& name(void) const;
 protected:
@@ -58,6 +60,7 @@ protected:
     int position;
     enum type { text, name, args } type;
     UnicodeString value;
+    UnicodeString arguments;
     token(void);
     token(int a_pos, const UnicodeString &a_value, enum type a_type);
   };
