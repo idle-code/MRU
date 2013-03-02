@@ -48,7 +48,7 @@ Metatag::~Metatag(void)
 { } 
 
 const UnicodeString &
-Metatag::name(void) const
+Metatag::tagName(void) const
 {
   return m_name;
 }
@@ -57,9 +57,9 @@ Metatag::name(void) const
 /* ------------------------------------------------------------------------- */
 
 UnicodeString
-MetatagExpression::evaluate(const UnicodeString &a_expression, const std::map<UnicodeString, Metatag*> &a_bindings)
+MetatagExpression::evaluate(const UnicodeString &a_expression, const std::list<Metatag*> &a_bindings)
 {
-  FO("MetatagExpression::evaluate(const UnicodeString &a_expression, const std::map<UnicodeString, Metatag*> &a_bindings)");
+  FO("MetatagExpression::evaluate(const UnicodeString &a_expression, const std::list<Metatag*> &a_bindings)");
 
   MetatagExpression me(a_expression);
   me.bind(a_bindings);
@@ -74,7 +74,7 @@ MetatagExpression::~MetatagExpression(void)
 { }
 
 void
-MetatagExpression::bind(const std::map<UnicodeString, Metatag*> &a_bindings)
+MetatagExpression::bind(const std::list<Metatag*> &a_bindings)
 {
   m_bindings = a_bindings;
 }
@@ -82,11 +82,11 @@ MetatagExpression::bind(const std::map<UnicodeString, Metatag*> &a_bindings)
 /* ------------------------------------------------------------------------- */
 
 MetatagExpression::token::token(void)
-  : position(-1), type(), value()
+  : position(-1), type(), value(), arguments()
 { }
 
 MetatagExpression::token::token(int a_pos, const UnicodeString &a_value, enum token::type a_type)
-  : position(a_pos), type(a_type), value(a_value)
+  : position(a_pos), type(a_type), value(a_value), arguments()
 { }
 
 data_tree::basic_tree<MetatagExpression::token>*
@@ -99,10 +99,9 @@ get_inserted_node(data_tree::basic_tree<MetatagExpression::token> *a_branch)
 void
 MetatagExpression::build_tree(const UnicodeString &a_expression)
 {
-  FO("MetatagExpression::build_tree(const UnicodeString &a_expression)");
+  //FO("MetatagExpression::build_tree(const UnicodeString &a_expression)");
   data_tree::basic_tree<token> parse_tree_root;
   parse_tree_root.value().type = token::name;
-  parse_tree_root.push_back(token(0, UnicodeString(), token::args));
   std::stack<data_tree::basic_tree<token>*> node_stack;
   node_stack.push(&parse_tree_root);
 
@@ -113,7 +112,6 @@ MetatagExpression::build_tree(const UnicodeString &a_expression)
 
   for(StringCharacterIterator i(a_expression); i.hasNext(); i.next(), ++pos) {
     UChar32 c = i.current32();
-    VAL((char)c);
 
     if(c == UChar32('\\')) {
       escape_sequence = true;
@@ -124,12 +122,10 @@ MetatagExpression::build_tree(const UnicodeString &a_expression)
       ++pos;
     }
 
-
     switch(area) {
       case token::name:
         if(c == UChar32('(')) {
           if(value.length() > 0) {
-            VAL(glue_cast<std::string>(value));
             node_stack.top()->push_back(token(pos, value, area));
             value.remove();
           }
@@ -143,8 +139,7 @@ MetatagExpression::build_tree(const UnicodeString &a_expression)
 
       case token::args:
         if(!escape_sequence && c == UChar32(')')) {
-          VAL(glue_cast<std::string>(value));
-          node_stack.top()->push_back(token(pos, value, area));
+          node_stack.top()->value().arguments = value;
           value.remove();
           
           c = i.next();
@@ -161,17 +156,13 @@ MetatagExpression::build_tree(const UnicodeString &a_expression)
       case token::text:
         if(!escape_sequence && c == UChar32('%')) {
           if(value.length() > 0) {
-            VAL(glue_cast<std::string>(value));
             node_stack.top()->push_back(token(pos, value, area));
             value.remove();
           }
           area = token::name;
         } else if(!escape_sequence && c == UChar32('}')) {
-          if(value.length() > 0) {
-            VAL(glue_cast<std::string>(value));
-            node_stack.top()->push_back(token(pos, value, area));
-            value.remove();
-          }
+          node_stack.top()->push_back(token(pos, value, area));
+          value.remove();
           node_stack.pop();
         } else
           value.append(c);
@@ -182,7 +173,7 @@ MetatagExpression::build_tree(const UnicodeString &a_expression)
   }
 
   if(area == token::args)
-    throw MetatagException(glue_cast<UnicodeString>("Unclosed arguments list of \'") + get_inserted_node(node_stack.top())->value().value + "\' tag", a_expression, pos);
+    throw MetatagException(glue_cast<UnicodeString>("Unclosed arguments list for \'") + get_inserted_node(node_stack.top())->value().value + "\' tag", a_expression, pos);
   else if(area == token::name)
     throw MetatagException(glue_cast<UnicodeString>("Unfinished metatag declaration at end of expression"), a_expression, pos);
 
@@ -191,7 +182,6 @@ MetatagExpression::build_tree(const UnicodeString &a_expression)
   }
 
   if(value.length() > 0) {
-    VAL(glue_cast<std::string>(value));
     node_stack.top()->push_back(token(pos, value, area));
     value.remove();
   }
@@ -199,47 +189,95 @@ MetatagExpression::build_tree(const UnicodeString &a_expression)
   m_parse_tree = parse_tree_root;
 }
 
+Metatag*
+MetatagExpression::find_binding(const UnicodeString &a_tagname) const
+{
+  std::list<Metatag*>::const_iterator tag = m_bindings.begin(), binding_end = m_bindings.end();
+  for(; tag != binding_end; ++tag) {
+    if((*tag)->tagName() == a_tagname)
+      return *tag;
+  }
+
+  return NULL;
+}
+
 UnicodeString
 MetatagExpression::execute(const data_tree::basic_tree<token> &a_branch, bool a_prepare)
 {
-  FO("MetatagExpression::execute(const data_tree::basic_tree<token> &a_branch)");
-  VAL(a_branch.value().type);
-  VAL(glue_cast<std::string>(a_branch.value().value));
+  //FO("MetatagExpression::execute(const data_tree::basic_tree<token> &a_branch)");
 
   if(a_branch.value().type == token::text) {
     return a_branch.value().value;
-  } else if(a_branch.value().type == token::name) {
-    std::map<UnicodeString, Metatag*>::const_iterator tag_callback = m_bindings.find(a_branch.value().value);
-    if(tag_callback == m_bindings.end())
-      throw MetatagException(glue_cast<UnicodeString>("Unknown tagname: \'") + a_branch.value().value + "\'", "", 0); //FIXME: add proper position and expression
-
-    data_tree::basic_tree<token>::const_node_iterator i = a_branch.begin();
-    UnicodeString area_of_effect;
-    for(; i != a_branch.end(); ++i) {
-      area_of_effect += execute(*i, a_prepare);
-    }
-
-    if(a_prepare) {
-      i = a_branch.begin();
-      if(i->value().type != token::args)
-        throw MetatagException(glue_cast<UnicodeString>("No arguments for tag: \'") + i->value().value + "\'", "", 0); //FIXME: add proper position and expression
-      (*tag_callback).second->Initialize(i->value().value);
-    } else {
-      //if(area_of_effect.length() == 0)
-      if(a_branch.size() == 1)
-        return (*(*tag_callback).second)();
-      else
-        return (*(*tag_callback).second)(area_of_effect);
-    }
   }
+  // else assume a_branch.value().type == token::name
+  
+  // find callback by tag name
+  Metatag *metatag = find_binding(a_branch.value().value);
+  if(metatag == NULL)
+    throw MetatagException(glue_cast<UnicodeString>("Unknown tagname: \'") + a_branch.value().value + "\'", "", 0); //FIXME: add proper position and expression
+
+  // evaluate area_of_effect
+  data_tree::basic_tree<token>::const_node_iterator i = a_branch.begin();
+  UnicodeString area_of_effect;
+  for(; i != a_branch.end(); ++i) {
+    area_of_effect += execute(*i, a_prepare);
+  }
+
+  // execute tag function
+  if(a_prepare) {
+    metatag->initialize(a_branch.value().arguments);
+  } else {
+    if(a_branch.empty())
+      return (*metatag)(); //no area_of_effect specified
+    else
+      return (*metatag)(area_of_effect); //execute over area_of_effect
+  }
+
   return UnicodeString();
 }
+
+namespace 
+{
+
+class EchoTag : public Metatag {
+public:
+  EchoTag(void)
+   : Metatag("")
+  { } 
+
+  bool
+  initialize(const UnicodeString &a_arguments)
+  {
+    return true;
+  }
+
+  UnicodeString
+  operator()(void)
+  {
+    return UnicodeString();
+  }
+
+  UnicodeString
+  operator()(const UnicodeString &a_text)
+  {
+    return a_text;
+  }
+};
+
+} /* anonymous namespace */
 
 UnicodeString
 MetatagExpression::evaluate(void)
 {
-  FO("MetatagExpression::evaluate(void)");
+  //FO("MetatagExpression::evaluate(void)");
   VAL(glue_cast<std::string>(m_expression_repr));
+  
+  EchoTag echo;
+  if(NULL == find_binding(UnicodeString())) {
+    WARN("No top ('') tag specified. Using default EchoTag");
+    m_bindings.push_back(&echo);
+    //throw MetatagException(glue_cast<UnicodeString>("No top ('') tag specified"), m_expression_repr);
+  }
 
   // build parse tree (if needed)
   if(m_parse_tree.empty()) {
@@ -252,7 +290,7 @@ MetatagExpression::evaluate(void)
 }
 
 UnicodeString
-MetatagExpression::evaluate(const std::map<UnicodeString, Metatag*> &a_bindings)
+MetatagExpression::evaluate(const std::list<Metatag*> &a_bindings)
 {
   bind(a_bindings);
   return evaluate();

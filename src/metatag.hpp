@@ -3,7 +3,7 @@
 
 #include "types.hpp"
 #include <basic_tree.hpp>
-#include <map>
+#include <list>
 
 namespace mru
 {
@@ -29,12 +29,12 @@ public:
   Metatag(const UnicodeString &a_name);
   virtual ~Metatag(void);
 
-  virtual bool Initialize(const UnicodeString &a_arguments) = 0;
+  virtual bool initialize(const UnicodeString &a_arguments) = 0;
 
   virtual UnicodeString operator()(void) = 0;
   virtual UnicodeString operator()(const UnicodeString &a_text) = 0;
 
-  const UnicodeString& name(void) const;
+  const UnicodeString& tagName(void) const;
 protected:
   UnicodeString m_name;
 };
@@ -44,18 +44,18 @@ protected:
 class MetatagExpression {
 public:
   typedef MetatagExpression self_type;
-  static UnicodeString evaluate(const UnicodeString &a_expression, const std::map<UnicodeString, Metatag*> &a_bindings);
+  static UnicodeString evaluate(const UnicodeString &a_expression, const std::list<Metatag*> &a_bindings);
 public:
   MetatagExpression(const UnicodeString &a_expression);
   ~MetatagExpression(void);
 
-  void bind(const std::map<UnicodeString, Metatag*> &a_bindings);
+  void bind(const std::list<Metatag*> &a_bindings);
   UnicodeString evaluate(void);
-  UnicodeString evaluate(const std::map<UnicodeString, Metatag*> &a_bindings);
+  UnicodeString evaluate(const std::list<Metatag*> &a_bindings);
 
 protected:
   UnicodeString m_expression_repr;
-  std::map<UnicodeString, Metatag*> m_bindings;
+  std::list<Metatag*> m_bindings;
   struct token {
     int position;
     enum type { text, name, args } type;
@@ -66,6 +66,7 @@ protected:
   };
   data_tree::basic_tree<token> m_parse_tree;
   void build_tree(const UnicodeString &a_expression);
+  Metatag* find_binding(const UnicodeString &a_tagname) const;
   UnicodeString execute(const data_tree::basic_tree<token> &a_branch, bool a_prepare =false);
 
   friend data_tree::basic_tree<MetatagExpression::token>* get_inserted_node(data_tree::basic_tree<MetatagExpression::token> *a_branch);

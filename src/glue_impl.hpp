@@ -2,6 +2,9 @@
 #  error "This is implementation file. Use glue.hpp instead."
 #else
 
+#include <unicode/utypes.h>
+#include <unicode/numfmt.h>
+
 namespace mru
 {
 
@@ -86,6 +89,19 @@ filepath_type
 glue_cast<filepath_type, UnicodeString>(const UnicodeString &a_value)
 {
   return filepath_type(glue_cast<std::string>(a_value));
+}
+
+/* ------------------------------------------------------------------------- */
+
+template<> inline
+UnicodeString
+glue_cast<UnicodeString, int>(const int &a_value)
+{
+  UnicodeString result;
+  UErrorCode err_code = U_ZERO_ERROR;
+  NumberFormat *format = icu::NumberFormat::createInstance(err_code);
+  format->format(a_value, result);
+  return result;
 }
 
 } /* namespace mru */
