@@ -19,7 +19,7 @@ MetatagException::~MetatagException(void) throw()
 std::pair<int, int>
 MetatagException::range(void) const throw()
 {
-  return std::make_pair(m_range_start, m_range_start + m_range_length);
+  return m_range;
 }
 
 const char *

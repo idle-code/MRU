@@ -1,7 +1,6 @@
 #ifndef PLUGIN_MANAGER
 #define PLUGIN_MANAGER
 
-#include <data_tree/registry.hpp>
 #include <dynamic_module.hpp>
 #include "types.hpp"
 #include <map>
@@ -73,7 +72,6 @@ public:
   typedef plugin_manager self_type;
   typedef PluginClass plugin_type;
   typedef plugin_factory<plugin_type> plugin_factory_type;
-  typedef data_tree::registry registry;
 
 public:
   plugin_manager(const name_type &a_interface, const registry &a_reg);
@@ -92,10 +90,9 @@ public:
   plugin_type* create_plugin(const name_type &a_name);
   void destroy_plugin(plugin_type *&a_instance);
 
-  void tree(const registry &a_tree);
-  const registry& tree(void) const;
+  std::list<name_type> available_plugins(void) const;
+
 protected:
-  registry m_tree;
   std::map<name_type, plugin_factory_type*> m_factories;
 };
 

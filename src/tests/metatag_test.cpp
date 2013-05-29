@@ -1,8 +1,7 @@
-#include "metatag.hpp"
-#include "glue.hpp"
+#include "metatag_test.hpp"
 #include <debug_l.h>
 
-class EchoTag : public mru::Metatag {
+class EchoTag : public Metatag {
 public:
   EchoTag(void)
    : Metatag("EchoTag")
@@ -35,14 +34,10 @@ public:
   static int foo;
 };
 
-int EchoTag::foo = 1;
-
-int
-main(int argc, char const *argv[])
+void
+metatag_tests::construction(void)
 {
-  using namespace mru;
-  FO("main()");
-
+  FO("metatag_tests::construction(void)")
   std::list<Metatag*> bindings;
   
   EchoTag echo;
@@ -59,7 +54,6 @@ main(int argc, char const *argv[])
   //VAL(mru::glue_cast<std::string>(me.evaluate()));
   //UnicodeString result = MetatagExpression::evaluate("%Count(start=0)_file_%ToUpper(){%Name(%Nontag(\\))_ma_kota}", bindings);
   //VAL(glue_cast<std::string>(result));
-
-  return 0;
+  
 }
 
