@@ -4,42 +4,11 @@
 
 #include <unicode/utypes.h>
 #include <unicode/numfmt.h>
+#include <sstream>
+#include <boost/locale.hpp>
 
 namespace mru
 {
-
-template<> inline
-std::string
-glue_cast<std::string, UnicodeString>(const UnicodeString &a_value)
-{
-  std::string result;
-  return a_value.toUTF8String(result);
-}
-
-template<> inline
-UnicodeString
-glue_cast<UnicodeString, std::string>(const std::string &a_value)
-{
-  return UnicodeString(a_value.c_str(), a_value.length());
-}
-
-/* ------------------------------------------------------------------------- */
-
-template<> inline
-wxString
-glue_cast<wxString, UnicodeString>(const UnicodeString &a_value)
-{
-  std::string result;
-  return wxString(a_value.toUTF8String(result).c_str(), wxConvUTF8);
-}
-
-template<> inline
-UnicodeString
-glue_cast<UnicodeString, wxString>(const wxString &a_value)
-{
-  wxCharBuffer buff = a_value.utf8_str(); 
-  return UnicodeString(buff, a_value.Length());
-}
 
 /* ------------------------------------------------------------------------- */
 
@@ -79,16 +48,14 @@ template<> inline
 UnicodeString
 glue_cast<UnicodeString, filepath_type>(const filepath_type &a_value)
 {
-  std::string path_repr = a_value.generic_string();
-  wxCharBuffer buff = path_repr.c_str(); 
-  return UnicodeString(buff, path_repr.length());
+  return a_value.generic_wstring();
 }
 
 template<> inline
 filepath_type
 glue_cast<filepath_type, UnicodeString>(const UnicodeString &a_value)
 {
-  return filepath_type(glue_cast<std::string>(a_value));
+  return filepath_type(a_value);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -97,11 +64,9 @@ template<> inline
 UnicodeString
 glue_cast<UnicodeString, int>(const int &a_value)
 {
-  UnicodeString result;
-  UErrorCode err_code = U_ZERO_ERROR;
-  NumberFormat *format = icu::NumberFormat::createInstance(err_code);
-  format->format(a_value, result);
-  return result;
+  std::wstringstream ss;
+  ss << boost::locale::as::number << a_value;  
+  return ss.str();
 }
 
 } /* namespace mru */

@@ -51,14 +51,6 @@ plugin_factory<PluginClass>::destroy(PluginClass *&a_instance)
 /* ------------------------------------------------------------------------- */
 
 template<typename PluginClass>
-plugin_manager<PluginClass>::plugin_manager(const name_type &a_interface, const registry &a_reg)
-  : generic_plugin_manager(a_interface), m_tree(a_reg)
-{
-  FO("plugin_manager<PluginClass>::plugin_manager(const name_type &a_interface, registery *a_reg)");
-  plugin_factory_distributor::get_instance()->register_manager(this);
-}
-
-template<typename PluginClass>
 plugin_manager<PluginClass>::plugin_manager(const name_type &a_interface)
   : generic_plugin_manager(a_interface)
 {
@@ -77,7 +69,6 @@ template<typename PluginClass>
 plugin_manager<PluginClass>::~plugin_manager(void)
 {
   plugin_factory_distributor::get_instance()->unregister_manager(this);
-  m_tree.clear();
   typename std::map<name_type, plugin_factory_type*>::iterator i = m_factories.begin();
   while(i != m_factories.end()) {
     unregister_factory(i->first); 
@@ -91,7 +82,6 @@ plugin_manager<PluginClass>::load_module(const filepath_type &a_path)
 {
   FO("load(const filepath_type &a_path)");
   VAL(a_path);
-
 
   dynamic_module_manager* mod_manager = dynamic_module_manager::get_instance();
   dynamic_module *module = mod_manager->load(a_path);
@@ -118,7 +108,7 @@ template<typename PluginClass>
 void
 plugin_manager<PluginClass>::unload_module(dynamic_module* a_module)
 {
-  FO("plugin_manager<PluginClass>::unload(registry &a_module_node)");
+  FO("plugin_manager<PluginClass>::unload_module(dynamic_module* a_module)")
   dynamic_module_manager* mod_manager = dynamic_module_manager::get_instance();
   mod_manager->unload(a_module);
 }
@@ -134,7 +124,6 @@ plugin_manager<PluginClass>::register_factory(generic_plugin_factory *a_factory)
     return false;
   }
   m_factories.insert(std::make_pair(a_factory->implementation_name(), reinterpret_cast<plugin_factory_type*>(a_factory)));
-  m_tree.create(a_factory->implementation_name(), a_factory);
   return true;
 }
 
@@ -148,7 +137,6 @@ plugin_manager<PluginClass>::unregister_factory(const name_type &a_factory_name)
     return;
   }
 
-  m_tree.remove(to_remove->first);
   to_remove->second->destroy();
   to_remove->second = NULL;
   m_factories.erase(to_remove);
@@ -183,17 +171,14 @@ plugin_manager<PluginClass>::destroy_plugin(plugin_type *&a_instance)
 }
 
 template<typename PluginClass>
-void
-plugin_manager<PluginClass>::tree(const registry &a_tree)
+std::list<name_type>
+plugin_manager<PluginClass>::available_plugins(void) const
 {
-  m_tree = a_tree;
-}
-
-template<typename PluginClass>
-const typename plugin_manager<PluginClass>::registry &
-plugin_manager<PluginClass>::tree(void) const
-{
-  return m_tree;
+  std::list<name_type> plugin_names;
+  typename std::map<name_type, plugin_factory_type*>::const_iterator ci = m_factories.begin();
+  for(; ci != m_factories.end(); ++ci)
+    plugin_names.push_back(ci->first);
+  return plugin_names;
 }
 
 /* ------------------------------------------------------------------------- */

@@ -29,6 +29,18 @@ main(int argc, char const *argv[])
     //return 2;
   }
 
+  std::list<name_type> my_plugins = my_pm->available_plugins();
+  VAL(my_plugins.size());
+  for(std::list<name_type>::iterator i = my_plugins.begin(); i != my_plugins.end(); ++i) {
+    VAL(*i);
+  }
+
+  std::list<name_type> yours_plugins = your_pm->available_plugins();
+  VAL(yours_plugins.size());
+  for(std::list<name_type>::iterator i = yours_plugins.begin(); i != yours_plugins.end(); ++i) {
+    VAL(*i);
+  }
+
   MyPlugin *mplg1 = my_pm->create_plugin("MPlg1");
   MyPlugin *mplg2 = my_pm->create_plugin("MPlg2");
   YourPlugin *yplg = your_pm->create_plugin("YPlg");
@@ -43,9 +55,6 @@ main(int argc, char const *argv[])
     yplg->say_goodbye();
   if(yplg2)
     yplg2->say_goodbye();
-
-  data_tree::print_tree(my_pm->tree()); 
-  data_tree::print_tree(your_pm->tree()); 
 
   my_pm->destroy_plugin(mplg1); 
   my_pm->destroy_plugin(mplg2); 
