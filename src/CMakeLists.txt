@@ -46,6 +46,8 @@ set (LIBS ${LIBS} plugin_manager)
 add_subdirectory ("plugins")
 include_directories ("plugins")
 
+add_subdirectory ("metatag")
+
 add_executable (mru "main.cpp" "core.cpp" "file_iterator.cpp")
 target_link_libraries (mru ${LIBS})
 set_target_properties (mru PROPERTIES ENABLE_EXPORTS TRUE)

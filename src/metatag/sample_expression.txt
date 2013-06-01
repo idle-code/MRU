@@ -1,0 +1,25 @@
+%UPPER{%AUDIO(artist)} - %AUDIO(title).%EXT
+
+%UPPER
+{
+  %AUDIO
+  ( 
+    artist
+  )
+}
+" - "
+%AUDIO
+(
+  title
+)
+"."
+%EXT
+
+----------------------------------------------------------
+
+'%' -> metatag_start
+'(' -> opening_bracket
+')' -> closing_bracket
+r'[0-9]+' -> number
+r'[a-zA-Z]+' -> literal
+

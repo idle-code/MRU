@@ -4,7 +4,7 @@
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "../metatag.hpp"
+#include "metatag/expression.hpp"
 
 using namespace CppUnit;
 using namespace mru;

@@ -10,10 +10,6 @@ target_link_libraries (unicode_path_test cppunit debug_l)
 add_test (unicode_path_test unicode_path_test)
 
 add_executable (metatag_test "metatag_test.cpp")
-target_link_libraries (metatag_test cppunit debug_l)
+target_link_libraries (metatag_test metatag cppunit debug_l)
 add_test (metatag_test metatag_test)
-
-add_executable (plugin_test "plugin_test.cpp")
-target_link_libraries (plugin_test ${LIBS} cppunit)
-add_test (plugin_test plugin_test)
 
