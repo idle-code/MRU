@@ -9,7 +9,7 @@
 using namespace CppUnit;
 using namespace mru;
 
-class matatag_tests : public TestCase {
+class metatag_tests : public TestCase {
 public:
   void construction(void);
   //void 

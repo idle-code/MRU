@@ -1,6 +1,9 @@
 #include "metatag_test.hpp"
+#include "glue.hpp"
 #include <debug_l.h>
+#include <cppunit/ui/text/TestRunner.h>
 
+/*
 class EchoTag : public Metatag {
 public:
   EchoTag(void)
@@ -10,29 +13,28 @@ public:
   bool
   initialize(const UnicodeString &a_arguments)
   {
-    FO("EchoTag::Initialize(const UnicodeString &a_arguments)");
-    VAL(mru::glue_cast<std::string>(tagName()));
+    FO("EchoTag::initialize(const UnicodeString &a_arguments)");
+    //VAL(mru::glue_cast<std::string>(tagName()));
     VAL(mru::glue_cast<std::string>(a_arguments));
     return true;
   }
 
   UnicodeString
-  operator()(void)
+  evaluate(void)
   {
-    FO("EchoTag::operator(void)");
     return mru::glue_cast<UnicodeString>("<none>");
   }
 
   UnicodeString
-  operator()(const UnicodeString &a_text)
+  evaluate(const UnicodeString &a_area_of_effect)
   {
-    FO("EchoTag::operator(const UnicodeString &a_text)");
-    VAL(mru::glue_cast<std::string>(a_text));
-    return mru::glue_cast<UnicodeString>("<") + a_text + mru::glue_cast<UnicodeString>(">") + mru::glue_cast<UnicodeString>(foo++);
+    VAL(mru::glue_cast<std::string>(a_area_of_effect));
+    return mru::glue_cast<UnicodeString>("<") + a_area_of_effect + mru::glue_cast<UnicodeString>(">") + mru::glue_cast<UnicodeString>(foo++);
   }
 
   static int foo;
 };
+//*/
 
 void
 metatag_tests::construction(void)
@@ -40,14 +42,14 @@ metatag_tests::construction(void)
   FO("metatag_tests::construction(void)")
   std::list<Metatag*> bindings;
   
-  EchoTag echo;
+  //EchoTag echo;
   //bindings.insert(std::make_pair(UnicodeString(), &echo));
-  bindings.push_back(&echo);
+  //bindings.push_back(&echo);
   UnicodeString result;
   //UnicodeString result = MetatagExpression::evaluate("%EchoTag(arguments...)", bindings);
   //UnicodeString result = MetatagExpression::evaluate("%EchoTag(arguments...){123%EchoTag(){456}}_some_text %EchoTag()", bindings);
   MetatagExpression me("%EchoTag(value=12){%EchoTag(){Ala} ma kota} and some other text");
-  me.bind(bindings);
+  //me.bind(bindings);
   result = me.evaluate();
   VAL(mru::glue_cast<std::string>(result));
   MSG("----------");
@@ -56,4 +58,16 @@ metatag_tests::construction(void)
   //VAL(glue_cast<std::string>(result));
   
 }
+
+#ifdef SINGLE_TEST_MODE
+
+int main(int, char *[])
+{
+  CppUnit::TextUi::TestRunner runner;
+  runner.addTest(metatag_tests::suite());
+  
+	return !runner.run();
+}
+
+#endif /* SINGLE_TEST_MODE */
 
