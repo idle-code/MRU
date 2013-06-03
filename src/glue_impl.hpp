@@ -29,6 +29,33 @@ glue_cast<wxString, filepath_type>(const filepath_type &a_value)
 /* ------------------------------------------------------------------------- */
 
 template<> inline
+UnicodeString
+glue_cast<UnicodeString, std::wstring>(const std::wstring &a_value)
+{
+  return UnicodeString(reinterpret_cast<const UChar*>(a_value.c_str()), a_value.length());
+}
+
+/* ------------------------------------------------------------------------- */
+
+template<> inline
+UnicodeString
+glue_cast<UnicodeString, std::string>(const std::string &a_value)
+{
+  return UnicodeString(a_value.c_str(), a_value.length());
+}
+
+template<> inline
+std::string
+glue_cast<std::string, UnicodeString>(const UnicodeString &a_value)
+{
+  std::string result;
+  a_value.toUTF8String(result);
+  return result;
+}
+
+/* ------------------------------------------------------------------------- */
+
+template<> inline
 wxString
 glue_cast<wxString, std::string>(const std::string &a_value)
 {
@@ -48,14 +75,14 @@ template<> inline
 UnicodeString
 glue_cast<UnicodeString, filepath_type>(const filepath_type &a_value)
 {
-  return a_value.generic_wstring();
+  return glue_cast<UnicodeString>(a_value.generic_wstring());
 }
 
 template<> inline
 filepath_type
 glue_cast<filepath_type, UnicodeString>(const UnicodeString &a_value)
 {
-  return filepath_type(a_value);
+  return filepath_type(glue_cast<filepath_type>(a_value));
 }
 
 /* ------------------------------------------------------------------------- */
@@ -66,8 +93,9 @@ glue_cast<UnicodeString, int>(const int &a_value)
 {
   std::wstringstream ss;
   ss << boost::locale::as::number << a_value;  
-  return ss.str();
+  return glue_cast<UnicodeString>(ss.str());
 }
+
 
 } /* namespace mru */
 

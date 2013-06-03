@@ -22,35 +22,45 @@ protected:
 
 /* ------------------------------------------------------------------------- */
 
+
+class Metatag {
+public:
+  typedef Metatag self_type;
+public:
+  Metatag(const UnicodeString &a_name);
+  Metatag(const self_type &a_other);
+  virtual ~Metatag(void);
+
+  UnicodeString evaluate(void);
+protected:
+  /* data */
+};
+
 class MetatagExpression {
 public:
   typedef MetatagExpression self_type;
-  static UnicodeString evaluate(const UnicodeString &a_expression, const std::list<MetatagExpression*> &a_bindings);
 public:
   MetatagExpression(const UnicodeString &a_expression);
   ~MetatagExpression(void);
+  
+  struct token {
+    enum token_kind_type {
+      whitespace,
+      text, // all other characters
+      argument_list_start, // '(' character
+      argument_list_end, // ')' character
+      operation_area_start, // '{' character
+      operation_area_end // '}' character
+    } type;
+    UnicodeString value;
+    token(const UnicodeString &a_value, token::token_kind_type a_type);
+  };
+  static std::list<token> tokenize(const UnicodeString &a_expression);
 
-  void bind(const std::list<MetatagExpression*> &a_bindings);
   UnicodeString evaluate(void);
-  UnicodeString evaluate(const std::list<MetatagExpression*> &a_bindings);
 
 protected:
-  UnicodeString m_expression_repr;
-  std::list<MetatagExpression*> m_bindings;
-  struct token {
-    int position;
-    enum type { text, name, args } type;
-    UnicodeString value;
-    UnicodeString arguments;
-    token(void);
-    token(int a_pos, const UnicodeString &a_value, enum type a_type);
-  };
-  data_tree::basic_tree<token> m_parse_tree;
-  void build_tree(const UnicodeString &a_expression);
-  MetatagExpression* find_binding(const UnicodeString &a_tagname) const;
-  UnicodeString execute(const data_tree::basic_tree<token> &a_branch, bool a_prepare =false);
-
-  friend data_tree::basic_tree<MetatagExpression::token>* get_inserted_node(data_tree::basic_tree<MetatagExpression::token> *a_branch);
+  MetatagExpression(const self_type &a_other);
 };
 
 } /* namespace mru */
