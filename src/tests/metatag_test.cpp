@@ -3,30 +3,29 @@
 #include <debug_l.h>
 #include <cppunit/ui/text/TestRunner.h>
 
-/*
+//*
 class EchoTag : public Metatag {
 public:
   EchoTag(void)
    : Metatag("EchoTag")
   { } 
 
-  bool
+  void
   initialize(const UnicodeString &a_arguments)
   {
     FO("EchoTag::initialize(const UnicodeString &a_arguments)");
     //VAL(mru::glue_cast<std::string>(tagName()));
     VAL(mru::glue_cast<std::string>(a_arguments));
-    return true;
   }
 
   UnicodeString
-  evaluate(void)
+  execute(void)
   {
     return mru::glue_cast<UnicodeString>("<none>");
   }
 
   UnicodeString
-  evaluate(const UnicodeString &a_area_of_effect)
+  execute(const UnicodeString &a_area_of_effect)
   {
     VAL(mru::glue_cast<std::string>(a_area_of_effect));
     return mru::glue_cast<UnicodeString>("<") + a_area_of_effect + mru::glue_cast<UnicodeString>(">") + mru::glue_cast<UnicodeString>(foo++);
@@ -34,6 +33,8 @@ public:
 
   static int foo;
 };
+
+int EchoTag::foo = 0;
 //*/
 
 void
@@ -42,15 +43,15 @@ metatag_tests::construction(void)
   FO("metatag_tests::construction(void)")
   std::list<Metatag*> bindings;
   
-  //EchoTag echo;
+  EchoTag echo;
   //bindings.insert(std::make_pair(UnicodeString(), &echo));
-  //bindings.push_back(&echo);
+  bindings.push_back(&echo);
   UnicodeString result;
   //UnicodeString result = MetatagExpression::evaluate("%EchoTag(arguments...)", bindings);
   //UnicodeString result = MetatagExpression::evaluate("%EchoTag(arguments...){123%EchoTag(){456}}_some_text %EchoTag()", bindings);
-  MetatagExpression me("%EchoTag(value=12){%EchoTag(){Ala} ma kota} and some other text");
+  MetatagExpression me = MetatagExpression::parse("%EchoTag(value=12){%EchoTag(){Ala} ma kota} and some other \\}text");
   //me.bind(bindings);
-  result = me.evaluate();
+  result = me.evaluate(bindings);
   VAL(mru::glue_cast<std::string>(result));
   MSG("----------");
   //VAL(mru::glue_cast<std::string>(me.evaluate()));

@@ -20,7 +20,7 @@ find_package (SigC++ 2.2 REQUIRED)
 include_directories (${SigC++_INCLUDE_DIRS})
 set (LIBS ${LIBS} ${SigC++_LIBRARIES})
 
-find_package (Boost COMPONENTS system filesystem REQUIRED)
+find_package (Boost COMPONENTS locale system filesystem REQUIRED)
 include_directories (${Boost_INCLUDE_DIRS})
 set (LIBS ${LIBS} ${Boost_LIBRARIES})
 
