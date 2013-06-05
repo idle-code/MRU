@@ -49,13 +49,13 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +27 expression.hpp
-badd +43 expression.cpp
-badd +1 ~/projects/mru/src/glue_impl.hpp
+badd +54 expression.hpp
+badd +129 expression.cpp
+badd +100 ~/projects/mru/src/glue_impl.hpp
 badd +1 ~/projects/mru/src/plugins/tag_plugin.hpp
-badd +0 ~/projects/mru/src/glue.hpp
-badd +0 ~/projects/mru/src/tests/metatag_test.cpp
-badd +0 ~/projects/mru/src/tests/metatag_test.hpp
+badd +1 ~/projects/mru/src/glue.hpp
+badd +60 ~/projects/mru/src/tests/metatag_test.cpp
+badd +1 ~/projects/mru/src/tests/metatag_test.hpp
 badd +2 ~/projects/mru/src/tests/unicode_path_test.cpp
 args expression.hpp
 edit expression.cpp
@@ -68,8 +68,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 77 + 78) / 157)
-exe 'vert 2resize ' . ((&columns * 79 + 78) / 157)
+exe 'vert 1resize ' . ((&columns * 104 + 105) / 211)
+exe 'vert 2resize ' . ((&columns * 106 + 105) / 211)
 argglobal
 setlocal noautoindent
 setlocal balloonexpr=
@@ -171,14 +171,30 @@ setlocal nowrap
 setlocal wrapmargin=0
 10
 normal! zo
-57
+66
 normal! zo
-let s:l = 7 - ((6 * winheight(0) + 23) / 46)
+116
+normal! zo
+125
+normal! zo
+129
+normal! zo
+155
+normal! zo
+155
+normal! zo
+192
+normal! zo
+192
+normal! zo
+192
+normal! zo
+let s:l = 196 - ((16 * winheight(0) + 24) / 49)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-7
-normal! 020|
+196
+normal! 040l
 lcd ~/projects/mru/src/metatag
 wincmd w
 argglobal
@@ -283,30 +299,21 @@ setlocal nowrap
 setlocal wrapmargin=0
 8
 normal! zo
-26
+41
 normal! zo
-52
+44
 normal! zo
-39
+45
 normal! zo
-46
-normal! zo
-47
-normal! zo
-64
-normal! zo
-70
-normal! zo
-let s:l = 2 - ((1 * winheight(0) + 23) / 46)
+let s:l = 48 - ((23 * winheight(0) + 24) / 49)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-2
-normal! 019|
+48
+normal! 032l
 wincmd w
-2wincmd w
-exe 'vert 1resize ' . ((&columns * 77 + 78) / 157)
-exe 'vert 2resize ' . ((&columns * 79 + 78) / 157)
+exe 'vert 1resize ' . ((&columns * 104 + 105) / 211)
+exe 'vert 2resize ' . ((&columns * 106 + 105) / 211)
 tabedit ~/projects/mru/src/tests/metatag_test.cpp
 set splitbelow splitright
 wincmd _ | wincmd |
@@ -317,8 +324,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 78 + 78) / 157)
-exe 'vert 2resize ' . ((&columns * 78 + 78) / 157)
+exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
+exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
 argglobal
 setlocal noautoindent
 setlocal balloonexpr=
@@ -418,12 +425,19 @@ setlocal nowinfixwidth
 set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
-let s:l = 64 - ((36 * winheight(0) + 23) / 46)
+7
+normal! zo
+let s:l = 52 - ((17 * winheight(0) + 24) / 49)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-64
-normal! 05|
+52
+let s:c = 112 - ((46 * winwidth(0) + 52) / 105)
+if s:c > 0
+  exe 'normal! 0' . s:c . 'lzs' . (112 - s:c) . 'l'
+else
+  normal! 0112l
+endif
 lcd ~/projects/mru/src/metatag
 wincmd w
 argglobal
@@ -526,16 +540,16 @@ setlocal nowinfixwidth
 set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
-let s:l = 16 - ((14 * winheight(0) + 23) / 46)
+let s:l = 16 - ((15 * winheight(0) + 24) / 49)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 16
 normal! 0
+lcd ~/projects/mru/src/metatag
 wincmd w
-2wincmd w
-exe 'vert 1resize ' . ((&columns * 78 + 78) / 157)
-exe 'vert 2resize ' . ((&columns * 78 + 78) / 157)
+exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
+exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
 tabedit ~/projects/mru/src/plugins/tag_plugin.hpp
 set splitbelow splitright
 set nosplitbelow
@@ -641,13 +655,13 @@ setlocal nowinfixwidth
 set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
-let s:l = 1 - ((0 * winheight(0) + 23) / 47)
+let s:l = 1 - ((0 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 1
 normal! 0
-2wincmd w
+lcd ~/projects/mru/src/metatag
 tabedit ~/projects/mru/src/glue_impl.hpp
 set splitbelow splitright
 wincmd _ | wincmd |
@@ -658,8 +672,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 78 + 78) / 157)
-exe 'vert 2resize ' . ((&columns * 78 + 78) / 157)
+exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
+exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
 argglobal
 setlocal noautoindent
 setlocal balloonexpr=
@@ -761,16 +775,13 @@ setlocal nowrap
 setlocal wrapmargin=0
 11
 normal! zo
-34
-normal! zo
-50
-normal! zo
-let s:l = 54 - ((41 * winheight(0) + 23) / 46)
+let s:l = 100 - ((35 * winheight(0) + 24) / 49)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-54
+100
 normal! 0
+lcd ~/projects/mru/src/metatag
 wincmd w
 argglobal
 edit ~/projects/mru/src/glue.hpp
@@ -872,16 +883,16 @@ setlocal nowinfixwidth
 set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
-let s:l = 20 - ((19 * winheight(0) + 23) / 46)
+let s:l = 20 - ((19 * winheight(0) + 24) / 49)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 20
 normal! 0
+lcd ~/projects/mru/src/metatag
 wincmd w
-2wincmd w
-exe 'vert 1resize ' . ((&columns * 78 + 78) / 157)
-exe 'vert 2resize ' . ((&columns * 78 + 78) / 157)
+exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
+exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
 tabnext 1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf

@@ -31,7 +31,9 @@ public:
   Metatag(const self_type &a_other);
   virtual ~Metatag(void);
 
-  UnicodeString evaluate(void);
+  virtual void initialize(const UnicodeString &a_arguments) = 0;
+  virtual UnicodeString execute(void) = 0;
+  virtual UnicodeString execute(const UnicodeString &a_area_of_effect) = 0;
 protected:
   /* data */
 };
@@ -39,28 +41,31 @@ protected:
 class MetatagExpression {
 public:
   typedef MetatagExpression self_type;
-public:
-  MetatagExpression(const UnicodeString &a_expression);
-  ~MetatagExpression(void);
-  
   struct token {
     enum token_kind_type {
       whitespace,
       text, // all other characters
-      argument_list_start, // '(' character
-      argument_list_end, // ')' character
+      metatag_start,        // '%' character
+      argument_list_start,  // '(' character
+      argument_list_end,    // ')' character
       operation_area_start, // '{' character
-      operation_area_end // '}' character
+      operation_area_end    // '}' character
     } type;
     UnicodeString value;
-    token(const UnicodeString &a_value, token::token_kind_type a_type);
+    token(const UnicodeString &a_value, token_kind_type a_type);
   };
   static std::list<token> tokenize(const UnicodeString &a_expression);
+  static MetatagExpression parse(const UnicodeString &a_expression);
 
-  UnicodeString evaluate(void);
+public:
+  MetatagExpression(void);
+  MetatagExpression(const UnicodeString &a_function_name);
+  MetatagExpression(const self_type &a_other);
+  ~MetatagExpression(void);
+  
+  UnicodeString evaluate(const std::list<Metatag*> &a_bindings);
 
 protected:
-  MetatagExpression(const self_type &a_other);
 };
 
 } /* namespace mru */
