@@ -75,6 +75,35 @@ protected:
   destroy_function_type m_destroy_function;
 };
 
+
+/* ------------------------------------------------------------------------- */
+
+template<typename Base>
+class abstract_factory {
+public:
+  virtual Base* create(void) {
+    return NULL; //cannot create instance of abstract Base class
+  }
+  virtual void destroy(Base *a_instance) {
+    delete a_instance;
+  }
+};
+
+template<typename Derived, typename Parent=typename Derived::parent_type>
+class factory : public abstract_factory<Parent> {
+public:
+  Derived* create(void) {
+    return new Derived();
+  }
+  void destroy(Derived *a_instance) {
+    delete a_instance;
+  }
+};
+
+
+/* ------------------------------------------------------------------------- */
+
+
 } /* namespace mru */
 
 #define PATTERNS_IMPL_HPP

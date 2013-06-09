@@ -1,10 +1,15 @@
 #include "metatag_test.hpp"
 #include "glue.hpp"
+#include "patterns.hpp"
 #include <debug_l.h>
 #include <cppunit/ui/text/TestRunner.h>
+#include <memory>
 
 //*
 class EchoTag : public Metatag {
+public:
+  typedef EchoTag self_type;
+  typedef Metatag parent_type;
 public:
   EchoTag(void)
    : Metatag("EchoTag")
@@ -49,15 +54,32 @@ metatag_tests::construction(void)
   UnicodeString result;
   //UnicodeString result = MetatagExpression::evaluate("%EchoTag(arguments...)", bindings);
   //UnicodeString result = MetatagExpression::evaluate("%EchoTag(arguments...){123%EchoTag(){456}}_some_text %EchoTag()", bindings);
-  MetatagExpression me = MetatagExpression::parse("%EchoTag(value=12){%EchoTag(){Ala} ma kota} and some other \\}text");
-  //me.bind(bindings);
-  result = me.evaluate(bindings);
+  MetatagExpression me = MetatagExpression::parse("%EchoTag(value=12){%EchoTag(){Ala}    ma kota} and %Count()some other text");
+  typedef std::map<UnicodeString, abstract_factory<Metatag>* > metatag_bindings;
+  metatag_bindings tag_map = me.bindings();
+
+  MSG("Metatags used in expression:");
+  for(metatag_bindings::iterator i = tag_map.begin(); i != tag_map.end(); ++i) { 
+    VAL(glue_cast<std::string>((*i).first));
+  }
+
+  tag_map[glue_cast<UnicodeString>("EchoTag")] = new factory<EchoTag>();
+  me.bindings(tag_map);
+
+  result = me.evaluate();
   VAL(mru::glue_cast<std::string>(result));
   MSG("----------");
   //VAL(mru::glue_cast<std::string>(me.evaluate()));
   //UnicodeString result = MetatagExpression::evaluate("%Count(start=0)_file_%ToUpper(){%Name(%Nontag(\\))_ma_kota}", bindings);
   //VAL(glue_cast<std::string>(result));
   
+}
+
+
+void
+metatag_tests::tokenizing(void)
+{
+  FO("metatag_tests::tokenizing(void)");
 }
 
 #ifdef SINGLE_TEST_MODE
