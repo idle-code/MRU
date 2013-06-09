@@ -2,15 +2,14 @@
 #define EXPRESSION_HPP
 
 #include "types.hpp"
-#include <list>
+#include <map>
 
 namespace mru
 {
 
 class MetatagExpressionException : public std::runtime_error {
 public: 
-  MetatagExpressionException(const UnicodeString &a_message, const UnicodeString &a_expression, int a_start, int a_length =0) throw();
-  MetatagExpressionException(const UnicodeString &a_message, const UnicodeString &a_expression) throw();
+  MetatagExpressionException(const UnicodeString &a_message, int a_start, int a_length =0) throw();
   ~MetatagExpressionException(void) throw();
   std::pair<int, int> range(void) const throw();
   const char* what(void) const throw();
@@ -22,20 +21,34 @@ protected:
 
 /* ------------------------------------------------------------------------- */
 
+struct MetatagEntry {
+  UnicodeString name;
+  UnicodeString arguments;
+  std::list<MetatagEntry*> childrens;
+
+  MetatagEntry(void);
+  MetatagEntry(const UnicodeString &a_name);
+  ~MetatagEntry(void);
+  void add_child(MetatagEntry *&a_child)
+  {
+    assert(a_child != NULL);
+    childrens.push_back(a_child);
+    a_child = NULL;
+  }
+};
 
 class Metatag {
 public:
   typedef Metatag self_type;
 public:
   Metatag(const UnicodeString &a_name);
-  Metatag(const self_type &a_other);
   virtual ~Metatag(void);
 
   virtual void initialize(const UnicodeString &a_arguments) = 0;
-  virtual UnicodeString execute(void) = 0;
   virtual UnicodeString execute(const UnicodeString &a_area_of_effect) = 0;
 protected:
-  /* data */
+  Metatag(const self_type &a_other); // = delete;
+  UnicodeString m_name;
 };
 
 class MetatagExpression {
@@ -51,11 +64,13 @@ public:
       operation_area_start, // '{' character
       operation_area_end    // '}' character
     } type;
+    int index;
     UnicodeString value;
-    token(const UnicodeString &a_value, token_kind_type a_type);
+    token(int a_index, const UnicodeString &a_value, token_kind_type a_type);
   };
   static std::list<token> tokenize(const UnicodeString &a_expression);
   static MetatagExpression parse(const UnicodeString &a_expression);
+  void parse(MetatagEntry *a_parent, std::list<token>::iterator &a_begin, const std::list<token>::iterator &a_end);
 
 public:
   MetatagExpression(void);
@@ -63,9 +78,15 @@ public:
   MetatagExpression(const self_type &a_other);
   ~MetatagExpression(void);
   
-  UnicodeString evaluate(const std::list<Metatag*> &a_bindings);
+  std::map<UnicodeString, abstract_factory<Metatag>*> bindings(void) const; 
+  void bindings(const std::map<UnicodeString, abstract_factory<Metatag>*> &a_bindings);
+  
+  UnicodeString evaluate(void);
+  UnicodeString evaluate(const std::map<UnicodeString, abstract_factory<Metatag>*> &a_bindings);
 
 protected:
+  std::map<UnicodeString, abstract_factory<Metatag>*> m_bindings;
+  MetatagEntry *m_root;
 };
 
 } /* namespace mru */

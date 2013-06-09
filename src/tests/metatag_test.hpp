@@ -12,10 +12,12 @@ using namespace mru;
 class metatag_tests : public TestCase {
 public:
   void construction(void);
+  void tokenizing(void);
   //void 
 
   CPPUNIT_TEST_SUITE(metatag_tests);
     CPPUNIT_TEST(construction);
+    CPPUNIT_TEST(tokenizing);
   CPPUNIT_TEST_SUITE_END();
 };
 
