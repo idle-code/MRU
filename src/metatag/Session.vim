@@ -49,12 +49,12 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +51 expression.hpp
-badd +250 expression.cpp
+badd +92 expression.hpp
+badd +395 expression.cpp
 badd +100 ~/projects/mru/src/glue_impl.hpp
 badd +1 ~/projects/mru/src/plugins/tag_plugin.hpp
 badd +1 ~/projects/mru/src/glue.hpp
-badd +80 ~/projects/mru/src/tests/metatag_test.cpp
+badd +69 ~/projects/mru/src/tests/metatag_test.cpp
 badd +1 ~/projects/mru/src/tests/metatag_test.hpp
 badd +2 ~/projects/mru/src/tests/unicode_path_test.cpp
 badd +38 ~/projects/mru/src/plugin_manager/plugin_manager.hpp
@@ -88,7 +88,7 @@ setlocal colorcolumn=
 setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
 setlocal commentstring=/*%s*/
 setlocal complete=.,w,b,u,t,i
-setlocal completefunc=neocomplcache#auto_complete
+setlocal completefunc=neocomplcache#manual_complete
 setlocal nocopyindent
 setlocal cryptmethod=
 setlocal nocursorbind
@@ -174,38 +174,38 @@ setlocal nowrap
 setlocal wrapmargin=0
 10
 normal! zo
-66
-normal! zo
 77
 normal! zo
-129
+88
 normal! zo
-139
+140
 normal! zo
-143
+150
 normal! zo
-169
+154
 normal! zo
-205
+180
 normal! zo
-207
+216
 normal! zo
-230
-normal! zo
-234
+218
 normal! zo
 242
 normal! zo
-299
+246
 normal! zo
-304
+254
 normal! zo
-let s:l = 302 - ((10 * winheight(0) + 24) / 49)
+325
+normal! zo
+340
+normal! zo
+let s:l = 398 - ((40 * winheight(0) + 24) / 49)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-302
-normal! 016l
+398
+normal! 01l
 lcd ~/projects/mru/src/metatag
 wincmd w
 argglobal
@@ -310,28 +310,20 @@ setlocal nowrap
 setlocal wrapmargin=0
 8
 normal! zo
-24
-normal! zo
-33
-normal! zo
-54
+40
 normal! zo
 57
 normal! zo
-58
+60
 normal! zo
-54
+61
 normal! zo
-57
-normal! zo
-58
-normal! zo
-let s:l = 63 - ((47 * winheight(0) + 24) / 49)
+let s:l = 92 - ((28 * winheight(0) + 24) / 49)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-63
-normal! 013l
+92
+normal! 045l
 lcd ~/projects/mru/src/metatag
 wincmd w
 exe 'vert 1resize ' . ((&columns * 104 + 105) / 211)
@@ -451,12 +443,12 @@ setlocal wrapmargin=0
 normal! zo
 47
 normal! zo
-let s:l = 57 - ((16 * winheight(0) + 24) / 49)
+let s:l = 69 - ((29 * winheight(0) + 24) / 49)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-57
-normal! 054l
+69
+normal! 0
 lcd ~/projects/mru/src/metatag
 wincmd w
 argglobal
@@ -559,12 +551,12 @@ setlocal nowinfixwidth
 set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
-let s:l = 22 - ((21 * winheight(0) + 24) / 49)
+let s:l = 27 - ((26 * winheight(0) + 24) / 49)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-22
-normal! 01l
+27
+normal! 04l
 lcd ~/projects/mru/src/metatag
 wincmd w
 exe 'vert 1resize ' . ((&columns * 153 + 105) / 211)
@@ -1157,7 +1149,7 @@ lcd ~/projects/mru/src/metatag
 wincmd w
 exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
 exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
-tabnext 2
+tabnext 1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
 endif
