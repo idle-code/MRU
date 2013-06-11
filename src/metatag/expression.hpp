@@ -13,6 +13,8 @@ public:
   ~MetatagExpressionException(void) throw();
   std::pair<int, int> range(void) const throw();
   const char* what(void) const throw();
+  const UnicodeString &expression(void) const;
+  void expression(const UnicodeString &a_expression);
 protected:
   UnicodeString m_message;
   UnicodeString m_expression;
@@ -20,22 +22,6 @@ protected:
 };
 
 /* ------------------------------------------------------------------------- */
-
-struct MetatagEntry {
-  UnicodeString name;
-  UnicodeString arguments;
-  std::list<MetatagEntry*> childrens;
-
-  MetatagEntry(void);
-  MetatagEntry(const UnicodeString &a_name);
-  ~MetatagEntry(void);
-  void add_child(MetatagEntry *&a_child)
-  {
-    assert(a_child != NULL);
-    childrens.push_back(a_child);
-    a_child = NULL;
-  }
-};
 
 class Metatag {
 public:
@@ -49,6 +35,23 @@ public:
 protected:
   Metatag(const self_type &a_other); // = delete;
   UnicodeString m_name;
+};
+
+struct MetatagEntry {
+  UnicodeString name;
+  UnicodeString arguments;
+  Metatag *metatag;
+  std::list<MetatagEntry*> childrens;
+
+  MetatagEntry(void);
+  MetatagEntry(const UnicodeString &a_name);
+  ~MetatagEntry(void);
+  void add_child(MetatagEntry *&a_child)
+  {
+    assert(a_child != NULL);
+    childrens.push_back(a_child);
+    a_child = NULL;
+  }
 };
 
 class MetatagExpression {
@@ -86,6 +89,8 @@ public:
 
 protected:
   std::map<UnicodeString, abstract_factory<Metatag>*> m_bindings;
+  void initialize(MetatagEntry *a_entry);
+  UnicodeString evaluate(MetatagEntry *a_entry);
   MetatagEntry *m_root;
 };
 
