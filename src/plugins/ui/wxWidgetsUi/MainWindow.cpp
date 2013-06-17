@@ -12,12 +12,12 @@
 namespace mru
 {
 
-MainWindow::MainWindow(Core *a_mru_core)
+MainWindow::MainWindow(MruCore *a_mru_core)
   : wxFrame(NULL, wxID_ANY, wxT("MRU - Multifile Renaming Utility"), wxPoint(-1, -1), wxSize(840, 520)),
     m_core(a_mru_core), m_preview_size(10) //TODO: replace by reg["ui.preview_size"] or something
 {
   if(m_core == NULL) {
-    ERR("There is no valid MRU Core class instance passed to GUI");
+    ERR("There is no valid MRU MruCore class instance passed to GUI");
     return;
   }
 
@@ -157,11 +157,17 @@ MainWindow::fill_filelist(void)
   {
     VAL(dir_iter.directory());
     VAL(glue_cast<std::string>(dir_iter.filename()));
+    MSG("----------------------");
     wxListItem file_entry;
     file_entry.SetId(i);
     file_entry.SetColumn(0);
+    //file_entry.SetText(wxT("WPP"));
+    //VAL(glue_cast<std::string>(glue_cast<wxString>(dir_iter.filename())));
+    //VAL(glue_cast<std::string>(dir_iter.filename()));
     file_entry.SetText(glue_cast<wxString>(dir_iter.filename()));
-    m_file_listctrl->InsertItem(file_entry);
+    if(m_file_listctrl->InsertItem(file_entry) == -1) {
+      WARN("Insert failed");
+    }
     //m_file_listctrl->InsertItem(i, wxT("TEST"));
   }
 }
@@ -237,7 +243,6 @@ void
 MainWindow::OnStartButtonClick(wxCommandEvent &a_evt)
 {
   FO("MainWindow::OnStartButtonClick(wxCommandEvent &a_evt)");
-  data_tree::print_tree( m_core->get_registry() );
 
 }
 

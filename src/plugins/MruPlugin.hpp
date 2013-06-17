@@ -7,7 +7,7 @@ namespace mru
 {
 
 // forward declaration:
-class Core;
+class MruCore;
 
 class MruPlugin : public plugin<MruPlugin> {
 public:
@@ -16,13 +16,13 @@ public:
   MruPlugin(const name_type &a_interface, const name_type &a_name);
   virtual ~MruPlugin(void);
   
-  virtual bool Init(Core *a_mru_core);
+  virtual bool Init(MruCore *a_mru_core);
 
-  virtual Core* core(void);
+  virtual MruCore* core(void);
   virtual registry reg(void);
 
 protected:
-  Core *m_core;
+  MruCore *m_core;
 };
 
 } /* namespace mru */

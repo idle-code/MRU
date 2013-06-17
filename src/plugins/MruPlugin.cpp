@@ -12,7 +12,7 @@ MruPlugin::~MruPlugin(void)
 { }
 
 bool
-MruPlugin::Init(Core *a_mru_core)
+MruPlugin::Init(MruCore *a_mru_core)
 {
   if(a_mru_core == NULL)
     return false;
@@ -21,7 +21,7 @@ MruPlugin::Init(Core *a_mru_core)
   return true;
 }
 
-Core*
+MruCore*
 MruPlugin::core(void)
 {
   return m_core;

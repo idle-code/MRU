@@ -13,13 +13,13 @@ namespace detail
 
 class wxWidgetsUiApp : public wxApp {
 public:
-  wxWidgetsUiApp(Core *a_mru_core);
+  wxWidgetsUiApp(MruCore *a_mru_core);
   ~wxWidgetsUiApp(void);
 
   bool OnInit(void);
   //int OnRun(void);
 private:
-  Core* m_core;
+  MruCore* m_core;
 };
 
 }
