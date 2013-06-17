@@ -10,22 +10,20 @@
 namespace mru
 {
 
-Core::Core(void)
+MruCore::MruCore(void)
   : m_ui(NULL), m_out_driver(NULL), m_base_directory("/"), m_current_directory(m_base_directory)
 {
-  FO("Core::Core(void)");
-  prepare_registry();
-  registry reg = reg::get_reference(); 
+  FO("MruCore::MruCore(void)");
 
   // create all managers (it is need to be done before any dynamic module could be loaded):
-  UiPluginManager::set_instance(new UiPluginManager("UiPlugin", reg["plugins.ui"]));
-  OutputPluginManager::set_instance(new OutputPluginManager("OutputPlugin", reg["plugins.output"]));
-  TagPluginManager::set_instance(new TagPluginManager("TagPlugin", reg["plugins.tags"]));
+  UiPluginManager::set_instance(new UiPluginManager("UiPlugin"));
+  OutputPluginManager::set_instance(new OutputPluginManager("OutputPlugin"));
+  TagPluginManager::set_instance(new TagPluginManager("TagPlugin"));
 }
 
-Core::~Core(void)
+MruCore::~MruCore(void)
 {
-  FO("Core::~Core(void)");
+  FO("MruCore::~MruCore(void)");
 
   // destroy all managers (it's not mandatory (imo) becouse we are exiting anyway...): 
   TagPluginManager::destroy_instance();
@@ -33,24 +31,18 @@ Core::~Core(void)
   UiPluginManager::destroy_instance();
 }
 
-registry
-Core::get_registry(void)
-{
-  return reg::get_reference();
-}
-
 int
-Core::start(int a_argc, char **a_argv)
+MruCore::start(int a_argc, char **a_argv)
 {
-  FO("Core::start(int a_argc, char **a_argv)");
+  FO("MruCore::start(int a_argc, char **a_argv)");
 
   parse_command_line(a_argc, a_argv);
   load_configuration();
   load_default_modules();
-
+  
   registry reg = reg::get_reference(); 
   UiPluginManager *ui_manager = UiPluginManager::get_instance();
-  m_ui = ui_manager->create_plugin(reg[".config"].get("ui"));
+  m_ui = ui_manager->create_plugin(reg.get<std::string>(".config.ui", "wxWidgetsUi"));
   m_ui->Init(this);
 
   if(m_ui == NULL) {
@@ -58,27 +50,15 @@ Core::start(int a_argc, char **a_argv)
     return 1;
   }
   int result = m_ui->start(a_argc, a_argv);
-  data_tree::print_tree(reg); 
   return result;
 }
 
 /* ------------------------------------------------------------------------- */
 
-void
-Core::prepare_registry(void)
+registry&
+MruCore::get_registry(void)
 {
-  FO("prepare_registry(void)");
-  registry reg = reg::get_reference(); 
-  reg.create(".arguments");
-  reg.create(".config");
-  reg.create(".plugins");
-  reg.create(".plugins.ui");
-  reg.create(".plugins.output");
-  reg.create(".plugins.tags");
-  //reg.create(".reg");
-  //reg.create(".reg._info";
-  reg.create(".run");
-  data_tree::print_tree(reg);
+  return reg::get_reference();
 }
 
 namespace
@@ -89,7 +69,8 @@ parse_argument(char *a_string)
 {
   if(a_string == NULL)
     return;
-  registry reg = reg::get_reference()[".arguments"]; 
+
+  /*
   MSG("Parsing: " << a_string);
   mru::string_type arg = a_string;
 
@@ -98,8 +79,8 @@ parse_argument(char *a_string)
   } else if(arg.startsWith(UNICODE_STRING_SIMPLE("-"))) {
     arg.remove(0, 1); //FIXME: differently treat options shortcuts?
   }
-  if(arg.length() < 1)
 
+  if(arg.length() < 1)
     return;
 
   int32_t equal_sign_index = arg.indexOf('=');
@@ -123,16 +104,17 @@ parse_argument(char *a_string)
       if(registry::path_type().is_valid_name(bare_key))
         reg.set(bare_key, registry::value_type::None);
   }
+  //*/
 }
 
 } /* unnamed namespace */
 
 //TODO: rewrite using boost::tokenizer
 void
-Core::parse_command_line(int a_argc, char **a_argv)
+MruCore::parse_command_line(int a_argc, char **a_argv)
 {
   FO("parse_command_line(int &a_argc, char **a_argv)");
-  registry reg = reg::get_reference()[".arguments"]; 
+  //registry reg = reg::get_reference()[".arguments"]; 
 
   //po::options_description desc("Usage: ");
   //desc.add_options()
@@ -149,20 +131,20 @@ Core::parse_command_line(int a_argc, char **a_argv)
 }
 
 bool
-Core::load_configuration(const filepath_type &a_file)
+MruCore::load_configuration(const filepath_type &a_file)
 {
   FO("load_configuration(const filepath_type &a_file)");
   registry reg = reg::get_reference(); 
   
-  reg[".config"].set("ui", reg.get_or(".arguments.ui", "wxWidgetsUi"));
-  //reg[".config"].set("ui", reg.get_or(".arguments.ui", "TextUi"));
-  reg[".config"].set("output_driver", reg.get_or(".arguments.output_driver", "GenericBoost"));
+  reg.put("config.ui", reg.get("config.ui", "wxWidgetsUi"));
+  //reg.put("config.ui", reg.get("config.ui", "TextUi"));
+  reg.put("config.output_driver", reg.get("config.output_driver", "GenericBoost"));
 
   return true;
 }
 
 int
-Core::load_default_modules(void)
+MruCore::load_default_modules(void)
 {
   FO("load_modules(void)");
 
@@ -183,7 +165,7 @@ Core::load_default_modules(void)
 /* ------------------------------------------------------------------------- */
 
 bool
-Core::set_base_directory(const filepath_type &a_directory)
+MruCore::set_base_directory(const filepath_type &a_directory)
 {
   if(!bfs::exists(a_directory) || !bfs::is_directory(a_directory))
     return false; //TODO: signal error
@@ -193,13 +175,13 @@ Core::set_base_directory(const filepath_type &a_directory)
 }
 
 const filepath_type &
-Core::get_base_directory(void) const
+MruCore::get_base_directory(void) const
 {
   return m_base_directory;
 }
 
 bool
-Core::set_current_directory(const filepath_type &a_directory)
+MruCore::set_current_directory(const filepath_type &a_directory)
 {
   if(!bfs::exists(a_directory) || !bfs::is_directory(a_directory))
     return false; //TODO: signal error
@@ -208,35 +190,32 @@ Core::set_current_directory(const filepath_type &a_directory)
 }
 
 const filepath_type &
-Core::get_current_directory(void) const
+MruCore::get_current_directory(void) const
 {
   return m_current_directory;
 }
 
 
-bool
-Core::start_rename(void)
+void
+MruCore::start_rename(void)
 {
-
-  return false;
+  FO("MruCore::start_rename(void)");
 }
 
-bool
-Core::pause_rename(void)
+void
+MruCore::pause_rename(void)
 {
-
-  return false;
+  FO("MruCore::pause_rename(void)");
 }
 
-bool
-Core::stop_rename(void)
+void
+MruCore::stop_rename(void)
 {
-
-  return false;
+  FO("MruCore::stop_rename(void)");
 }
 
 FileIterator
-Core::get_directory_iterator(const filepath_type &a_directory)
+MruCore::get_directory_iterator(const filepath_type &a_directory)
 {
   return FileIterator(a_directory);
 }
@@ -244,13 +223,13 @@ Core::get_directory_iterator(const filepath_type &a_directory)
 /* ------------------------------------------------------------------------- */
 
 UiPlugin *
-Core::get_ui_plugin(void)
+MruCore::get_ui_plugin(void)
 {
   return m_ui;
 }
 
 OutputPlugin *
-Core::get_output_plugin(void)
+MruCore::get_output_plugin(void)
 {
   return m_out_driver;
 }

@@ -35,7 +35,7 @@ wxWidgetsUi::start(int a_argc, char *a_argv[])
 namespace detail
 {
 
-wxWidgetsUiApp::wxWidgetsUiApp(Core *a_mru_core)
+wxWidgetsUiApp::wxWidgetsUiApp(MruCore *a_mru_core)
   : wxApp(), m_core(a_mru_core)
 { }
 

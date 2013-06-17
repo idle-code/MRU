@@ -12,7 +12,7 @@ class MainWindow : public wxFrame {
 public:
   typedef MainWindow self_type;
 public:
-  MainWindow(Core *a_mru_core);
+  MainWindow(MruCore *a_mru_core);
   ~MainWindow(void);
 
   void fill_filelist(void);
@@ -42,7 +42,7 @@ private:
 
   wxListCtrl *m_file_listctrl;
 private:
-  Core* m_core;
+  MruCore* m_core;
   int m_preview_size;
 };
 
