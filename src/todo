@@ -1,4 +1,4 @@
-- iteracja po katalogach powinna przebiegac rekurencyjnie
+$ iteracja po katalogach powinna przebiegac rekurencyjnie
 - podpiac metatagi do interfejsu (sprawdzic obsluge bledow)
 - podpiac zdarzenia w MruCore i wykorzystac je w interfejsie
 - generowac liste metatagow

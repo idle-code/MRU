@@ -1,5 +1,5 @@
 #include "MruPlugin.hpp"
-#include "core.hpp"
+#include "MruCore.hpp"
 
 namespace mru
 {

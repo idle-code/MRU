@@ -1,4 +1,4 @@
-#include "core.hpp"
+#include "MruCore.hpp"
 #undef NDEBUG_L
 #include <debug_l.h>
 using namespace mru;

@@ -1,7 +1,7 @@
 #ifndef STANDARDTAGS_HPP
 #define STANDARDTAGS_HPP
 
-#include <plugins/tag_plugin.hpp>
+#include <plugins/TagPlugin.hpp>
 
 namespace mru
 {

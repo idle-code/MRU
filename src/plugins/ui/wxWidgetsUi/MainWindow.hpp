@@ -3,7 +3,7 @@
 
 #include <wx/wx.h>
 #include <wx/spinctrl.h>
-#include <core.hpp>
+#include "MruCore.hpp"
 
 namespace mru
 {

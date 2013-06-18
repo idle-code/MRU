@@ -15,7 +15,7 @@ typedef boost::property_tree::ptree registry;
 typedef boost::property_tree::ptree::key_type name_type;
 typedef std::wstring string_type;
 typedef boost::filesystem::wpath filepath_type;
-typedef boost::filesystem::directory_iterator bfs_iterator_type;
+namespace bfs = boost::filesystem;
 
 typedef singleton<registry> reg;
 

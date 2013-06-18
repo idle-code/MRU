@@ -3,7 +3,7 @@
 
 #include "types.hpp"
 #include "patterns.hpp"
-#include "file_iterator.hpp"
+#include "FileIterator.hpp"
 #include <sigc++/sigc++.h>
 #include <boost/filesystem.hpp>
 
