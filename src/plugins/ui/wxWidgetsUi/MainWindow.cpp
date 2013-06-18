@@ -155,7 +155,9 @@ MainWindow::fill_filelist(void)
 
   for(int i = 0; (i < m_preview_size || m_preview_size == 0) && dir_iter != dir_end; ++i, ++dir_iter)
   {
-    VAL(dir_iter.directory());
+    VAL(glue_cast<std::string>(dir_iter.base_filename()));
+    VAL(glue_cast<std::string>(dir_iter.base_directory()));
+    VAL(glue_cast<std::string>(dir_iter.directory()));
     VAL(glue_cast<std::string>(dir_iter.filename()));
     MSG("----------------------");
     wxListItem file_entry;

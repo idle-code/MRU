@@ -1,7 +1,7 @@
 #ifndef TEXTUI_HPP
 #define TEXTUI_HPP
 
-#include <plugins/ui_plugin.hpp>
+#include <plugins/UiPlugin.hpp>
 
 namespace mru
 {

@@ -1,8 +1,8 @@
 #ifndef WXWIDGETSUI_HPP
 #define WXWIDGETSUI_HPP
 
-#include "core.hpp"
-#include "plugins/ui_plugin.hpp"
+#include "MruCore.hpp"
+#include "plugins/UiPlugin.hpp"
 #include <wx/app.h>
 
 namespace mru

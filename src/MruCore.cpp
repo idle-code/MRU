@@ -1,9 +1,9 @@
 #define PLUGIN_HOST
-#include "core.hpp"
+#include "MruCore.hpp"
 #include "types.hpp"
-#include "plugins/ui_plugin.hpp"
-#include "plugins/output_plugin.hpp"
-#include "plugins/tag_plugin.hpp"
+#include "plugins/UiPlugin.hpp"
+#include "plugins/OutputPlugin.hpp"
+#include "plugins/TagPlugin.hpp"
 #undef NDEBUG_L
 #include <debug_l.h>
 

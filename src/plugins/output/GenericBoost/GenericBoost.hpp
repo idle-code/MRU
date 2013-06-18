@@ -1,7 +1,7 @@
 #ifndef GENERICBOOST_HPP
 #define GENERICBOOST_HPP
 
-#include "plugins/output_plugin.hpp"
+#include "plugins/OutputPlugin.hpp"
 
 namespace GenericBoost_OutputPlugin
 {
