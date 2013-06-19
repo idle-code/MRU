@@ -1,0 +1,18 @@
+$ iteracja po katalogach powinna przebiegac rekurencyjnie
+- podpiac metatagi do interfejsu (sprawdzic obsluge bledow)
+- podpiac zdarzenia w MruCore i wykorzystac je w interfejsie
+- generowac liste metatagow
+- dodac wyrazenia sortujace
+- dodac zapisywanie/odczytywanie konfiguracji (plik .config/config.xml lub ./config.xml)
+- napisac pluginy metatagow
+  - Count
+  - Filename
+  - Name
+  - Directory
+  - MP3
+  - Ext?
+  - ToLower/ToUpper
+  - Replace?
+  - RemoveReoccuring
+  - Translate
+

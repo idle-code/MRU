@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<todo version="0.1.20">
+    <title>
+        Multifile Renaming Utility
+    </title>
+    <note priority="high" time="1367188343">
+        Implement
+        <note priority="high" time="1367188735">
+            all configuration should be preserved on exit (using property_tree serialization)
+        </note>
+        <note priority="medium" time="1367188668">
+            tag tree view in wxWidgets GUI
+        </note>
+    </note>
+    <note priority="medium" time="1367188347">
+        Fix
+        <note priority="medium" time="1367188428">
+            plugin_manager (and whole plugin system) should be fully generic - ideally there shouldn't be any requirements on plugin classes
+        </note>
+        <note priority="medium" time="1367188480">
+            MetatagExpression should be rewritten so it don't need basic_tree template (from data_tree project)
+        </note>
+    </note>
+</todo>
