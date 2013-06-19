@@ -7,6 +7,7 @@ syntax: glob
 *.cbTemp
 *.exe
 *~
+*.bak
 *.o
 *.a
 .todo.*
@@ -18,6 +19,12 @@ Makefile
 *.make
 *.dir
 *.so
+*.aux
+*.bbl
+*.blg
+*.log
+*.baz
+*.bib
 
 src/.todo
 mru

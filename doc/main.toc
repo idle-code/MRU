@@ -1,0 +1,35 @@
+\select@language {polish}
+\contentsline {chapter}{Spis tre\'sci}{3}
+\contentsline {chapter}{\numberline {1}Wprowadzenie}{5}
+\contentsline {section}{\numberline {1.1}Cele pracy}{5}
+\contentsline {section}{\numberline {1.2}Plan pracy}{6}
+\contentsline {chapter}{\numberline {2}Teoria}{7}
+\contentsline {section}{\numberline {2.1}Systemy plik\IeC {\'o}w i identyfikacja danych}{7}
+\contentsline {section}{\numberline {2.2}Identyfikatory plik\IeC {\'o}w w r\IeC {\'o}\IeC {\.z}nych systemach}{7}
+\contentsline {section}{\numberline {2.3}Metadane zawarte w plikach}{7}
+\contentsline {chapter}{\numberline {3}Implementacja}{8}
+\contentsline {section}{\numberline {3.1}\IeC {\'S}rodowisko pracy}{8}
+\contentsline {subsection}{\numberline {3.1.1}System operacyjny FreeBSD}{8}
+\contentsline {subsection}{\numberline {3.1.2}Mercurial}{8}
+\contentsline {subsection}{\numberline {3.1.3}CMake}{8}
+\contentsline {subsection}{\numberline {3.1.4}vim}{8}
+\contentsline {section}{\numberline {3.2}Wykorzystane biblioteki}{8}
+\contentsline {subsection}{\numberline {3.2.1}SigC}{9}
+\contentsline {subsection}{\numberline {3.2.2}boost::filesystem}{9}
+\contentsline {subsection}{\numberline {3.2.3}boost::property\_tree}{9}
+\contentsline {section}{\numberline {3.3}Rdze\IeC {\'n} aplikacji - klasa MruCore}{9}
+\contentsline {section}{\numberline {3.4}Wyra\IeC {\.z}enia zawieraj\IeC {\k a}ce metatagi}{9}
+\contentsline {section}{\numberline {3.5}System modu\IeC {\l }\IeC {\'o}w i jego implementacja}{9}
+\contentsline {section}{\numberline {3.6}Typy modu\IeC {\l }\IeC {\'o}w w MRU}{9}
+\contentsline {section}{\numberline {3.7}Modu\IeC {\l }y UI}{9}
+\contentsline {subsection}{\numberline {3.7.1}wxWidgetsUi}{9}
+\contentsline {subsection}{\numberline {3.7.2}TextUi}{9}
+\contentsline {section}{\numberline {3.8}Modu\IeC {\l }y output}{9}
+\contentsline {subsection}{\numberline {3.8.1}GenericBoost}{9}
+\contentsline {section}{\numberline {3.9}Modu\IeC {\l }y metatag\IeC {\'o}w}{9}
+\contentsline {subsection}{\numberline {3.9.1}Count}{9}
+\contentsline {subsection}{\numberline {3.9.2}Audio}{9}
+\contentsline {subsection}{\numberline {3.9.3}CRC}{9}
+\contentsline {subsection}{\numberline {3.9.4}ToLower}{9}
+\contentsline {chapter}{\numberline {4}Definicje}{10}
+\contentsline {chapter}{Bibliografia}{14}
