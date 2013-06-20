@@ -1,22 +1,44 @@
-\chapter{Wprowadzenie}
-
+\chapter{Wstęp}
 
 \par
-Generalnie co chce zrobić i dlaczego
+Z każdym rokiem ludzie oraz same komputery generują coraz większą ilość informacji.
+Mimo że duża część z nich jest przechowywana w dobrze strukturyzowanych bazach danych, to ciągle, większość ludzi ma bezpośredni dostęp jedynie to tego co przechowuje w systemie plików własnego komputera.
+<Rodzaje danych, ich zastosowanie>
 
-%\clearpage
+\par
+Od dziesięcioleci dysk twardy pozostaje głównym kontenerem dla danych użytkowników komputerów na całym świecie.
+<Dane przechowywane w systemach plików>
 
-\section{Cele pracy}
-\begin{itemize}
-\item Cel pracy \#1
-\item Cel pracy \#2
-\item Cel pracy \#N
-\end{itemize}
+\par
+<Systemy plików, ich cechy wspólne, ograniczenia, metadane>
+
+\par
+<problem z identyfikatorami>
 
 \clearpage
+
+\section{Cel i zakres pracy}
+\par
+Niniejsza praca ma na celu stworzenie programu narzędziowego pozwalającego na automatyczne generowanie identyfikatorów (nazw) plików na podstawie metadanych w nich zawartych. <także danych generowanych przez sam program - CRC np>
+
+\par
+Zakres pracy obejmuje:
+\begin{itemize}
+\item Przegląd istniejących rozwiązań - programów i technik wspomagających masową zmianę identyfikatorów plików.
+\item Porównanie funkcjonalności istniejących narzędzi i ich ograniczeń.
+\item Projekt oraz implementacja wieloplatformowej architektury modułów.
+\item Stworzenie parsera wyrażeń zawierających metatagi.
+\item Projekt graficznego interfejsu użytkownika opartego na bibliotece wxWidgets.
+\item Implementacja backendu do systemu plików opartego na bibliotece boost::filesystem.
+\item Implementacja przykładowych modułów metatagów.
+\item Testy aplikacji.
+\end{itemize}
+
+\section{Założenia}
+Gotowa aplikacja powinna być niezależna od systemu operacyjnego w stopniu w jakim pozwalają na to zależności użytych bibliotek. Dzięki modułowej budowie powinna także udostępniać interfejs pozwalający na jej łatwą rozbudowę.
+
 \section{Plan pracy}
-
-Co w jakim rozdziale się znajduje.
-
+<Co w jakim rozdziale się znajduje>
 W rozdziale \ref{teoria-identyfikatory} oraz~\ref{teoria-metadane} opisano Lorem ipsum dolor sit amet.
 
+\clearpage

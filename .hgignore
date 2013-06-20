@@ -24,7 +24,8 @@ Makefile
 *.blg
 *.log
 *.baz
-*.bib
+*.toc
+*.dvi
 
 src/.todo
 mru
