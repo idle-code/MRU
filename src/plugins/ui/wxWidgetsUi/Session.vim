@@ -2,11 +2,11 @@ let SessionLoad = 1
 if &cp | set nocp | endif
 let s:cpo_save=&cpo
 set cpo&vim
-inoremap <silent> <Plug>(neocomplcache_start_omni_complete) 
-inoremap <silent> <Plug>(neocomplcache_start_auto_complete_no_select) 
-inoremap <silent> <Plug>(neocomplcache_start_auto_complete) =neocomplcache#popup_post()
-inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_quick_match) unite#sources#neocomplcache#start_quick_match()
 inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_complete) unite#sources#neocomplcache#start_complete()
+inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_quick_match) unite#sources#neocomplcache#start_quick_match()
+inoremap <silent> <Plug>(neocomplcache_start_auto_complete) =neocomplcache#popup_post()
+inoremap <silent> <Plug>(neocomplcache_start_auto_complete_no_select) 
+inoremap <silent> <Plug>(neocomplcache_start_omni_complete) 
 inoremap <silent> <C-Tab> =UltiSnips_ListSnippets()
 xnoremap 	 :call UltiSnips_SaveLastVisualSelection()gvs
 snoremap <silent> 	 :call UltiSnips_ExpandSnippet()
@@ -31,6 +31,7 @@ set backspace=indent,eol,start
 set backup
 set backupskip=crontab.*
 set completefunc=neocomplcache#manual_complete
+set completeopt=preview,menuone
 set expandtab
 set fileencodings=ucs-bom,utf-8,default,latin1
 set helplang=pl
@@ -54,10 +55,10 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +0 MainWindow.cpp
-badd +0 MainWindow.hpp
-badd +0 wxWidgetsUi.hpp
-badd +0 wxWidgetsUi.cpp
+badd +158 MainWindow.cpp
+badd +1 MainWindow.hpp
+badd +1 wxWidgetsUi.hpp
+badd +71 wxWidgetsUi.cpp
 args MainWindow.cpp
 edit MainWindow.cpp
 set splitbelow splitright
@@ -86,7 +87,7 @@ setlocal colorcolumn=
 setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
 setlocal commentstring=/*%s*/
 setlocal complete=.,w,b,u,t,i
-setlocal completefunc=neocomplcache#manual_complete
+setlocal completefunc=neocomplcache#auto_complete
 setlocal nocopyindent
 setlocal cryptmethod=
 setlocal nocursorbind
@@ -170,15 +171,54 @@ setlocal nowinfixwidth
 set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
-let s:l = 158 - ((24 * winheight(0) + 25) / 50)
+13
+normal! zo
+18
+normal! zo
+33
+normal! zo
+45
+normal! zo
+141
+normal! zo
+161
+normal! zo
+193
+normal! zo
+205
+normal! zo
+208
+normal! zo
+141
+normal! zo
+161
+normal! zo
+193
+normal! zo
+205
+normal! zo
+208
+normal! zo
+141
+normal! zo
+161
+normal! zo
+193
+normal! zo
+205
+normal! zo
+208
+normal! zo
+let s:l = 34 - ((19 * winheight(0) + 24) / 49)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-158
-normal! 043l
+34
+normal! 056l
+lcd ~/projects/mru/src/plugins/ui/wxWidgetsUi
 wincmd w
 argglobal
-edit MainWindow.hpp
+edit ~/projects/mru/src/plugins/ui/wxWidgetsUi/MainWindow.hpp
 setlocal noautoindent
 setlocal balloonexpr=
 setlocal nobinary
@@ -277,16 +317,16 @@ setlocal nowinfixwidth
 set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
-let s:l = 20 - ((19 * winheight(0) + 25) / 50)
+let s:l = 19 - ((18 * winheight(0) + 24) / 49)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-20
-normal! 07l
+19
+normal! 01l
 wincmd w
 exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
 exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
-tabedit wxWidgetsUi.cpp
+tabedit ~/projects/mru/src/plugins/ui/wxWidgetsUi/wxWidgetsUi.cpp
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -397,15 +437,15 @@ setlocal nowinfixwidth
 set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
-let s:l = 71 - ((48 * winheight(0) + 24) / 49)
+let s:l = 62 - ((39 * winheight(0) + 24) / 49)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-71
+62
 normal! 0
 wincmd w
 argglobal
-edit wxWidgetsUi.hpp
+edit ~/projects/mru/src/plugins/ui/wxWidgetsUi/wxWidgetsUi.hpp
 setlocal noautoindent
 setlocal balloonexpr=
 setlocal nobinary
@@ -513,7 +553,7 @@ normal! 025l
 wincmd w
 exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
 exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
-tabnext 2
+tabnext 1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
 endif
