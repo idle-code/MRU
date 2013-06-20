@@ -2,7 +2,7 @@
 
 #undef NDEBUG_L
 #include <debug_l.h>
-#include <wx/treectrl.h>
+#include <wx/listbox.h>
 #include <wx/dirdlg.h>
 #include <wx/event.h>
 #include "PathValidator.hpp"
@@ -31,9 +31,13 @@ MainWindow::MainWindow(MruCore *a_mru_core)
 
   wxStaticBoxSizer *tree_sizer = new wxStaticBoxSizer(wxVERTICAL, this, wxT("Plugins"));
   { // plugins tree:
-    wxTreeCtrl *tree = new wxTreeCtrl(this, wxID_ANY);
-    tree->SetBackgroundColour(green);
-    tree_sizer->Add(tree, 1, wxEXPAND, 0);
+    //TODO: move m_metatag_listbox to class (as property)
+    wxListBox *m_metatag_listbox = new wxListBox(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, wxLB_SINGLE | wxLB_ALWAYS_SB | wxLB_SORT);
+    m_metatag_listbox->SetBackgroundColour(green);
+    tree_sizer->Add(m_metatag_listbox, 1, wxEXPAND, 0);
+
+    wxString items[] = { wxT("Test"), wxT("asdasd") };
+    m_metatag_listbox->InsertItems(2, items, 0);
   }
 
   // expression, source directory and other settings:
