@@ -1,8 +1,8 @@
-$ iteracja po katalogach powinna przebiegac rekurencyjnie
++ iteracja po katalogach powinna przebiegac rekurencyjnie
 - podpiac metatagi do interfejsu (sprawdzic obsluge bledow)
 - podpiac zdarzenia w MruCore i wykorzystac je w interfejsie
-- generowac liste metatagow
-- dodac wyrazenia sortujace
+$ generowac liste metatagow
+- dodac wyrazenie sortujace
 - dodac zapisywanie/odczytywanie konfiguracji (plik .config/config.xml lub ./config.xml)
 - napisac pluginy metatagow
   - Count
