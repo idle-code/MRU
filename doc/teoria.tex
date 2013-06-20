@@ -6,13 +6,63 @@ W niniejszym rozdziale postaram się przybliżyć obraz problemu identyfikatoró
 Jednym z podstawowych elementów systemu komputerowego jest jego pamięć. Od początku istnienia komputerów istniała potrzeba składowania danych wymaganych przy praktycznie każdych operacjach wykonywanych przez jednostkę centralną komputera. Jako że pierwsze systemy komputerowe były wykorzystywane do obliczeń typowo matematycznych, algorytmy na nich uruchamiane nie wymagały wielkich kontenerów na dane. W tych czasach wbudowane rejestry oraz ulotna pamięć RAM zaspokajały potrzemy rynku. Jednak wraz z rozwojem sprzętu i algorytmów na nim uruchamianych pojawiła się potrzeba przechowywania coraz to większej ilości danych jak i (dzięki zastosowaniu architektury von Neumanna) samych programów przez coraz dłuższy czas. Pojawiła się idea nieulotnej oraz pojemnej pamięci - dysku twardego. <!sprawdzić!>
 
 \par
-Pojemności pierwszych dysków twardych stanowiły promil dzisiejszych jednostek toteż nie wymagały stosowania systemów plików - były po prostu nieulotnym rozszerzeniem pamięci operacyjnej. Wraz ze zwiększeniem ich pojemności oraz generalizacją oprogramowania, pojawiła się potrzeba standaryzowania, kategoryzacji przechowywanych na dyskach danych - tak powstały systemy plików.
+Pojemności pierwszych dysków twardych stanowiły promil dzisiejszych jednostek toteż nie wymagały stosowania systemów plików - były po prostu nieulotnym rozszerzeniem pamięci operacyjnej RAM.\\
+Wraz ze zwiększeniem ich pojemności oraz generalizacją oprogramowania, pojawiła się potrzeba standaryzowania, kategoryzacji przechowywanych na dyskach danych - tak powstały systemy plików.
 
 \ref{stallings}
 
 \section{Systemy plików i identyfikacja danych}
+System plików stanowi warstwę abstrakcji między programami, a danymi zapisanymi na nośniku --- dysku twardym, karcie pamięci czy też płycie CD. System plików jest metodą zapisu danych --- schematem dzięki któremu, programy nie muszą operować na surowych blokach danych lecz mogą korzystać z bardziej wysokopoziomowych deskryptorów plików - węzłów bądź ścieżek dostępu.\\
+Zwykle systemem plików zarządza system operacyjny --- to on udostępnia API, a także blokuje lub pozwala na dostęp do danych ze względu na uprawnienia użytkownika, programu lub samego zasobu.\\
+
+\par
+Istnieje wiele typów oraz implementacji systemów plików, które można podzielić na dwie kategorie:
+
+\begin{itemize}
+\item tradycyjne - znajdujące zastosowanie przy przechowywaniu dowolnych (ogólnych) danych w postaci plików
+\item specjalne - dostosowane do specyficznych rozwiązań (jak na przykład bazy danych)
+\end{itemize}
+
+Oddzielną kategorię mogą stanowić zdobywające coraz większą popularność wirtualne systemy plików - różnią się one od tradycyjnych i specjalistycznych tym że nie przechowują danych fizycznie na nośniku, a są raczej aplikacjami udostępniającymi (generującymi) struktury danych na żądanie użytkownika/programu. Przykładem takich systemów mogą być: \texttt{procfs} - udostępniający dostęp do procesów systemowych i ich atrybutów w systemach rodziny GNU/Linux oraz *BSD, czy też \texttt{NFS} (Network File System) --- pozwalający na dostęp do systemów plików znajdujących się na innych komputerach w sieci.
+
+\subsection{Katalogi i ścieżki do plików}
+Niniejsza praca skupia się na problemie opisywania danych w tradycyjnych systemach plików za pomocą tak zwanych ścieżek do plików.
+
+\par
+Tradycyjne systemy plików pozwalają na przechowywanie danych w drzewiastej strukturze danych zwanej drzewem katalogów. W większości implementacji każdy węzeł takiego drzewa może być katalogiem, plikiem lub dowiązaniem do innego węzła. Dodatkowo węzły katalogów jako jedyne mogę posiadać węzły podległe --- podkatalogi.\\
+Każdy węzeł prócz węzła-korzenia jest identyfikowany przez unikalny względem węzła-rodzica identyfikator zwany nazwą pliku/katalogu.\\
+Warto zauważyć iż struktura drzewa katalogów nie wymusza sposobu rozkładu danych w systemie plików --- tak długo jak identyfikatory pozostają unikalne, pliki przez nie opisywane mogą znajdować się w tym samym katalogu\footnote{W praktyce ilość plików które mogą należeć do jednego węzła zależy od rozmiaru licznika użytego w implementacji.}.
 
 \subsection{Różnice w identyfikacji plików wśród różnych systemów operacyjnych}
+Format ścieżki do pliku narzucany jest niezależnie od zastosowanego systemu plików przez system operacyjny.
+
+\par
+Systemy kompatybilne ze standardem \texttt{POSIX}, wywodzące się z Unixów takie jak Apple MacOS czy rodzina BSD, a także rodzina GNU/Linux używają drzew katalogów z pojedynczym, nienazwanym korzeniem oznaczanym symbolem prawego ukośnika (slash)~---~'\texttt{/}'.\\
+Symbol prawego ukośnika jest również używany jako separator elementów (poziomów) ścieżki i nie może stanowić elementu identyfikatora węzła w wymienionych środowiskach.\\
+
+Przykład ścieżki zgodnej ze standardem \texttt{POSIX}:
+\begin{center}
+\texttt{/home/idlecode/projects/mru/doc/main.tex}
+\end{center}
+
+\par
+Systemy operacyjne z rodziny Windows korporacji Microsoft\footnote{Istnieje wiele więcej systemów operacyjnych używających podobnego schematu} wykorzystują natomiast lewy ukośnik (backslash) --- '\texttt{\textbackslash}' --- jako separator komponentów ścieżki oraz uniemożliwiają stosowanie większej ilości symboli w nazwach.\\
+System plików systemu Windows może posiadać kilka korzeni (po jednym dla każdego wolumenu/dysku) oznaczanych pojedynczymi, zwykle dużymi literami alfabetu łacińskiego. Litera dysku wraz z symbolem dwukropka poprzedza właściwą ścieżkę do pliku.\\
+
+Przykład ścieżki używanej w systemach operacyjnych Windows korporacji Microsoft:
+\begin{center}
+\texttt{C:\textbackslash Users\textbackslash idlecode\textbackslash My Documents\textbackslash Projects\textbackslash MRU\textbackslash doc\textbackslash main.tex}
+\end{center}
+
+\par
+Ze względów ogólnie stosowanego API (języka C), w przypadku obu\footnote{System MacOS nie posiada tego ograniczenia} wyżej wymienionych schematów nazwy elementów nie mogą zawierać znaku NUL (o kodzie heksadecymalnym \texttt{0x00}), który jest interpretowany jako koniec łańcucha znaków.
+
+\par
+Istnieje jeszcze kilka schematów zapisu ścieżek, które nie zostały przybliżone ze względu na zakres niniejszej pracy.
+
+<!TODO: zachowywanie wielkości znaków i ich interpretacja!>
+<!TODO: kodowanie używane do zapisu ścieżki!>
+<!TODO: maksymalna długość ścieżki i nazwy pliku!>
 
 \section{Metadane zawarte w plikach}
 
