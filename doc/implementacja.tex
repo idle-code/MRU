@@ -1,25 +1,51 @@
-%\chapter{Oj pomyliłem się to nie ten tytuł}
 \chapter{Implementacja}
-\label{zxc}
+\par
+Rozdział ten zawiera opis środowiska które zostało użyte do stworzenia implementacji, a także architektury samej aplikacji.
 
 \section{Środowisko pracy}
-Użyty język programowania; toolchain; system operacyjny; kontrola wersji;
+
+\subsection{Język C++}
+\par
+Do implementacji aplikacji \texttt{MRU} został użyty język C++ w standardzie z roku 2003 (ISO/IEC 14882:2003).
+Język C++ jest dojrzałym, wieloplatformowym językiem programowania średniego poziomu, używanym od wielu lat przez programistów na całym świecie do tworzenia aplikacji, sterowników czy nawet systemów operacyjnych. Dzięki kompatybilności z C\footnote{C++ nie jest całkowicie kompatybilny z  C, jednak różnice w obu tych językach są na tyle małe że zwykle nie wpływają negatywnie na kompatybilność (szczególnie na poziomie ABI).} pozwala na wykorzystanie wielu istniejących bibliotek napisanych zarówno w C jak i C++.
+
+\subsection{LLVM Clang}
+\par
+\texttt{LLVM} --- Low Level Virtual Machine --- jest modułową architekturą do budowy kompilatorów. Pozwala ona na oddzielenie parserów różnych języków programowania (frontendów) od modułu optymalizacji (wspólnych dla wszystkich języków kompilowalnych) i emiterów kodu bajtowego (backendów) dla różnych platform.
+
+\par
+Clang jest frontendem języków C i C++ dla architektury \texttt{LLVM}. Projekt jest otwarty (wydawany na licencji BSD) i zdobywa coraz większą popularność\footnote{Od listopada 2012 Clang stał się domyślnym kompilatorem dla systemu FreeBSD} dorównując i przewyższając w niektórych testach GCC.
+
 \subsection{System operacyjny FreeBSD}
+\par
+System FreeBSD jest systemem operacyjnym z rodziny BSD wywodzącej się z kolei z rodziny \texttt{UNIX}-ów. Podobnie do dystrybucji GNU/Linux, sam w sobie wraz w wieloma, otwartymi bibliotekami tworzonymi przez społeczność stanowi środowisko przyjazne programistom.
+
 \subsection{Mercurial}
+\par
+Do zarządzania plikami źródłowymi oraz kopią zapasową został wykorzystany rozproszony system kontroli wersji Mercurial. Wraz z serwisem bitbucket.org pozwala on na synchronizację kodów źródłowych między wieloma maszynami, ułatwiając tym samym pracę nad pojedynczym projektem wielu programistów.
+\par
+W odróżnieniu od scentralizowanych systemów kontroli wersji takich jak SVN, Mercurial, podobnie jak Git nie wymaga pojedynczego serwera, ani serwera w ogóle. Pełne repozytorium jest trzymane na każdej maszynie z której korzysta programista, a praca różnych programistów (zmiany w kodzie) może być synchronizowana między nimi samymi.
+
 \subsection{CMake}
+\par
+Aby projekt był jak najbardziej przenośny i niezależny od platformy, ważne jest aby jego proces budowania był również taki był.
+W celu zapewnienia łatwego wsparcia dla budowania projektu na wielu platformach i wielu łańcuchach narzędziowych, MRU stosuje CMake --- narzędzie do zarządzania procesem kompilacji i zależnościami.
+\par
+CMake pozwala programiście określić z jakich elementów składa się program i jakich zewnętrznych zasobów (bibliotek) wymaga. Narzędzie następnie interpretuje skryptowy plik konfiguracyjny i tworzy natywne dla danej platformy pliki projektowe zawierające odpowiednią do zbudowania projektu konfigurację.
+
 \subsection{vim}
 
 \section{Wykorzystane biblioteki}
-asd
-\subsection{SigC}
 
-\subsection{boost::filesystem}
+\subsection{SigC++}
 
-\subsection{boost::property\_tree}
+\subsection{\texttt{boost::filesystem}}
 
-%\subsection{boost program_options}
-%\subsection{wxWidgets}
-%\subsection{ICU}
+\subsection{\texttt{boost::property\_tree}}
+
+\subsection{\texttt{boost::program\_options}}
+\subsection{wxWidgets}
+\subsection{ICU}
 
 \section{Rdzeń aplikacji - klasa MruCore}
 
