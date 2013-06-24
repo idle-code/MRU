@@ -1,55 +1,74 @@
 \chapter{Implementacja}
-\par
-Rozdział ten zawiera opis środowiska które zostało użyte do stworzenia implementacji, a także architektury samej aplikacji.
 
-\section{Środowisko pracy}
-
-\subsection{Język C++}
-\par
-Do implementacji aplikacji \texttt{MRU} został użyty język C++ w standardzie z roku 2003 (ISO/IEC 14882:2003).
-Język C++ jest dojrzałym, wieloplatformowym językiem programowania średniego poziomu, używanym od wielu lat przez programistów na całym świecie do tworzenia aplikacji, sterowników czy nawet systemów operacyjnych. Dzięki kompatybilności z C\footnote{C++ nie jest całkowicie kompatybilny z  C, jednak różnice w obu tych językach są na tyle małe że zwykle nie wpływają negatywnie na kompatybilność (szczególnie na poziomie ABI).} pozwala na wykorzystanie wielu istniejących bibliotek napisanych zarówno w C jak i C++.
-
-\subsection{LLVM Clang}
-\par
-\texttt{LLVM} --- Low Level Virtual Machine --- jest modułową architekturą do budowy kompilatorów. Pozwala ona na oddzielenie parserów różnych języków programowania (frontendów) od modułu optymalizacji (wspólnych dla wszystkich języków kompilowalnych) i emiterów kodu bajtowego (backendów) dla różnych platform.
-
-\par
-Clang jest frontendem języków C i C++ dla architektury \texttt{LLVM}. Projekt jest otwarty (wydawany na licencji BSD) i zdobywa coraz większą popularność\footnote{Od listopada 2012 Clang stał się domyślnym kompilatorem dla systemu FreeBSD} dorównując i przewyższając w niektórych testach GCC.
-
-\subsection{System operacyjny FreeBSD}
-\par
-System FreeBSD jest systemem operacyjnym z rodziny BSD wywodzącej się z kolei z rodziny \texttt{UNIX}-ów. Podobnie do dystrybucji GNU/Linux, sam w sobie wraz w wieloma, otwartymi bibliotekami tworzonymi przez społeczność stanowi środowisko przyjazne programistom.
-
-\subsection{Mercurial}
-\par
-Do zarządzania plikami źródłowymi oraz kopią zapasową został wykorzystany rozproszony system kontroli wersji Mercurial. Wraz z serwisem bitbucket.org pozwala on na synchronizację kodów źródłowych między wieloma maszynami, ułatwiając tym samym pracę nad pojedynczym projektem wielu programistów.
-\par
-W odróżnieniu od scentralizowanych systemów kontroli wersji takich jak SVN, Mercurial, podobnie jak Git nie wymaga pojedynczego serwera, ani serwera w ogóle. Pełne repozytorium jest trzymane na każdej maszynie z której korzysta programista, a praca różnych programistów (zmiany w kodzie) może być synchronizowana między nimi samymi.
-
-\subsection{CMake}
-\par
-Aby projekt był jak najbardziej przenośny i niezależny od platformy, ważne jest aby jego proces budowania był również taki był.
-W celu zapewnienia łatwego wsparcia dla budowania projektu na wielu platformach i wielu łańcuchach narzędziowych, MRU stosuje CMake --- narzędzie do zarządzania procesem kompilacji i zależnościami.
-\par
-CMake pozwala programiście określić z jakich elementów składa się program i jakich zewnętrznych zasobów (bibliotek) wymaga. Narzędzie następnie interpretuje skryptowy plik konfiguracyjny i tworzy natywne dla danej platformy pliki projektowe zawierające odpowiednią do zbudowania projektu konfigurację.
-
-\subsection{vim}
-
+\clearpage
 \section{Wykorzystane biblioteki}
-
 \subsection{SigC++}
+\begin{wrapfigure}{r}{0.4\textwidth}
+\begin{center}
+\includegraphics[scale=0.50]{img/sigcpp_logo.png}
+\end{center}
+\caption{Logo biblioteki SigC++}
+\end{wrapfigure}
+\par
+SigC++ jest biblioteką dla języka C++ implementującą bezpieczny (ze względu na typy) mechanizm sygnałów.
+Sygnały (zdarzenia) są wysokopoziomowym odpowiednikiem wywołań zwrotnych używanych do wstrzykiwania kodu programisty-użytkownika do istniejącej implementacji. W językach niskopoziomowych, takich jak C często stosuje się do tego celu wskaźniki do funkcji, jednak ich niskopoziomowa natura może powodować trudne do wykrycia błędy spowodowane przekazaniem złego typu wskaźnika lub błędnej jego sygnatury. Biblioteka udostępnia wysokopoziomowe szablony obiektów sygnałów jak i interfejsy do zastosowania w klasach użytkownika, ułatwiające w znaczny sposób zarządzanie podpiętymi zdarzeniami.\\
+\par
+SigC++ jest często używana w projektach GUI takich jak projekt pulpitu GNOME; w takim też celu zostanie ona użyta w aplikacji MRU.
 
 \subsection{\texttt{boost::filesystem}}
+\par
+Biblioteka \texttt{boost::filesystem} pozwala na niezależny od systemu operacyjnego dostęp do drzewa katalogów. Ze względu na swoją uniwersalność została użyta jako podstawowy sterownik (moduł wyjścia --- output module) w aplikacji MRU.
 
 \subsection{\texttt{boost::property\_tree}}
+\par
+\texttt{boost::property\_tree} jest drzewiastym (hierarchicznym) kontenerem ogólnego przeznaczenia\footnote{Z założenia biblioteka \texttt{boost::property\_tree} została stworzona do reprezentacji struktury ogólnych plików konfiguracyjnych lecz nic nie stoi na przeszkodzie aby traktować ją jako ogólny kontener}, który posłuży jako główne źródło informacji o wtyczkach i samym rdzeniu aplikacji MRU.
 
 \subsection{\texttt{boost::program\_options}}
+\par
+Biblioteka \texttt{boost::program\_options} udostępnia wygodny i rozszerzalny parser argumentów przekazanych programowi z linii komend.
+
 \subsection{wxWidgets}
+wxWidgets jest wieloplatformową biblioteką do tworzenia graficznych interfejsów użytkownika (ang. GUI). W projekcie została wykorzystana do stworzenia wtyczki interfejsu (ui module) wxWidgetsUi. wxWidgets udostępnia i pozwala tworzyć przenośny zestaw klas kontrolek, które są tłumaczone na natywne kontrolki środowiska uruchamiającego aplikacje.
+
 \subsection{ICU}
+ICU --- International Components for Unicode" --- jest biblioteką opracowaną przez IBM wspierającą lokalizacje, globalizacje i umożliwiającą operacje na łańcuchach znaków w kodowaniach UTF.\\
+Jako że główne operacje w aplikacji MRU przeprowadzane są na łańcuchach znaków, istotne jest aby wykonywane były one z należytą precyzją. ICU jest najbardziej zaawansowaną, ogólnie dostępną biblioteką tego typu z długą historią zastosowań.
+
+\clearpage
 
 \section{Rdzeń aplikacji - klasa MruCore}
+Rdzeniem aplikacji jest klasa MruCore stanowi ona interfejs do całej funkcjonalności programu i udostępnia informacje o jego działaniu.
+<!TODO!>
 
 \section{Wyrażenia zawierające metatagi}
+Najważniejszym elementem projektu MRU są metatagi wraz metawyrażeniami na które się składają.
+Metawyrażenia używane są jak wzorzec (szablon) na podstawie którego generowane są kolejne nazwy plików.
+
+\par
+Metatagi są reprezentacjami wywołań do odpowiadającym im wtyczek.
+Za każdym razem gdy MRU zmienia plik na którym operuje, metawyrażenie jest ewaluowane, każde wystąpienie tagu jest przekładane na wywołanie odpowiedniej metody na obiekcie wtyczki, a rezultat tego wywołania jest wstawiany w miejsce wystąpienia tagu.
+
+\begin{wrapfigure}{r}{0.4\textwidth}
+\begin{center}
+%\includegraphics[scale=0.50]{img/metatag.png}
+\end{center}
+\caption{Metatag z wyróżnionymi elemetami na niego się składającymi}
+\end{wrapfigure}
+
+\par
+Metatag jest identyfikatorem wprowadzonym do zwykłego tekstu, składającym się z czterech elementów które nie mogą zostać rozdzielone białymi znakami. Metawyrażenie rozpoczyna się od symbolu procent --- '\%' --- po którym następuje nazwa metatagu składająca się ze znaków alfanumerycznych alfabetu łacińskiego\footnote{Z technicznego punktu widzenia nic nie stoi na przeszkodzie aby do zapisu nazwy metataga zastosować pełen zestaw znaków, lecz ze względu na globalizacje --- nie wszyscy użytkownicy potrafili by używać każdej nazwy --- zastosowano wyżej opisaną konwencję.}.
+Po nazwie następuje para nawiasów --- '(' wraz z ')' --- zawierających opcjonalnie listę parametrów inicjalizacyjnych metatag. Nie istnieją ograniczenia co do zawartości listy inizjalizującej --- może ona zawierać pełen zakres znaków włączając to znaki zakończenia listy (nawiasy zamykające) o ile są odpowiednio oznaczone\footnote{Aby zignorować interpretację znaku specjalnego w metawyrażeniu, można użyć ogólnie znanego schematu wyłączania znaków --- poprzedzania ich symbolem '\textbackslash'}.
+Ostatnim elementem jest opcjonalny zakres działania metatagu --- jest to obszar zawierający się między parą nawiasów klamrowych ('\{' oraz '\}') który sam w sobie jest metawyrażeniem. Dzięki temu, efekty metatagów mogą się na siebie nakładać.
+
+\begin{figure}
+\begin{center}
+%\includegraphics[scale=0.50]{img/metaexpr.png}
+\end{center}
+\caption{Przykładowe metawyrażenie wraz z wyróżnionymi elementami metatagów}
+\end{figure}
+
+Parsowanie metawyrażenia rozpoczyna się od tokenizacji --- wydzieleniu znaczących dla wyrażenia elementów takich jak symbole (procent, nawiasy), a także ciągi znaków alfanumerycznych oraz białych. Na podstawie listy tokenów budowane jest drzewo wywołań, które jest strukturą zawierającą kolejność oraz zależności między metatagami.
+Drzewo wywołań składa się jedynie z metatagów. Aby otrzymać taką strukturę, ciągi surowego tekstu (nie będące metatagami) zostały zamienione na wywołania anonimowych (nienazwanych) metatagów, których argumentami inicjalizującymi są właśnie surowe ciągi tekstu, a jedyną funkcją --- zwrócenie argumentów z listy inicjalizującej. Dzięki temu ewaluacja wyrażeń jest prostsza, a dodatkowy anonimowy metatag może zostać wykorzystany na przykład do zmiany kodowania surowego tekstu.
 
 \section{System modułów i jego implementacja}
 

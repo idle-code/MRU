@@ -1,0 +1,70 @@
+\chapter{Środowisko pracy}
+\par
+Rozdział ten zawiera opis środowiska które zostało użyte do stworzenia implementacji, a także architektury samej aplikacji.
+
+\section{Język C++}
+\par
+Do implementacji aplikacji \texttt{MRU} został użyty język C++ w standardzie z roku 2003 (ISO/IEC 14882:2003).
+Język C++ jest dojrzałym, wieloplatformowym językiem programowania średniego poziomu, używanym od wielu lat przez programistów na całym świecie do tworzenia aplikacji, sterowników czy nawet systemów operacyjnych. Dzięki kompatybilności z C\footnote{C++ nie jest całkowicie kompatybilny z  C, jednak różnice w obu tych językach są na tyle małe że zwykle nie wpływają negatywnie na kompatybilność (szczególnie na poziomie ABI).} pozwala na wykorzystanie wielu istniejących bibliotek napisanych zarówno w C jak i C++.
+
+%\subsection{LLVM Clang}
+%\begin{wrapfigure}{r}{0.4\textwidth}
+%\begin{center}
+%\includegraphics[scale=0.70]{img/clang_logo.png}
+%\end{center}
+%\caption{Logo frontendu Clang}
+%\end{wrapfigure}
+\par
+\texttt{LLVM} --- Low Level Virtual Machine --- jest modułową architekturą do budowy kompilatorów. Pozwala ona na oddzielenie parserów różnych języków programowania (frontendów) od modułu optymalizacji (wspólnych dla wszystkich języków kompilowalnych) i emiterów kodu bajtowego (backendów) dla różnych platform.
+
+\par
+Clang jest frontendem języków C i C++ dla architektury \texttt{LLVM}. Projekt jest otwarty (wydawany na licencji BSD) i zdobywa coraz większą popularność\footnote{Od listopada 2012 Clang wraz z LLVM stał się domyślnym kompilatorem dla systemu FreeBSD} dorównując i przewyższając w niektórych testach GCC.
+
+\section{System operacyjny FreeBSD}
+%\begin{wrapfigure}{r}{0.4\textwidth}
+%\begin{center}
+%\includegraphics[scale=0.70]{img/freebsd_logo.png}
+%\end{center}
+%\caption{Logo systemu FreeBSD}
+%\end{wrapfigure}
+\par
+System FreeBSD jest systemem operacyjnym z rodziny BSD wywodzącej się z kolei z rodziny \texttt{UNIX}-ów. Podobnie do dystrybucji GNU/Linux, sam w sobie wraz w wieloma, otwartymi bibliotekami tworzonymi przez społeczność stanowi środowisko przyjazne programistom.
+
+\section{Mercurial}
+\begin{wrapfigure}{r}{0.4\textwidth}
+\begin{center}
+\includegraphics[scale=0.70]{img/mercurial_logo.png}
+\end{center}
+\caption{Logo systemu Mercurial}
+\end{wrapfigure}
+\par
+Do zarządzania plikami źródłowymi oraz kopią zapasową został wykorzystany rozproszony system kontroli wersji Mercurial. Wraz z serwisem bitbucket.org pozwala on na synchronizację kodów źródłowych między wieloma maszynami, ułatwiając tym samym pracę nad pojedynczym projektem wielu programistów.
+\par
+W odróżnieniu od scentralizowanych systemów kontroli wersji takich jak SVN, Mercurial, podobnie jak Git nie wymaga pojedynczego serwera, ani serwera w ogóle. Pełne repozytorium jest trzymane na każdej maszynie z której korzysta programista, a praca różnych programistów (zmiany w kodzie) może być synchronizowana między nimi samymi.
+
+\section{CMake}
+%\begin{wrapfigure}{r}{0.4\textwidth}
+%\begin{center}
+%\includegraphics[scale=0.75]{img/cmake_logo.png}
+%\end{center}
+%\caption{Logo narzędzia CMake}
+%\end{wrapfigure}
+
+\par
+Aby projekt był jak najbardziej przenośny i niezależny od platformy, ważne jest aby jego proces budowania był również taki był.
+W celu zapewnienia łatwego wsparcia dla budowania projektu na wielu platformach i wielu łańcuchach narzędziowych, MRU stosuje CMake --- narzędzie do zarządzania procesem kompilacji i zależnościami.
+\par
+CMake pozwala programiście określić z jakich elementów składa się program i jakich zewnętrznych zasobów (bibliotek) wymaga. Narzędzie następnie interpretuje skryptowy plik konfiguracyjny i tworzy natywne dla danej platformy pliki projektowe zawierające odpowiednią do zbudowania projektu konfigurację.
+
+\section{Vim}
+\begin{wrapfigure}{r}{0.4\textwidth}
+\begin{center}
+\includegraphics[scale=0.3]{img/vim_logo.png}
+\end{center}
+\caption{Logo edytora Vim}
+\end{wrapfigure}
+
+\par
+Edytor \texttt{Vim} jest rozszerzoną wersją klasycznego \texttt{vi}, który jest standardowym oprogramowaniem w przypadku dystrybucji zarówno GNU/Linux jak i systemów z rodziny BSD. Vim jest platformą dla wielu pluginów które tworzą jego faktyczną funkcjonalność. Vim sam w sobie wspiera pracę z wieloma dokumentami, koloruję składnie plików źródłowych i posiada wiele komend ułatwiających produkcję kodu. Dzięki wtyczkom istnieje możliwość rozszerzenia go o zaawansowane kompletowanie składni czy szybkie wstawki kodu (ang. snippety).
+
+\clearpage
