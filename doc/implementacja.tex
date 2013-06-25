@@ -31,8 +31,8 @@ Wymagane funkcjonalności:
 \item Aplikacja powinna być przenośna na poziomie kodu źródłowego zarówno między platformami z rodziny Microsoft Windows jak i zgodnymi ze standardem \texttt{POSIX}.
 \end{itemize}
 
-\section{Projekt}
-\label{projekt}
+%\section{Projekt}
+%\label{projekt}
 
 \section{Wykorzystane biblioteki}
 \label{wykorzystane-biblioteki}
@@ -74,6 +74,43 @@ Rdzeniem aplikacji jest klasa \texttt{MruCore} stanowi ona interfejs do całej f
 \par
 Klasa \texttt{MruCore} zawiera metody umożliwiające wtyczkom GUI na kontrolę pracy programu. Sygnały zdefiniowane w klasie dostarczają informacji zwrotnej o pracy aplikacji.
 
+\section{glue\_cast - łącznik technologii}
+Jako że w aplikacji zostały wykorzystane różne biblioteki, wprowadziły one wiele wymagań co do obsługiwanych typów danych.
+Biblioteka ICU korzysta głównie z klas takich jak \texttt{UnicodeString} podczas gdy biblioteki \texttt{boost} zostały oparte na strukturach ze standardowej biblioteki \texttt{STL} takich jak \texttt{std::string}. Do tego dochodzi niskopoziomowa warstwa API systemu operacyjnego która często operuje na surowych łańcuchach znaków --- \texttt{const char *}.
+\par
+Aby ułatwić konwersję między różnymi redundantnymi typami danych, został opracowany szablon \texttt{glue\_cast} podobny w zastosowaniu do wbudowanych w język język rzutowań takich jak \texttt{dynamic\_cast} czy \texttt{reinterpret\_cast}.
+
+\begin{lstlisting}[caption={ glue.hpp}, language=C++]
+template<typename DstType, typename SrcType> inline
+DstType
+glue_cast(const SrcType &a_value)
+{
+  return DstType(a_value);
+}
+\end{lstlisting}
+
+\par
+Generyczna implementacja szablonu często jest nieodpowiednia dla typów dla których realizowana jest jego specjalizacja jednak problem ten został rozwiązany --- każda para typów używanych w aplikacji posiada dwie jawne specjalizacje szablonu umożliwiające ich konwersję.
+\begin{lstlisting}[caption={ Fragment glue\_impl.hpp --- specjalizacja dla std::wstring i wxString}, language=C++]
+template<> inline
+wxString
+glue_cast<wxString, std::wstring>(const std::wstring &a_value)
+{
+  return wxString(a_value.c_str(), wxConvUTF8);
+}
+
+template<> inline
+std::wstring
+glue_cast<std::wstring, wxString>(const wxString &a_value)
+{
+  return std::wstring(a_value.wc_str());
+}
+
+\end{lstlisting}
+
+\par
+Dzięki wykorzystaniu szablonów nie ma potrzeby tworzenia nowych funkcji konwersji, a całość wygląda bardziej spójnie i jest łatwiejsza w utrzymaniu. Dodatkowym atutem użytego rozwiązania jest jego przenośność --- wybrane specjalizacje można wykorzystać w jakimkolwiek projekcie używających specjalizowanych typów. Dodawanie nowych konwersji sprowadza się do dopisania kolejnej pary szablonów.
+
 \section{Wyrażenia zawierające metatagi}
 Najważniejszym elementem projektu MRU są metatagi wraz metawyrażeniami na które się składają.
 Metawyrażenia używane są jak wzorzec (szablon) na podstawie którego generowane są kolejne nazwy plików.
@@ -107,7 +144,7 @@ Parsowanie metawyrażenia rozpoczyna się od tokenizacji --- wydzieleniu znaczą
 
 \begin{sidewaysfigure}
 \begin{center}
-\includegraphics[scale=0.6]{img/metatag_expr_tree4.png}
+\includegraphics[scale=0.55]{img/metatag_expr_tree4.png}
 \end{center}
 \caption{Drzewo wywołań stworzone z przykładowego metawyrażenia}
 \label{metatag-expr-tree}
@@ -145,7 +182,7 @@ Aby umożliwić ładowanie wtyczek w języku C++ należy najpierw zdefiniować c
 W MRU (jak i wielu innych programach) wtyczka jest obiektem udostępniającym metody określone przez interfejs wtyczki. Także biblioteka dynamiczna musi w jakiś sposób udostępnić owe obiekty.
 
 \par
-Menadżer wtyczek po załadowaniu biblioteki dynamicznej przeszukuje ją pod kątem funkcji o nazwie \texttt{register\_plugins} wyeksportowanej bez przesłaniania nazw (name mangling) np za pomocą konstrukcji \texttt{extern ''C'' { ... }} i jeśli takowa istnieje --- uruchamia ją przekazując jako argument wskaźnik własną instancje.
+Menadżer wtyczek po załadowaniu biblioteki dynamicznej przeszukuje ją pod kątem funkcji o nazwie \texttt{register\_plugins} wyeksportowanej bez przesłaniania nazw (name mangling) np za pomocą konstrukcji \texttt{extern ''C'' \{ ... \}} i jeśli takowa istnieje --- uruchamia ją przekazując jako argument wskaźnik własną instancje.
 \par
 Sama wtyczka natomiast rejestruje w instancji przekazanego menadżera fabryki klas w niej zawartych.
 Dzięki temu, obiekty wtyczek nie są tworzone od czas gdy są faktycznie potrzebne. Zmniejsza to obciążenie pamięciowe programu jak i ułatwia pracę twórcom wtyczek, którzy mogą skupić się na implementowaniu faktycznej funkcjonalności modułów. Takie rozwiązanie pozwala również programowi-hostowi na decydowanie ile i kiedy mają być tworzone wybrane obiekty.
