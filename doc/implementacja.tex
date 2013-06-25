@@ -1,6 +1,36 @@
 \chapter{Implementacja}
 
-\clearpage
+\section{Specyfikacja wymagań}
+\subsection{Wymagania funkcjonalne}
+Użytkownikiem aplikacji jest administrator lub osoba posiadająca dużą kolekcję plików.
+Wymagane funkcjonalności:
+\begin{itemize}
+\item Możliwość wyboru katalogu zawierających pliki wymagające zmiany nazw
+\item Udostępnienie filtrów glob pozwalających na automatyczną selekcję plików
+%\item Sortowanie wybranych plików za pomocą metawyrażeń
+\item Możliwość ekstrakcji metadanych z plików typu
+  \begin{itemize}
+  \item MP3
+  \item PNG
+  %\item 
+  \end{itemize}
+\item Wybór operacji na samych plikach lub pełnych ścieżkach (wraz z katalogami)
+\item Automatyczna iteracja względem wybranych plików i zmiana ich nazwy
+\item Notyfikacja o powtarzających się identyfikatorach plików
+\item Notyfikacja o możliwych problemach z kompatybilnością spowodowanych zastosowanym zestawem znaków
+\item Notyfikacja o błędach ekstrakcji metadanych
+\item Zachowywanie konfiguracji programu między uruchomieniami
+\end{itemize}
+
+\subsection{Wymagania niefunkcjonalne}
+\begin{itemize}
+\item Minimalistyczny, skalowalny interfejs użytkownika
+\item Aplikacja powinna być przenośna na poziomie kodu źródłowego zarówno między platformami z rodziny Microsoft Windows jak i zgodnymi ze standardem \texttt{POSIX}.
+\end{itemize}
+
+\section{Projekt}
+
+
 \section{Wykorzystane biblioteki}
 \subsection{SigC++}
 \begin{wrapfigure}{r}{0.4\textwidth}
@@ -45,12 +75,12 @@ Najważniejszym elementem projektu MRU są metatagi wraz metawyrażeniami na kt�
 Metawyrażenia używane są jak wzorzec (szablon) na podstawie którego generowane są kolejne nazwy plików.
 
 \par
+Za każdym razem gdy MRU zmienia plik na którym operuje, metawyrażenie jest ewaluowane. Każde wystąpienie tagu jest przekładane na wywołanie odpowiedniej metody na obiekcie wtyczki, a rezultat tego wywołania jest wstawiany w miejsce wystąpienia tagu.
 Metatagi są reprezentacjami wywołań do odpowiadającym im wtyczek.
-Za każdym razem gdy MRU zmienia plik na którym operuje, metawyrażenie jest ewaluowane, każde wystąpienie tagu jest przekładane na wywołanie odpowiedniej metody na obiekcie wtyczki, a rezultat tego wywołania jest wstawiany w miejsce wystąpienia tagu.
 
 \begin{wrapfigure}{r}{0.4\textwidth}
 \begin{center}
-%\includegraphics[scale=0.50]{img/metatag.png}
+\includegraphics[scale=0.50]{img/metatag_sample.png}
 \end{center}
 \caption{Metatag z wyróżnionymi elemetami na niego się składającymi}
 \end{wrapfigure}
@@ -62,29 +92,152 @@ Ostatnim elementem jest opcjonalny zakres działania metatagu --- jest to obszar
 
 \begin{figure}
 \begin{center}
-%\includegraphics[scale=0.50]{img/metaexpr.png}
+\includegraphics[scale=0.55]{img/metatag_expr.png}
 \end{center}
 \caption{Przykładowe metawyrażenie wraz z wyróżnionymi elementami metatagów}
 \end{figure}
 
+\par
 Parsowanie metawyrażenia rozpoczyna się od tokenizacji --- wydzieleniu znaczących dla wyrażenia elementów takich jak symbole (procent, nawiasy), a także ciągi znaków alfanumerycznych oraz białych. Na podstawie listy tokenów budowane jest drzewo wywołań, które jest strukturą zawierającą kolejność oraz zależności między metatagami.
-Drzewo wywołań składa się jedynie z metatagów. Aby otrzymać taką strukturę, ciągi surowego tekstu (nie będące metatagami) zostały zamienione na wywołania anonimowych (nienazwanych) metatagów, których argumentami inicjalizującymi są właśnie surowe ciągi tekstu, a jedyną funkcją --- zwrócenie argumentów z listy inicjalizującej. Dzięki temu ewaluacja wyrażeń jest prostsza, a dodatkowy anonimowy metatag może zostać wykorzystany na przykład do zmiany kodowania surowego tekstu.
+Drzewo wywołań składa się jedynie z metatagów. Aby otrzymać taką strukturę, ciągi surowego tekstu (nie będące metatagami) zostają zamienione na wywołania anonimowych (nienazwanych) metatagów, których argumentami inicjalizującymi są właśnie surowe ciągi tekstu, a jedyną funkcją --- zwrócenie argumentów z listy inicjalizującej. Dzięki temu ewaluacja wyrażeń jest prostsza, a dodatkowy anonimowy metatag może zostać wykorzystany na przykład do zmiany kodowania surowego tekstu.
+\par
+Wyrażenia są ewaluowane od lewej do prawej przy czym metawyrażenia zagnieżdżone w zakresach operacyjnych wyrażeń są ewaluowane przed otaczającym je metatagiem. W ten sposób rezultat wykonania pod-wyrażenia jest dostępny dla tagu-rodzica, co pozwala na wiązanie wywołań niespotykane w żadnym istniejącym programie.
 
-\section{System modułów i jego implementacja}
+\section{System modułów}
+\par
+Aby ułatwić proces projektowania a także zwiększyć rozszerzalność aplikacji, duża część funkcjonalności została oddelegowana do oddzielnych modułów zwanych również wtyczkami.
+Wtyczki są klasami ładowanymi w trakcie działania programu z bibliotek dynamicznych.
+W celu udostępnienia aplikacji funkcjonalności zawartych w modułach wtyczek, niezbędne było zaprojektowanie menadżera wtyczek --- plugin manager.
+Klasy menadżera wtyczek umożliwiają programiście-użytkownikowi ładowanie modułów z wcześniej zadeklarowanym interfejsem niezależnie od platformy systemowej na której uruchamiany jest program\footnote{Same moduły muszą być skompilowane pod platformę na której program ma być uruchamiany.}.
 
-\section{Typy modułów w MRU}
+\par
+Problemem który rozwiązuje menadżer wtyczek jest fakt że biblioteki dynamiczne przechowują głównie funkcje; klasy które istnieją jedynie w trakcie kompilacji nie mogą zostać wyeksportowane do pliku jak ma to miejsce w językach wspierających introspekcje/refleksje typów --- takich jak Java czy C\#.
+Aby umożliwić ładowanie wtyczek w języku C++ należy najpierw zdefiniować czym właściwie jest sama wtyczka.\\
+
+W MRU (jak i wielu innych programach) wtyczka jest obiektem udostępniającym metody określone przez interfejs wtyczki. Także biblioteka dynamiczna musi w jakiś sposób udostępnić owe obiekty.
+
+\par
+Menadżer wtyczek po załadowaniu biblioteki dynamicznej przeszukuje ją pod kątem funkcji o nazwie \texttt{register\_plugins} wyeksportowanej bez przesłaniania nazw (name mangling) np za pomocą konstrukcji \texttt{extern "C" { ... }} i jeśli takowa istnieje --- uruchamia ją przekazując jako argument wskaźnik własną instancje.
+\par
+Sama wtyczka natomiast rejestruje w instancji przekazanego menadżera fabryki klas w niej zawartych.
+Dzięki temu, obiekty wtyczek nie są tworzone od czas gdy są faktycznie potrzebne. Zmniejsza to obciążenie pamięciowe programu jak i ułatwia pracę twórcom wtyczek, którzy mogą skupić się na faktycznej implementowaniu faktycznej funkcjonalności modułów. Takie rozwiązanie pozwala również programowi-hostowi na decydowanie ile i kiedy mają być tworzone wybrane obiekty.
+
+Z założenia menadżer wtyczek powinien umożliwiać ładowanie wielu wtyczek z jednej biblioteki dynamicznej.
+Problem ten został rozwiązany dzięki zastosowaniu klasy identyfikatorów interfejsów --- każdy menażer i każda fabryka wtyczki posiada identyfikator informujący jaki typ interfejsu obsługuje. Dzięki zastosowaniu dystrybutora (brokera) fabryk, podczas ładowania modułu możliwe jest rejestrowanie fabryk wtyczek różnych interfejsów pod warunkiem że w czasie ładowania stworzone zostały ich instancje.
+
+\section{Typy modułów w MRU} 
+Aplikacja obsługuje trzy interfejsy wtyczek:
+\begin{itemize}
+\item UiPlugin - moduły interfejsu; pozwalają na implementacje różnych interfejsów użytkownika.
+\item OutputPlugin - sterowniki wyjścia --- umożliwiają korzystanie z różnych interfejsów do systemu plików.
+\item TagPlugin - moduły udostępniające fabryki do tworzenia wszelkich metatagów.
+\end{itemize}
 
 \section{Moduły UI}
+\par
+Wtyczki interfejsu użytkownika pozwalają użytkownikowi końcowemu na interakcję z programem.
+Pojedynczy proces aplikacji może posiadać aktywną tylko jedną wtyczkę interfejsu. Decyzja o wyborze interfejsu użytkownika dokonywana jest na podstawie pliku konfiguracyjnego lub odpowiedniego przełącznika linii poleceń.
+Wtyczki interfejsu odpowiadają za całkowitą komunikację między użytkownikiem i rdzeniem aplikacji --- MruCore; to one udostępniają większość funkcjonalności aplikacji, a także informują użytkownika o stanie programu.
+\par
+Jako że funkcjonalność aplikacji jest w dużej mierze determinowana przez klasę rdzenia (MruCore), interfejs UiPlugin nie posiada z góry zdefiniowanych metod jak inne wtyczki. Jedyna metoda w nim zawarta --- \texttt{start} --- pozwala na reinterpretacje linii poleceń i służy do przekazania kontroli nad programem (klasą MruCore) właśnie do samej wtyczki.
+
 \subsection{wxWidgetsUi}
+\par
+wxWidgetsUi jest implementacją graficznego interfejsu użytkownika opartego na wspomnianej bibliotece \texttt{wxWidgets}. Założeniem tego modułu jest udostępnienie użytkownikowi końcowemu prostego oraz szybkiego dostępu do funkcjonalności programu, a także pomoc w zapoznaniu się z aplikacją.
+
+\begin{figure}
+\begin{center}
+%\includegraphics[scale=0.50]{img/wxwidgetsui.png}
+\end{center}
+\caption{Okno aplikacji MRU --- wtyczka wxWidgetsUi}
+\end{figure}
+
+Okno aplikacji stworzone przez wtyczkę wxWidgetsUi jest podzielone na trzy sekcje:
+\begin{itemize}
+\item Sekcja górna odpowiada za selekcję plików oraz pozwala na edycję metawyrażenia które ma zostać zastosowane na wybranych plikach.
+W lewym górnym rogu widnieje lista dostępnych Metatagów, a pola po prawej stronie pozwalają na wybór katalogu, filtru glob oraz samego metawyrażenia.
+
+\item Środkowa część okna stanowi podgląd wybranych plików jak i efektów zastosowania edytowanego wyrażenia do nich. Lista plików może być ograniczona i odświeżana w zależności od opcji znajdujących się pod nią.
+
+\item Na dole okna widoczne są przyciski do (ręcznego) generowania podglądu, jego konfiguracji, a także rozpoczęcia transformacji nazw dla wybranych plików.
+\end{itemize}
+
 \subsection{TextUi}
+\par
+TextUi jest wtyczką interfejsu udostępniającą funkcjonalność programu z poziomu linii komend. Pozwala ona na przekazanie parametrów konfiguracyjnych i rozpoczęcie transformacji nazw bez interakcji z użytkownikiem jak ma to miejsce w przypadku graficznych interfejsów użytkownika. Dzięki zastosowaniu tej wtyczki istnieje możliwość wykorzystania aplikacji MRU z poziomu skryptów powłoki, na maszynach nie wykorzystujących środowiska graficznego lub zdalnych.
 
 \section{Moduły output}
+\par
+Wtyczki wyjścia są warstwą abstrakcji pomiędzy systemem operacyjnym i jego drzewem katalogów, a rdzeniem aplikacji. Udostępniają one iteratory pozwalające na przeszukiwanie  dysku w celu znalezienia plików pasujących do wzorca wybranego przez użytkownika, oraz przekazują polecenia zmiany identyfikatora pliku do API używanego systemu. Kontrolują one również poprawność wygenerowanych nazw, a także zapewniają ich unikalność.
+
 \subsection{GenericBoost}
+Wtyczka GenericBoost została opracowana na podstawie biblioteki \texttt{boost::filesystem}. Stanowi ona sprawdzone oraz przenośne rozwiązaniem problemu dostępu do drzewa katalogów, bezpieczne do wykorzystania na wielu systemach bez zmian w kodzie samej wtyczki.
+
 
 \section{Moduły metatagów}
-\subsection{Count}
-\subsection{Audio}
-\subsection{CRC}
-\subsection{ToLower}
+Główna funkcjonalność aplikacji została zawarta w modułach tagów --- to one odpowiadają ekstrakcje metadanych lub generowanie wartości, które rdzeń aplikacji jedynie składa i przesyła wraz z komunikatem zmiany do systemu plików.
+\par
+Każdy z poniżej wymienionych tagów może zostać dodany do wyrażenia po załadowaniu odpowiedniej biblioteki dynamicznej go zawierającej\footnote{Część tagów nie wymaga ładowania --- są wbudowane w plik wykonywalny aplikacji, natomiast część mimo iż jest dostarczana w standardzie z aplikacją może wymagać dodatkowej konfiguracji w postaci określenia ścieżki ładowania bibliotek}.
 
-\label{}
+\subsection{Count}
+Tag Count jest używany do numeracji wybranych plików.
+Dla każdego pliku generowany jest kolejny numer. Lista argumentów tagu pozwala na określenie wartości początkowej, prefiksu oraz systemu w którym ma odbywać się numeracja.
+W poniższej tabeli zawarte zostały parametry obsługiwane przez metatag:
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{| c | p{13cm} |}
+\hline
+\textbf{Argument} & \textbf{Opis} \\
+\hline
+start=\textit{N} & Ustawia początkowy stan licznika na \textit{N}--- od tej wartości tag rozpocznie zliczanie \\
+step=\textit{N} & Ustawia rozmiar kroku --- kolejny numer będzie większy o \textit{N} w stosunku do poprzedniego \\
+\hline
+\end{tabular} \end{center}
+\caption{Zestaw argumentów inicjalizacyjnych dla metatagu Count}
+\end{table}
+
+Aby wykorzystać kilka argumentów jednocześnie należy oddzielić je od siebie za pomocą symbolu przecinka --- '\texttt{,}'.
+
+\subsection{MP3}
+Tag MP3 pozwala na ekstrakcję danych z plików audio zakodowanych w standardzie MPEG-1/MPEG-2 Audio Layer 3 oraz zawierających tagi ID3.
+Tag ten obsługuje następujące argumenty:
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{| c | p{13cm} |}
+\hline
+\textbf{Argument} & \textbf{Opis} \\
+\hline
+title & Konfiguruje tag do ekstrakcji tytułu utworu \\
+artist & Konfiguruje tag do ekstrakcji nazwy artysty wykonującego utwór \\
+album & Konfiguruje tag do ekstrakcji nazwy albumu w którym zawiera się utwór \\
+year & Konfiguruje tag do ekstrakcji roku powstania utworu \\
+comment & Konfiguruje tag do ekstrakcji komentarza \\
+\hline
+
+\end{tabular}
+\caption{Zestaw argumentów inicjalizacyjnych dla metatagu MP3}
+\end{center}
+\end{table}
+
+\subsection{CRC32}
+Metatg CRC32 służy liczenia cyklicznej sumy kontrolnej CRC o wielkości słowa 32 bity.
+Zwracana suma kontrolna jest sformatowana jako wartość heksadecymalna.
+
+\subsection{TextCase}
+Tag TextCase jest używany do zmiany wielkości liter w skojarzonym z tagiem zakresie działania. Pewność działania dla pełnego zakresu kodów unicode jest zapewniona dzięki wykorzystaniu funkcji z biblioteki ICU.
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{| c | p{13cm} |}
+\hline
+\textbf{Argument} & \textbf{Opis} \\
+\hline
+upper & Konfiguruje tag do zamiany wszystkich znaków w zakresie na ich większe odpowiedniki \\
+lower & Konfiguruje tag do zamiany wszystkich znaków w zakresie na ich mniejsze odpowiedniki \\
+title & Konfiguruje tag do zamiany znaków w zakresie tak by wyglądały na tytuł (Pierwsze znaki każdego słowa są zamieniane na ich większe odpowiedniki \\
+\hline
+\end{tabular} \end{center}
+\caption{Zestaw argumentów inicjalizacyjnych dla metatagu TextCase}
+\end{table}
+
+\section{Testy}
