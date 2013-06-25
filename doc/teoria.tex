@@ -1,16 +1,16 @@
 \chapter{Teoria}
+\label{teoria}
 \par
 W niniejszym rozdziale postaram się przybliżyć obraz problemu identyfikatorów (zwanych również nazwami) plików opisując środowisko i w którym występuje.
 
 \section{Dane w systemie komputerowym}
 \par
-Jednym z podstawowych elementów systemu komputerowego jest jego pamięć. Od początku istnienia komputerów istniała potrzeba składowania danych wymaganych przy praktycznie każdych operacjach wykonywanych przez jednostkę centralną komputera. Jako że pierwsze systemy komputerowe były wykorzystywane do obliczeń typowo matematycznych, algorytmy na nich uruchamiane nie wymagały wielkich kontenerów na dane. W tych czasach wbudowane rejestry oraz ulotna pamięć RAM zaspokajały potrzemy rynku. Jednak wraz z rozwojem sprzętu i algorytmów na nim uruchamianych pojawiła się potrzeba przechowywania coraz to większej ilości danych jak i (dzięki zastosowaniu architektury von Neumanna) samych programów przez coraz dłuższy czas. Pojawiła się idea nieulotnej oraz pojemnej pamięci - dysku twardego. <!sprawdzić!>
+Jednym z podstawowych elementów systemu komputerowego jest jego pamięć. Od początku istnienia komputerów istniała potrzeba składowania danych wymaganych przy praktycznie każdych operacjach wykonywanych przez jednostkę centralną komputera. Jako że pierwsze systemy komputerowe były wykorzystywane do obliczeń typowo matematycznych, algorytmy na nich uruchamiane nie wymagały wielkich kontenerów na dane. W tych czasach wbudowane rejestry oraz ulotna pamięć RAM zaspokajały potrzemy rynku. Jednak wraz z rozwojem sprzętu i algorytmów na nim uruchamianych pojawiła się potrzeba przechowywania coraz to większej ilości danych jak i (dzięki zastosowaniu architektury von Neumanna) samych programów przez coraz dłuższy czas. Pojawiła się idea nieulotnej oraz pojemnej pamięci - dysku twardego.\\
+<! sprawdzić !>
 
 \par
 Pojemności pierwszych dysków twardych stanowiły promil dzisiejszych jednostek toteż nie wymagały stosowania systemów plików - były po prostu nieulotnym rozszerzeniem pamięci operacyjnej RAM.\\
 Wraz ze zwiększeniem ich pojemności oraz generalizacją oprogramowania, pojawiła się potrzeba standaryzowania, kategoryzacji przechowywanych na dyskach danych - tak powstały systemy plików.
-
-\ref{stallings}
 
 \section{Systemy plików i identyfikacja danych}
 \par
@@ -84,5 +84,8 @@ Ciekawym przykładem metadanych są rozszerzenia nazw plików --- sufiksy rozpoc
 %Metadane w plikach i obok nich
 \par
 Niektóre formaty plików (szczególnie multimedialnych) pozwalają na integracje metadanych z samym plikiem. Jako że pliki (szczególnie binarne) mogą stosować dowolną strukturę zapisu, nie istnieje ogólny algorytm wyciągnięcia zawartych w ten sposób informacji. Istnieje natomiast wiele bibliotek umożliwiających odczyt informacji z określonego typu pliku.
+
+\par
+Do metadanych można zaliczyć także sumy kontrolne. Są to wartości liczone na podstawie zawartości pliku używane w celu testów integralności oraz identyczności.
 
 \clearpage
