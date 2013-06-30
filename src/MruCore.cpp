@@ -11,7 +11,11 @@ namespace mru
 {
 
 MruCore::MruCore(void)
-  : m_ui(NULL), m_out_driver(NULL), m_base_directory("/"), m_current_directory(m_base_directory)
+  : m_ui(NULL), m_out_driver(NULL),
+    m_base_directory("/home/idlecode/projects/mru/src/tests/files"), m_current_directory(m_base_directory),
+    m_include_directories(false), m_include_filenames(true), m_work_on_directories(false),
+    m_bindings_outdated(true)
+
 {
   FO("MruCore::MruCore(void)");
 
@@ -59,6 +63,42 @@ registry&
 MruCore::get_registry(void)
 {
   return reg::get_reference();
+}
+
+void
+MruCore::include_directories(bool enable)
+{
+  m_include_directories = enable;
+}
+
+bool
+MruCore::include_directories(void) const
+{
+  return m_include_directories;
+}
+
+void
+MruCore::include_filenames(bool enable)
+{
+  m_include_filenames = enable;
+}
+
+bool
+MruCore::include_filenames(void) const
+{
+  return m_include_filenames;
+}
+
+void
+MruCore::work_on_directories(bool enable)
+{
+  m_work_on_directories = enable;
+}
+
+bool
+MruCore::work_on_directories(void) const
+{
+  return m_work_on_directories;
 }
 
 namespace
@@ -156,22 +196,53 @@ MruCore::load_default_modules(void)
   OutputPluginManager *output_manager = OutputPluginManager::get_instance();
   modules_loaded += output_manager->load_module("plugins/output/GenericBoost/GenericBoost");
 
-  TagPluginManager *tag_manager = TagPluginManager::get_instance();
-  modules_loaded += tag_manager->load_module("plugins/tags/StandardTags/StandardTags");
-
+  modules_loaded += load_tags();
   return modules_loaded;
+}
+
+namespace
+{
+
+class metatag_factory_wrapper : public abstract_factory<Metatag> {
+public:
+  metatag_factory_wrapper(plugin_factory<TagPlugin> *a_plugin_factory)
+    : m_plugin_factory(a_plugin_factory)
+  { }
+
+  Metatag* create(void)
+  {
+    return reinterpret_cast<TagPlugin*>(m_plugin_factory->create());
+  } 
+
+  void destroy(Metatag *a_instance)
+  {
+    m_plugin_factory->destroy(static_cast<TagPlugin*>(a_instance));
+  }
+private:
+  plugin_factory<TagPlugin> *m_plugin_factory;
+};
+
+} /* anonymous namespace */
+
+int
+MruCore::load_tags(void)
+{
+  TagPluginManager *tag_manager = TagPluginManager::get_instance();
+  int tags_loaded = 0;
+  tags_loaded += tag_manager->load_module("plugins/tags/StandardTags/StandardTags");
+
+  return tags_loaded;
 }
 
 /* ------------------------------------------------------------------------- */
 
-bool
+void
 MruCore::set_base_directory(const filepath_type &a_directory)
 {
   if(!bfs::exists(a_directory) || !bfs::is_directory(a_directory))
-    return false; //TODO: signal error
+    return; //TODO: signal error
   m_base_directory = a_directory;
   set_current_directory(a_directory);
-  return true;
 }
 
 const filepath_type &
@@ -180,13 +251,12 @@ MruCore::get_base_directory(void) const
   return m_base_directory;
 }
 
-bool
+void
 MruCore::set_current_directory(const filepath_type &a_directory)
 {
   if(!bfs::exists(a_directory) || !bfs::is_directory(a_directory))
-    return false; //TODO: signal error
+    return; //TODO: signal error
   m_current_directory = a_directory;
-  return true;
 }
 
 const filepath_type &
@@ -195,11 +265,50 @@ MruCore::get_current_directory(void) const
   return m_current_directory;
 }
 
+void
+MruCore::set_metatag_expression(const UnicodeString &a_expression)
+{
+  FO("MruCore::set_metatag_expression(const UnicodeString &a_expression)");
+  m_metatag_expression = MetatagExpression::parse(a_expression);
+  m_bindings_outdated = true;
+  bind_metatags();
+}
+
+void
+MruCore::bind_metatags(void)
+{
+  if(!m_bindings_outdated)
+    return;
+  FO("MruCore::bind_metatags(void)");
+  TagPluginManager *tag_manager = TagPluginManager::get_instance();
+  MetatagExpression::bindings_map metatags_bindings;
+  std::list<name_type> tag_name_list = tag_manager->available_plugins();
+  for(std::list<name_type>::iterator tag_name = tag_name_list.begin(); tag_name != tag_name_list.end(); ++tag_name) {
+    //VAL(glue_cast<std::string>(glue_cast<UnicodeString>(*tag_name)));
+    metatags_bindings.insert(std::make_pair(glue_cast<UnicodeString>(*tag_name), new metatag_factory_wrapper(tag_manager->get_factory(*tag_name))));
+  }
+  //VAL(metatags_bindings.size());
+  m_metatag_expression.bindings(metatags_bindings);
+  m_bindings_outdated = false;
+}
+
+UnicodeString
+MruCore::get_metatag_expression(void)
+{
+  return m_metatag_expression.str();
+}
+
+void
+MruCore::reset_state(void)
+{
+  m_metatag_expression.reset();
+}
 
 void
 MruCore::start_rename(void)
 {
   FO("MruCore::start_rename(void)");
+  reset_state();
 }
 
 void
@@ -212,12 +321,29 @@ void
 MruCore::stop_rename(void)
 {
   FO("MruCore::stop_rename(void)");
+  reset_state();
 }
 
 FileIterator
-MruCore::get_directory_iterator(const filepath_type &a_directory)
+MruCore::get_directory_iterator(void)
 {
-  return FileIterator(a_directory);
+  FO("MruCore::get_directory_iterator(void)");
+  try {
+    return FileIterator(get_current_directory(), include_directories(), include_filenames());
+  } catch(...) {
+    ERR("Couldn't get directory iterator for: " << get_current_directory());
+    return FileIterator();
+  }
+}
+
+UnicodeString
+MruCore::generate_filepath(const FileIterator &a_iterator)
+{
+  FO("MruCore::generate_filepath(const FileIterator &a_iterator)");
+  if(a_iterator == FileIterator()) // if invalid iterator
+    return UnicodeString();
+  bind_metatags();
+  return m_metatag_expression.evaluate(a_iterator.base_filename()); 
 }
 
 /* ------------------------------------------------------------------------- */
@@ -232,6 +358,17 @@ OutputPlugin *
 MruCore::get_output_plugin(void)
 {
   return m_out_driver;
+}
+
+std::list<UnicodeString>
+MruCore::get_available_metatags(void)
+{
+  std::list<name_type> tag_name_list = TagPluginManager::get_instance()->available_plugins();
+  std::list<UnicodeString> result;
+  for(std::list<name_type>::iterator tag_name = tag_name_list.begin(); tag_name != tag_name_list.end(); ++tag_name) {
+    result.push_back(glue_cast<UnicodeString>(*tag_name));
+  }
+  return result;
 }
 
 } /* namespace mru */

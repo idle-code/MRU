@@ -151,12 +151,12 @@ glue_cast<UnicodeString, int>(const int &a_value)
 
 /* ------------------------------------------------------------------------- */
 
-//template<> inline
-//UnicodeString
-//glue_cast<UnicodeString, wxString>(const wxString &a_value)
-//{
-//  return UnicodeString();
-//}
+template<> inline
+UnicodeString
+glue_cast<UnicodeString, wxString>(const wxString &a_value)
+{
+  return glue_cast<UnicodeString>(glue_cast<std::wstring>(a_value));
+}
 
 template<> inline
 wxString
@@ -166,7 +166,6 @@ glue_cast<wxString, UnicodeString>(const UnicodeString &a_value)
 }
 
 /* ------------------------------------------------------------------------- */
-
 
 } /* namespace mru */
 

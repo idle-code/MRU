@@ -143,6 +143,15 @@ plugin_manager<PluginClass>::unregister_factory(const name_type &a_factory_name)
 }
 
 template<typename PluginClass>
+typename plugin_manager<PluginClass>::plugin_factory_type *
+plugin_manager<PluginClass>::get_factory(const name_type &a_name)
+{
+  if(m_factories.find(a_name) != m_factories.end())
+    return m_factories[a_name];
+  return NULL;
+}
+
+template<typename PluginClass>
 typename plugin_manager<PluginClass>::plugin_type *
 plugin_manager<PluginClass>::create_plugin(const name_type &a_plugin_name)
 {

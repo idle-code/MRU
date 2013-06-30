@@ -41,6 +41,12 @@ MetatagExpressionException::what(void) const throw()
 }
 
 const UnicodeString &
+MetatagExpressionException::message(void) const throw()
+{
+  return m_message;
+}
+
+const UnicodeString &
 MetatagExpressionException::expression(void) const
 {
   return m_expression;
@@ -54,27 +60,30 @@ MetatagExpressionException::expression(const UnicodeString &a_expression)
 
 /* ------------------------------------------------------------------------- */
 
-Metatag::Metatag(const UnicodeString &a_name)
-  : m_name(a_name)
-{ }
-
-Metatag::Metatag(const self_type &a_other)
-{ }
-
-Metatag::~Metatag(void)
-{ }
-
-/* ------------------------------------------------------------------------- */
-
 MetatagEntry::MetatagEntry(void)
-{ } 
+  : name(UnicodeString()), arguments(UnicodeString()), metatag(NULL), childrens()
+{
+  //FO("MetatagEntry::MetatagEntry(void)");
+} 
+
+MetatagEntry::MetatagEntry(const MetatagEntry &a_other)
+  : name(a_other.name), arguments(a_other.arguments), metatag(a_other.metatag), childrens()
+{
+  for(std::list<MetatagEntry*>::const_iterator i = a_other.childrens.begin(); i != a_other.childrens.end(); ++i) {
+    childrens.push_back(new MetatagEntry(**i));
+  }
+}
 
 MetatagEntry::MetatagEntry(const UnicodeString &a_name)
-  : name(a_name)
-{ } 
+  : name(a_name), arguments(UnicodeString()), metatag(NULL), childrens()
+{
+  //FO("MetatagEntry::MetatagEntry(const UnicodeString &a_name)");
+} 
 
 MetatagEntry::~MetatagEntry(void)
 {
+  if(metatag != NULL)
+    delete metatag;
   for(std::list<MetatagEntry*>::iterator i = childrens.begin(); i != childrens.end(); ++i) {
     delete (*i);
   }
@@ -116,22 +125,30 @@ MetatagExpression::token::token(int a_index, const UnicodeString &a_value, token
 MetatagExpression::MetatagExpression(void)
   : m_root(new MetatagEntry())
 {
+  //FO("MetatagExpression::MetatagExpression(void)");
 
 }
 
-MetatagExpression::MetatagExpression(const UnicodeString &a_expression)
-  : m_root(new MetatagEntry())
+MetatagExpression::MetatagExpression(const self_type &a_other)
+  : m_bindings(a_other.m_bindings), m_root(new MetatagEntry(*a_other.m_root)), m_expression(a_other.m_expression)
 {
-
+  //FO("MetatagExpression::MetatagExpression(const self_type &a_other)");
 }
 
-MetatagExpression::MetatagExpression(const MetatagExpression &a_other)
+MetatagExpression::self_type &
+MetatagExpression::operator=(const self_type &a_other)
 {
-  
+  //FO("MetatagExpression::operator=(const self_type &a_other)");
+  m_bindings = a_other.m_bindings;
+  delete m_root;
+  m_root = new MetatagEntry(*a_other.m_root);
+  m_expression = a_other.m_expression;
+  return *this;
 }
 
 MetatagExpression::~MetatagExpression(void)
 {
+  //FO("MetatagExpression::~MetatagExpression(void)");
   delete m_root;
 }
 
@@ -227,7 +244,7 @@ public:
     m_value = a_arguments; 
   }
 
-  UnicodeString execute(const UnicodeString &a_area_of_effect)
+  UnicodeString execute(const UnicodeString &a_file_path, const UnicodeString &a_area_of_effect)
   {
     return m_value + a_area_of_effect;
   }
@@ -354,6 +371,7 @@ MetatagExpression::parse(const UnicodeString &a_expression)
     throw mee;
   }
   
+  expression.m_expression = a_expression;
   return expression;
 }
 
@@ -366,9 +384,17 @@ MetatagExpression::bindings(void) const
 void
 apply_bindings(MetatagEntry *a_entry, const std::map<UnicodeString, abstract_factory<Metatag>*> a_bindings)
 {
+  //FO("apply_bindings(MetatagEntry *a_entry, const std::map<UnicodeString, abstract_factory<Metatag>*> a_bindings)");
+  //VAL(a_bindings.size());
   std::map<UnicodeString, abstract_factory<Metatag>*>::const_iterator binding = a_bindings.find(a_entry->name);
+  //VAL(a_entry);
+  //VAL(a_entry->metatag);
+  //VAL(glue_cast<std::string>(a_entry->metatag->name()));
+  //VAL(a_entry->childrens.size());
+  //VAL(glue_cast<std::string>(a_entry->name));
+  //VAL(glue_cast<std::string>(a_entry->arguments));
   if(binding == a_bindings.end() || (*binding).second == NULL)
-      throw MetatagExpressionException(glue_cast<UnicodeString>("No '") + (*binding).first + glue_cast<UnicodeString>("' metatag handler defined"), -1);
+      throw MetatagExpressionException(glue_cast<UnicodeString>("No '") + a_entry->name + glue_cast<UnicodeString>("' metatag handler defined"), -1);
   a_entry->metatag = (*binding).second->create();
 
   for(std::list<MetatagEntry*>::iterator i = a_entry->childrens.begin(); i != a_entry->childrens.end(); ++i)
@@ -378,43 +404,73 @@ apply_bindings(MetatagEntry *a_entry, const std::map<UnicodeString, abstract_fac
 void
 MetatagExpression::bindings(const std::map<UnicodeString, abstract_factory<Metatag>*> &a_bindings)
 {
+  //FO("MetatagExpression::bindings(const std::map<UnicodeString, abstract_factory<Metatag>*> &a_bindings)");
   m_bindings = a_bindings;
 
   if(m_bindings[UnicodeString()] == NULL)
     m_bindings[UnicodeString()] = new factory<EchoTag>();
 
+  //VAL(m_root);
+  //VAL(m_root->metatag);
   apply_bindings(m_root, m_bindings);
 }
 
 UnicodeString
-MetatagExpression::evaluate(void)
+MetatagExpression::evaluate(const UnicodeString &a_file_path)
 {
   initialize(m_root);
-  return evaluate(m_root);
+  return evaluate(a_file_path, m_root);
 }
 
 void
 MetatagExpression::initialize(MetatagEntry *a_entry)
 {
+  //FO("MetatagExpression::initialize(MetatagEntry *a_entry)");
+  assert(a_entry != NULL);
+  assert(a_entry->metatag != NULL);
   a_entry->metatag->initialize(a_entry->arguments);
   for(std::list<MetatagEntry*>::iterator i = a_entry->childrens.begin(); i != a_entry->childrens.end(); ++i)
     initialize(*i);
 }
 
 UnicodeString
-MetatagExpression::evaluate(MetatagEntry *a_entry)
+MetatagExpression::evaluate(const UnicodeString &a_file_path, MetatagEntry *a_entry)
 {
+  assert(a_entry != NULL);
+  assert(a_entry->metatag != NULL);
   UnicodeString area_of_effect;
   for(std::list<MetatagEntry*>::iterator i = a_entry->childrens.begin(); i != a_entry->childrens.end(); ++i)
-    area_of_effect += evaluate(*i);
-  return a_entry->metatag->execute(area_of_effect);
+    area_of_effect += evaluate(a_file_path, *i);
+  //MSG("Executing " << glue_cast<std::string>(a_entry->name));
+  return a_entry->metatag->execute(a_file_path, area_of_effect);
 }
 
 UnicodeString
-MetatagExpression::evaluate(const std::map<UnicodeString, abstract_factory<Metatag>*> &a_bindings)
+MetatagExpression::evaluate(const UnicodeString &a_file_path, const std::map<UnicodeString, abstract_factory<Metatag>*> &a_bindings)
 {
   bindings(a_bindings);
-  return evaluate();
+  return evaluate(a_file_path);
+}
+
+void
+MetatagExpression::reset(MetatagEntry *a_entry)
+{
+  if(a_entry->metatag != NULL)
+    a_entry->metatag->reset();
+  for(std::list<MetatagEntry*>::iterator i = a_entry->childrens.begin(); i != a_entry->childrens.end(); ++i)
+    reset(*i);
+}
+
+void
+MetatagExpression::reset(void)
+{
+  reset(m_root);
+}
+
+UnicodeString
+MetatagExpression::str(void) const
+{
+  return m_expression;
 }
 
 } /* namespace mru */

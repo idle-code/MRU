@@ -20,8 +20,6 @@ wxWidgetsUi::start(int a_argc, char *a_argv[])
 {
   FO("wxWidgetsUi::start(int a_argc, char *a_argv[])");
   
-  //TODO: start main window
-  
   detail::wxWidgetsUiApp *app = new detail::wxWidgetsUiApp(core());
   wxApp::SetInstance(app);
   int result = wxEntry(a_argc, a_argv);

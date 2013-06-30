@@ -24,9 +24,10 @@ public:
   }
 
   UnicodeString
-  execute(const UnicodeString &a_area_of_effect)
+  execute(const UnicodeString &a_file_path, const UnicodeString &a_area_of_effect)
   {
     FO("EchoTag::execute(const UnicodeString &a_area_of_effect)");
+    VAL(mru::glue_cast<std::string>(a_file_path));
     VAL(mru::glue_cast<std::string>(a_area_of_effect));
     return mru::glue_cast<UnicodeString>("<") + a_area_of_effect + mru::glue_cast<UnicodeString>(">");
   }
@@ -52,7 +53,7 @@ public:
   }
 
   UnicodeString
-  execute(const UnicodeString &a_area_of_effect)
+  execute(const UnicodeString &a_file_path, const UnicodeString &a_area_of_effect)
   {
     //FO("CountTag::execute(const UnicodeString &a_area_of_effect)");
     //VAL(mru::glue_cast<std::string>(a_area_of_effect));
@@ -88,17 +89,17 @@ metatag_tests::construction(void)
   tag_map[glue_cast<UnicodeString>("EchoTag")] = new factory<EchoTag>();
   me.bindings(tag_map);
 
-  result = me.evaluate();
-  VAL(mru::glue_cast<std::string>(result));
-  result = me.evaluate();
-  VAL(mru::glue_cast<std::string>(result));
-  result = me.evaluate();
-  VAL(mru::glue_cast<std::string>(result));
-  result = me.evaluate();
-  VAL(mru::glue_cast<std::string>(result));
-  result = me.evaluate();
-  VAL(mru::glue_cast<std::string>(result));
-  MSG("----------");
+  //result = me.evaluate();
+  //VAL(mru::glue_cast<std::string>(result));
+  //result = me.evaluate();
+  //VAL(mru::glue_cast<std::string>(result));
+  //result = me.evaluate();
+  //VAL(mru::glue_cast<std::string>(result));
+  //result = me.evaluate();
+  //VAL(mru::glue_cast<std::string>(result));
+  //result = me.evaluate();
+  //VAL(mru::glue_cast<std::string>(result));
+  //MSG("----------");
   //VAL(mru::glue_cast<std::string>(me.evaluate()));
   //UnicodeString result = MetatagExpression::evaluate("%Count(start=0)_file_%ToUpper(){%Name(%Nontag(\\))_ma_kota}", bindings);
   //VAL(glue_cast<std::string>(result));
