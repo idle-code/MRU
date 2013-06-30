@@ -2,6 +2,7 @@
 #define METATAG_HPP
 
 #include "types.hpp"
+#include "FileIterator.hpp"
 
 namespace mru
 {
@@ -16,7 +17,7 @@ public:
 
   virtual void reset(void);
   virtual void initialize(const UnicodeString &a_arguments) = 0;
-  virtual UnicodeString execute(const UnicodeString &a_file_path, const UnicodeString &a_area_of_effect) = 0;
+  virtual UnicodeString execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect) = 0;
 protected:
   Metatag(const self_type &a_other); // = delete;
   UnicodeString m_name;

@@ -32,7 +32,7 @@ Count::initialize(const UnicodeString &a_arguments)
 }
 
 UnicodeString
-Count::execute(const UnicodeString &a_file_path, const UnicodeString &a_area_of_effect)
+Count::execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect)
 {
   //FO("Core::execute(const UnicodeString &a_area_of_effect)");
   //VAL(glue_cast<std::string>(a_file_path));

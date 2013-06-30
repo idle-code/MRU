@@ -17,10 +17,10 @@ ExtTag::initialize(const UnicodeString &a_arguments)
 }
 
 UnicodeString
-ExtTag::execute(const UnicodeString &a_file_path, const UnicodeString &a_area_of_effect)
+ExtTag::execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect)
 {
   return glue_cast<UnicodeString>(
-      glue_cast<filepath_type>(a_file_path).extension()
+      glue_cast<filepath_type>(a_file_path.filename()).extension()
       );
 }
 

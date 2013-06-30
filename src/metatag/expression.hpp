@@ -74,15 +74,15 @@ public:
   std::map<UnicodeString, abstract_factory<Metatag>*> bindings(void) const; 
   void bindings(const std::map<UnicodeString, abstract_factory<Metatag>*> &a_bindings);
   
-  UnicodeString evaluate(const UnicodeString &a_file_path);
-  UnicodeString evaluate(const UnicodeString &a_file_path, const std::map<UnicodeString, abstract_factory<Metatag>*> &a_bindings);
+  UnicodeString evaluate(const FileIterator &a_file_path);
+  UnicodeString evaluate(const FileIterator &a_file_path, const std::map<UnicodeString, abstract_factory<Metatag>*> &a_bindings);
   void reset(void);
   UnicodeString str(void) const;
 protected:
   MetatagExpression(const UnicodeString &a_function_name);
   bindings_map m_bindings;
   void initialize(MetatagEntry *a_entry);
-  UnicodeString evaluate(const UnicodeString &a_file_path, MetatagEntry *a_entry);
+  UnicodeString evaluate(const FileIterator &a_file_path, MetatagEntry *a_entry);
   void reset(MetatagEntry *a_entry);
 public: //TEMPORARY
   MetatagEntry *m_root;
