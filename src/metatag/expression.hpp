@@ -1,6 +1,7 @@
 #ifndef EXPRESSION_HPP
 #define EXPRESSION_HPP
 
+#include "metatag.hpp"
 #include "types.hpp"
 #include <map>
 
@@ -9,10 +10,11 @@ namespace mru
 
 class MetatagExpressionException : public std::runtime_error {
 public: 
-  MetatagExpressionException(const UnicodeString &a_message, int a_start, int a_length =0) throw();
+  MetatagExpressionException(const UnicodeString &a_message, int a_start, int a_length =1) throw();
   ~MetatagExpressionException(void) throw();
   std::pair<int, int> range(void) const throw();
   const char* what(void) const throw();
+  const UnicodeString& message(void) const throw();
   const UnicodeString &expression(void) const;
   void expression(const UnicodeString &a_expression);
 protected:
@@ -23,20 +25,6 @@ protected:
 
 /* ------------------------------------------------------------------------- */
 
-class Metatag {
-public:
-  typedef Metatag self_type;
-public:
-  Metatag(const UnicodeString &a_name);
-  virtual ~Metatag(void);
-
-  virtual void initialize(const UnicodeString &a_arguments) = 0;
-  virtual UnicodeString execute(const UnicodeString &a_area_of_effect) = 0;
-protected:
-  Metatag(const self_type &a_other); // = delete;
-  UnicodeString m_name;
-};
-
 struct MetatagEntry {
   UnicodeString name;
   UnicodeString arguments;
@@ -44,6 +32,7 @@ struct MetatagEntry {
   std::list<MetatagEntry*> childrens;
 
   MetatagEntry(void);
+  MetatagEntry(const MetatagEntry &a_other);
   MetatagEntry(const UnicodeString &a_name);
   ~MetatagEntry(void);
   void add_child(MetatagEntry *&a_child)
@@ -57,6 +46,7 @@ struct MetatagEntry {
 class MetatagExpression {
 public:
   typedef MetatagExpression self_type;
+  typedef std::map<UnicodeString, abstract_factory<Metatag>* > bindings_map;
   struct token {
     enum token_kind_type {
       whitespace,
@@ -77,21 +67,26 @@ public:
 
 public:
   MetatagExpression(void);
-  MetatagExpression(const UnicodeString &a_function_name);
   MetatagExpression(const self_type &a_other);
+  self_type& operator=(const self_type &a_other);
   ~MetatagExpression(void);
   
   std::map<UnicodeString, abstract_factory<Metatag>*> bindings(void) const; 
   void bindings(const std::map<UnicodeString, abstract_factory<Metatag>*> &a_bindings);
   
-  UnicodeString evaluate(void);
-  UnicodeString evaluate(const std::map<UnicodeString, abstract_factory<Metatag>*> &a_bindings);
-
+  UnicodeString evaluate(const UnicodeString &a_file_path);
+  UnicodeString evaluate(const UnicodeString &a_file_path, const std::map<UnicodeString, abstract_factory<Metatag>*> &a_bindings);
+  void reset(void);
+  UnicodeString str(void) const;
 protected:
-  std::map<UnicodeString, abstract_factory<Metatag>*> m_bindings;
+  MetatagExpression(const UnicodeString &a_function_name);
+  bindings_map m_bindings;
   void initialize(MetatagEntry *a_entry);
-  UnicodeString evaluate(MetatagEntry *a_entry);
+  UnicodeString evaluate(const UnicodeString &a_file_path, MetatagEntry *a_entry);
+  void reset(MetatagEntry *a_entry);
+public: //TEMPORARY
   MetatagEntry *m_root;
+  UnicodeString m_expression;
 };
 
 } /* namespace mru */

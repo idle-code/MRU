@@ -47,6 +47,8 @@ add_subdirectory ("plugins")
 include_directories ("plugins")
 
 add_subdirectory ("metatag")
+include_directories ("metatag")
+set (LIBS ${LIBS} metatag)
 
 add_executable (mru "main.cpp" "MruCore.cpp" "FileIterator.cpp")
 target_link_libraries (mru ${LIBS} ${CMAKE_DL_LIBS})

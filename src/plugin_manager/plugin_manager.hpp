@@ -86,6 +86,7 @@ public:
 
   bool register_factory(generic_plugin_factory *a_factory);
   void unregister_factory(const name_type &a_name);
+  plugin_factory_type* get_factory(const name_type &a_name);
 
   plugin_type* create_plugin(const name_type &a_name);
   void destroy_plugin(plugin_type *&a_instance);
