@@ -1,25 +1,22 @@
-#ifndef STANDARDTAGS_HPP
-#define STANDARDTAGS_HPP
+#ifndef DIR_TAG_HPP
+#define DIR_TAG_HPP
 
 #include <plugins/TagPlugin.hpp>
 
 namespace mru
 {
 
-class Count : public TagPlugin {
+class DirTag : public TagPlugin {
 public:
-  PLUGIN_NAME("Count")
-  Count(void);
-  ~Count(void);
+  PLUGIN_NAME("Dir")
+  DirTag(void);
+  ~DirTag(void);
 
-  void reset(void);
   void initialize(const UnicodeString &a_arguments);
   UnicodeString execute(const UnicodeString &a_file_path, const UnicodeString &a_area_of_effect);
-private:
-  int m_counter;
 };
 
 } /* namespace mru */
 
-#endif /* STANDARDTAGS_HPP */
+#endif /* DIR_TAG_HPP */
 

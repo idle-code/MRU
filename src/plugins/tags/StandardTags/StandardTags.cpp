@@ -8,14 +8,13 @@ namespace mru
 Count::Count(void)
   : TagPlugin(static_implementation_name()), m_counter(0)
 {
-  FO("Count::Count(void)");
+  //FO("Count::Count(void)");
 
 }
 
 Count::~Count(void)
 {
-  FO("Count::~Count(void)");
- 
+  //FO("Count::~Count(void)");
 }
 
 void
@@ -43,7 +42,14 @@ Count::execute(const UnicodeString &a_file_path, const UnicodeString &a_area_of_
 
 } /* namespace mru */
 
+#include "ExtTag.hpp"
+#include "NameTag.hpp"
+#include "DirTag.hpp"
+
 EXPORT_START
   EXPORT_PLUGIN(mru::Count)
+  EXPORT_PLUGIN(mru::ExtTag)
+  EXPORT_PLUGIN(mru::NameTag)
+  EXPORT_PLUGIN(mru::DirTag)
 EXPORT_END
 
