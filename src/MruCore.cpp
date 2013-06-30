@@ -343,7 +343,7 @@ MruCore::generate_filepath(const FileIterator &a_iterator)
   if(a_iterator == FileIterator()) // if invalid iterator
     return UnicodeString();
   bind_metatags();
-  return m_metatag_expression.evaluate(a_iterator.base_filename()); 
+  return m_metatag_expression.evaluate(a_iterator); 
 }
 
 /* ------------------------------------------------------------------------- */

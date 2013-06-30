@@ -17,9 +17,12 @@ DirTag::initialize(const UnicodeString &a_arguments)
 }
 
 UnicodeString
-DirTag::execute(const UnicodeString &a_file_path, const UnicodeString &a_area_of_effect)
+DirTag::execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect)
 {
-  return glue_cast<UnicodeString>("Invalid");
+  if(a_file_path.directory().length() == 0)
+    return UnicodeString();
+  else
+    return a_file_path.directory() + glue_cast<UnicodeString>("/");
 }
 
 } /* namespace mru */

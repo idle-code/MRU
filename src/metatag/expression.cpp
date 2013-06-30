@@ -244,7 +244,7 @@ public:
     m_value = a_arguments; 
   }
 
-  UnicodeString execute(const UnicodeString &a_file_path, const UnicodeString &a_area_of_effect)
+  UnicodeString execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect)
   {
     return m_value + a_area_of_effect;
   }
@@ -416,7 +416,7 @@ MetatagExpression::bindings(const std::map<UnicodeString, abstract_factory<Metat
 }
 
 UnicodeString
-MetatagExpression::evaluate(const UnicodeString &a_file_path)
+MetatagExpression::evaluate(const FileIterator &a_file_path)
 {
   initialize(m_root);
   return evaluate(a_file_path, m_root);
@@ -434,7 +434,7 @@ MetatagExpression::initialize(MetatagEntry *a_entry)
 }
 
 UnicodeString
-MetatagExpression::evaluate(const UnicodeString &a_file_path, MetatagEntry *a_entry)
+MetatagExpression::evaluate(const FileIterator &a_file_path, MetatagEntry *a_entry)
 {
   assert(a_entry != NULL);
   assert(a_entry->metatag != NULL);
@@ -446,7 +446,7 @@ MetatagExpression::evaluate(const UnicodeString &a_file_path, MetatagEntry *a_en
 }
 
 UnicodeString
-MetatagExpression::evaluate(const UnicodeString &a_file_path, const std::map<UnicodeString, abstract_factory<Metatag>*> &a_bindings)
+MetatagExpression::evaluate(const FileIterator &a_file_path, const std::map<UnicodeString, abstract_factory<Metatag>*> &a_bindings)
 {
   bindings(a_bindings);
   return evaluate(a_file_path);
