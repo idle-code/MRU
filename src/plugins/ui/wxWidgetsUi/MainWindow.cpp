@@ -351,8 +351,13 @@ MainWindow::OnMetatagTextCtrlChange(wxCommandEvent &a_evt)
       last_good_expression = m_core->get_metatag_expression();  
       m_metatag_textctrl->SetBackgroundColour(wxColour(255, 255, 255));
     } catch(MetatagExpressionException &mee) {
-      m_metatag_textctrl->SetBackgroundColour(wxColour(250, 250, 0));
+      m_metatag_textctrl->SetBackgroundColour(wxColour(250, 50, 0));
       WARN("MetatagExpressionException: " << glue_cast<std::string>(mee.message()));
+      m_core->set_metatag_expression(last_good_expression);
+      fill_filelist();
+    } catch(MetatagException &me) {
+      m_metatag_textctrl->SetBackgroundColour(wxColour(250, 250, 0));
+      WARN("MetatagException: " << glue_cast<std::string>(me.message()));
       m_core->set_metatag_expression(last_good_expression);
       fill_filelist();
     }

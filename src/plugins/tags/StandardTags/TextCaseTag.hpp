@@ -1,22 +1,28 @@
-#ifndef EXT_TAG_HPP
-#define EXT_TAG_HPP
+#ifndef TEXT_CASE_TAG_HPP
+#define TEXT_CASE_TAG_HPP
 
 #include <plugins/TagPlugin.hpp>
 
 namespace mru
 {
 
-class Ext : public TagPlugin {
+class TextCaseTag : public TagPlugin {
 public:
-  PLUGIN_NAME("Ext")
-  Ext(void);
-  ~Ext(void);
+  PLUGIN_NAME("TextCase")
+  TextCaseTag(void);
+  ~TextCaseTag(void);
 
   void initialize(const UnicodeString &a_arguments);
-  UnicodeString execute(const UnicodeString &a_file_path, const UnicodeString &a_area_of_effect);
+  UnicodeString execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect);
+public:
+  enum {
+    to_upper,
+    to_lower,
+    to_title
+  } m_action;
 };
 
 } /* namespace mru */
 
-#endif /* EXT_TAG_HPP */
+#endif /* TEXT_CASE_TAG_HPP */
 
