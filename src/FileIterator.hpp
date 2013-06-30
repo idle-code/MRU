@@ -2,6 +2,7 @@
 #define FILE_ITERATOR_HPP
 
 #include "types.hpp"
+#include <unicode/regex.h>
 
 namespace mru
 {
@@ -42,13 +43,13 @@ protected:
   bfs::path m_base_path;
 protected:
   const bfs::recursive_directory_iterator& bfs_iterator(void) const;
-  FileIterator(const filepath_type &a_path, bool a_directory, bool a_file);
+  FileIterator(const filepath_type &a_path, bool a_directory, bool a_file, const UnicodeString &a_filter);
 
-  void progress_to_next_directory(void);
-  void progress_to_next_file(void);
+  void progress_if_needed(void);
 private:
   bool m_include_directories;
   bool m_include_files;
+  UnicodeString m_filter;
 };
 
 } /* namespace mru */

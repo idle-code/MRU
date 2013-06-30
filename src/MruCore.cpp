@@ -266,6 +266,20 @@ MruCore::get_current_directory(void) const
 }
 
 void
+MruCore::set_file_filter(const UnicodeString &a_filter)
+{
+  FO("MruCore::set_file_filter(const UnicodeString &a_filter)");
+  m_file_filter = a_filter; 
+  filter_changed(m_file_filter);
+}
+
+const UnicodeString &
+MruCore::get_file_filter(void)
+{
+  return m_file_filter;
+}
+
+void
 MruCore::set_metatag_expression(const UnicodeString &a_expression)
 {
   FO("MruCore::set_metatag_expression(const UnicodeString &a_expression)");
@@ -329,7 +343,7 @@ MruCore::get_directory_iterator(void)
 {
   FO("MruCore::get_directory_iterator(void)");
   try {
-    return FileIterator(get_current_directory(), include_directories(), include_filenames());
+    return FileIterator(get_current_directory(), include_directories(), include_filenames(), m_file_filter);
   } catch(...) {
     ERR("Couldn't get directory iterator for: " << get_current_directory());
     return FileIterator();
@@ -339,7 +353,7 @@ MruCore::get_directory_iterator(void)
 UnicodeString
 MruCore::generate_filepath(const FileIterator &a_iterator)
 {
-  FO("MruCore::generate_filepath(const FileIterator &a_iterator)");
+  //FO("MruCore::generate_filepath(const FileIterator &a_iterator)");
   if(a_iterator == FileIterator()) // if invalid iterator
     return UnicodeString();
   bind_metatags();

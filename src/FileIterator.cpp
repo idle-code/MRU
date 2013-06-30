@@ -12,7 +12,7 @@ FileIterator::FileIterator(void)
 
 FileIterator::FileIterator(const self_type &a_other)
   : m_bfs_iterator(a_other.m_bfs_iterator), m_base_path(a_other.m_base_path),
-    m_include_directories(true), m_include_files(true)
+    m_include_directories(true), m_include_files(true), m_filter()
 { }
 
 //FileIterator::FileIterator(const filepath_type &a_path)
@@ -20,19 +20,18 @@ FileIterator::FileIterator(const self_type &a_other)
 //{ }
 
 FileIterator::~FileIterator(void)
-{ }
+{ } 
 
-FileIterator::FileIterator(const filepath_type &a_path, bool a_directory, bool a_file)
+FileIterator::FileIterator(const filepath_type &a_path, bool a_directory, bool a_file, const UnicodeString &a_filter)
   : m_bfs_iterator(a_path), m_base_path(a_path),
-    m_include_directories(a_directory), m_include_files(a_file)
+    m_include_directories(a_directory), m_include_files(a_file), m_filter(a_filter)
 {
+
+  //m_filter.findAndReplace(glue_cast<UnicodeString>("*"), glue_cast<UnicodeString>(".*"));
+  //m_filter.findAndReplace(glue_cast<UnicodeString>("?"), glue_cast<UnicodeString>(".?"));
   if(!(a_directory + a_file))
     m_bfs_iterator = bfs::recursive_directory_iterator();
-
-  if(!m_include_directories)
-    progress_to_next_directory();
-  if(!m_include_files)
-    progress_to_next_file();
+  progress_if_needed();
 }
 
 /* ------------------------------------------------------------------------- */
@@ -85,10 +84,7 @@ FileIterator::self_type &
 FileIterator::operator++(void)
 {
   ++m_bfs_iterator;
-  if(!m_include_directories)
-    progress_to_next_directory();
-  if(!m_include_files)
-    progress_to_next_file();
+  progress_if_needed();
   return *this;
 }
 
@@ -97,25 +93,45 @@ FileIterator::operator++(int)
 {
   self_type tmp(*this);
   ++m_bfs_iterator;
-  if(!m_include_directories)
-    progress_to_next_directory();
-  if(!m_include_files)
-    progress_to_next_file();
+  progress_if_needed();
   return tmp;
 }
 
 void
-FileIterator::progress_to_next_directory(void)
+FileIterator::progress_if_needed(void)
 {
-  while(m_bfs_iterator != bfs::recursive_directory_iterator() && bfs::is_directory(m_bfs_iterator->status()))
-    ++m_bfs_iterator;
-}
+  bfs::recursive_directory_iterator end_iterator;
 
-void
-FileIterator::progress_to_next_file(void)
-{
-  while(m_bfs_iterator != bfs::recursive_directory_iterator() && bfs::is_regular_file(m_bfs_iterator->status()))
-    ++m_bfs_iterator;
+  if(m_filter.length() > 0) {
+    UErrorCode status;
+    icu::RegexMatcher matcher(m_filter, 0, status);
+    if(!U_FAILURE(status)) {
+      while(m_bfs_iterator != end_iterator) {
+        matcher.reset(bare_filename());
+        if(matcher.matches(status)) {
+          break;
+        }
+
+        if(U_FAILURE(status)) {
+          //ERR("RegexMatcher error");
+          break;
+        } 
+        ++m_bfs_iterator;
+      }
+    }
+  }
+
+  if(!m_include_directories) {
+    while(m_bfs_iterator != end_iterator &&
+          bfs::is_directory(m_bfs_iterator->status()))
+      ++m_bfs_iterator;
+  }
+
+  if(!m_include_files) {
+    while(m_bfs_iterator != end_iterator &&
+          bfs::is_regular_file(m_bfs_iterator->status()))
+      ++m_bfs_iterator;
+  }
 }
 
 /* ------------------------------------------------------------------------- */

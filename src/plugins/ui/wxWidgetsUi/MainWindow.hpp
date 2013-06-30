@@ -25,7 +25,10 @@ private:
   void OnMetatagListClick(wxCommandEvent &a_evt); 
   // metatag expression
   wxTextCtrl *m_metatag_textctrl;
+  void OnMetatagTextCtrlChange(wxCommandEvent &a_evt);
+  // template
   wxButton *m_metatag_load_template_button;
+  void OnMetatagLoadTemplateButtonClick(wxCommandEvent &a_evt);
 
   // source directory
   filepath_type m_source_directory;
@@ -34,20 +37,18 @@ private:
 
   wxButton *m_source_directory_button;
   void OnSourceDirectoryButtonClick(wxCommandEvent &a_evt);
+  
+  // source directory mask
+  wxTextCtrl *m_source_directory_mask_textctrl;
+  void OnSourceDirectoryMaskTextCtrlChange(wxCommandEvent &a_evt);
 
-  // top panel
+  // top checkboxes
   wxCheckBox *m_work_on_directories_checkbox;
   void OnWorkOnDirectoriesCheckboxClick(wxCommandEvent &a_evt);
   wxCheckBox *m_include_directories_checkbox;
   void OnIncludeDirectoriesCheckboxClick(wxCommandEvent &a_evt);
   wxCheckBox *m_include_files_checkbox;
   void OnIncludeFilesCheckboxClick(wxCommandEvent &a_evt);
-
-  // source directory mask
-  wxTextCtrl *m_source_directory_mask_textctrl;
-
-  void OnMetatagTextCtrlChange(wxCommandEvent &a_evt);
-  void OnMetatagLoadTemplateButtonClick(wxCommandEvent &a_evt);
 
   // bottom panel
   wxCheckBox *m_auto_preview_checkbox;
