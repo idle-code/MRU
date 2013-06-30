@@ -413,12 +413,14 @@ MetatagExpression::bindings(const std::map<UnicodeString, abstract_factory<Metat
   //VAL(m_root);
   //VAL(m_root->metatag);
   apply_bindings(m_root, m_bindings);
+  initialize(m_root);
 }
 
 UnicodeString
 MetatagExpression::evaluate(const FileIterator &a_file_path)
 {
-  initialize(m_root);
+  FO("MetatagExpression::evaluate(const FileIterator &a_file_path)");
+  //initialize(m_root);
   return evaluate(a_file_path, m_root);
 }
 

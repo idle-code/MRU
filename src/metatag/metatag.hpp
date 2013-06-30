@@ -23,6 +23,17 @@ protected:
   UnicodeString m_name;
 };
 
+class MetatagException : public std::runtime_error {
+public:
+  MetatagException(const UnicodeString &a_tag_name, const UnicodeString &a_message);
+  ~MetatagException(void) throw();
+  const char* what(void) const throw();
+  const UnicodeString& message(void) const throw();
+private:
+  UnicodeString m_tag_name;
+  UnicodeString m_message;
+};
+
 } /* namespace mru */
 
 #endif /* METATAG_HPP */
