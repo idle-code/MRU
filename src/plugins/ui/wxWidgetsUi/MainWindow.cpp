@@ -60,7 +60,7 @@ MainWindow::MainWindow(MruCore *a_mru_core)
     m_source_directory_button = new wxButton(this, wxID_ANY, wxT("..."));
     m_source_directory_button->SetMinSize(wxSize(30, 20));
     wxStaticText *source_directory_mask_label = new wxStaticText(this, wxID_ANY, wxT("File mask:"));
-    m_source_directory_mask_textctrl = new wxTextCtrl(this, wxID_ANY, wxT("*"));
+    m_source_directory_mask_textctrl = new wxTextCtrl(this, wxID_ANY, wxT(".*"));
 
     source_directory_sizer->Add(source_directory_label,           0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 3);
     source_directory_sizer->Add(m_source_directory_textctrl,      1, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT, 0);
@@ -72,6 +72,7 @@ MainWindow::MainWindow(MruCore *a_mru_core)
 
     Connect(m_source_directory_textctrl->GetId(), wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(MainWindow::OnSourceDirectoryTextCtrlChange));
     Connect(m_source_directory_button->GetId(), wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainWindow::OnSourceDirectoryButtonClick));
+    Connect(m_source_directory_mask_textctrl->GetId(), wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(MainWindow::OnSourceDirectoryMaskTextCtrlChange));
   }
 
   { // top panel checkboxes
@@ -339,6 +340,14 @@ MainWindow::OnMetatagLoadTemplateButtonClick(wxCommandEvent &a_evt)
 
 }
 
+void
+MainWindow::OnSourceDirectoryMaskTextCtrlChange(wxCommandEvent &a_evt)
+{
+  FO("MainWindow::OnSourceDirectoryMaskTextCtrlChange(wxCommandEvent &a_evt)");
+  m_core->set_file_filter(glue_cast<UnicodeString>(m_source_directory_mask_textctrl->GetValue()));
+  fill_filelist();
+}
+
 static UnicodeString last_good_expression;
 void
 MainWindow::OnMetatagTextCtrlChange(wxCommandEvent &a_evt)
@@ -369,7 +378,8 @@ MainWindow::OnAutoPreviewCheckboxClick(wxCommandEvent &a_evt)
 {
   FO("MainWindow::OnAutoPreviewCheckboxClick(wxCommandEvent &a_evt)");
   m_preview_button->Enable(!m_auto_preview_checkbox->GetValue());
-  fill_filelist();
+  wxCommandEvent evt;
+  OnPreviewButtonClick(evt);
 }
 
 void

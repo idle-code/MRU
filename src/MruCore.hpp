@@ -89,6 +89,7 @@ private:
 
   filepath_type m_base_directory;
   filepath_type m_current_directory;
+  UnicodeString m_file_filter;
 
   MetatagExpression m_metatag_expression;
 

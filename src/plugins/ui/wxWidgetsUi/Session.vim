@@ -2,12 +2,12 @@ let SessionLoad = 1
 if &cp | set nocp | endif
 let s:cpo_save=&cpo
 set cpo&vim
-imap <F11> :wa
-inoremap <silent> <Plug>(neocomplcache_start_omni_complete) 
-inoremap <silent> <Plug>(neocomplcache_start_auto_complete_no_select) 
-inoremap <silent> <Plug>(neocomplcache_start_auto_complete) =neocomplcache#popup_post()
-inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_quick_match) unite#sources#neocomplcache#start_quick_match()
 inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_complete) unite#sources#neocomplcache#start_complete()
+inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_quick_match) unite#sources#neocomplcache#start_quick_match()
+inoremap <silent> <Plug>(neocomplcache_start_auto_complete) =neocomplcache#popup_post()
+inoremap <silent> <Plug>(neocomplcache_start_auto_complete_no_select) 
+inoremap <silent> <Plug>(neocomplcache_start_omni_complete) 
+imap <F11> :wa
 inoremap <silent> <C-Tab> =UltiSnips_ListSnippets()
 xnoremap 	 :call UltiSnips_SaveLastVisualSelection()gvs
 snoremap <silent> 	 :call UltiSnips_ExpandSnippet()
@@ -15,13 +15,13 @@ snoremap <silent> <NL> :call UltiSnips_JumpForwards()
 snoremap <silent>  :call UltiSnips_JumpBackwards()
 nmap <silent> \ig <Plug>IndentGuidesToggle
 nmap gx <Plug>NetrwBrowseX
+map <F4> :tabnew 
+map <F5> :tabprevious
+map <F6> :tabnext
+map <F11> :wa
 nnoremap <silent> <Plug>NetrwBrowseX :call netrw#NetrwBrowseX(expand("<cWORD>"),0)
 snoremap <silent> <BS> c
 snoremap <silent> <C-Tab> :call UltiSnips_ListSnippets()
-map <F11> :wa
-map <F6> :tabnext
-map <F5> :tabprevious
-map <F4> :tabnew 
 inoremap <silent> 	 =UltiSnips_ExpandSnippet()
 inoremap <silent> <NL> =UltiSnips_JumpForwards()
 inoremap <silent>  =UltiSnips_JumpBackwards()
@@ -48,7 +48,7 @@ set showcmd
 set tabstop=2
 set wildmenu
 set wildmode=longest,list,full
-set window=49
+set window=48
 let s:so_save = &so | let s:siso_save = &siso | set so=0 siso=0
 let v:this_session=expand("<sfile>:p")
 silent only
@@ -60,7 +60,7 @@ set shortmess=aoO
 badd +34 MainWindow.cpp
 badd +1 MainWindow.hpp
 badd +1 wxWidgetsUi.hpp
-badd +62 wxWidgetsUi.cpp
+badd +28 wxWidgetsUi.cpp
 args MainWindow.cpp
 edit MainWindow.cpp
 set splitbelow splitright
@@ -72,8 +72,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
-exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
+exe 'vert 1resize ' . ((&columns * 73 + 78) / 157)
+exe 'vert 2resize ' . ((&columns * 83 + 78) / 157)
 argglobal
 setlocal noautoindent
 setlocal balloonexpr=
@@ -179,70 +179,44 @@ normal! zo
 normal! zo
 36
 normal! zo
-44
+177
 normal! zo
-176
+209
 normal! zo
-207
+244
 normal! zo
-245
+285
 normal! zo
-286
+298
 normal! zo
-299
-normal! zo
-302
-normal! zo
-361
-normal! zo
-208
-normal! zo
-243
-normal! zo
-284
-normal! zo
-297
-normal! zo
-300
-normal! zo
-359
-normal! zo
-243
-normal! zo
-284
-normal! zo
-297
-normal! zo
-300
-normal! zo
-359
-normal! zo
-243
-normal! zo
-284
-normal! zo
-297
-normal! zo
-300
+301
 normal! zo
 345
 normal! zo
-347
+354
 normal! zo
-348
+356
 normal! zo
-352
+386
 normal! zo
-372
+354
 normal! zo
-372
+356
 normal! zo
-let s:l = 355 - ((15 * winheight(0) + 23) / 47)
+378
+normal! zo
+381
+normal! zo
+387
+normal! zo
+387
+normal! zo
+let s:l = 382 - ((11 * winheight(0) + 23) / 46)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-355
-normal! 09l
+382
+normal! 028|
 lcd ~/projects/mru/src/plugins/ui/wxWidgetsUi
 wincmd w
 argglobal
@@ -347,15 +321,15 @@ setlocal nowrap
 setlocal wrapmargin=0
 9
 normal! zo
-let s:l = 38 - ((27 * winheight(0) + 23) / 47)
+let s:l = 65 - ((44 * winheight(0) + 23) / 46)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-38
-normal! 013l
+65
+normal! 03|
 wincmd w
-exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
-exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
+exe 'vert 1resize ' . ((&columns * 73 + 78) / 157)
+exe 'vert 2resize ' . ((&columns * 83 + 78) / 157)
 tabedit ~/projects/mru/src/plugins/ui/wxWidgetsUi/wxWidgetsUi.cpp
 set splitbelow splitright
 wincmd _ | wincmd |
@@ -366,8 +340,10 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
-exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
+exe '1resize ' . ((&lines * 43 + 24) / 49)
+exe 'vert 1resize ' . ((&columns * 73 + 78) / 157)
+exe '2resize ' . ((&lines * 43 + 24) / 49)
+exe 'vert 2resize ' . ((&columns * 74 + 78) / 157)
 argglobal
 setlocal noautoindent
 setlocal balloonexpr=
@@ -467,12 +443,12 @@ setlocal nowinfixwidth
 set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
-let s:l = 23 - ((19 * winheight(0) + 23) / 47)
+let s:l = 23 - ((17 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 23
-normal! 02l
+normal! 03|
 lcd ~/projects/mru/src/plugins/ui/wxWidgetsUi
 wincmd w
 argglobal
@@ -575,16 +551,18 @@ setlocal nowinfixwidth
 set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
-let s:l = 5 - ((4 * winheight(0) + 23) / 47)
+let s:l = 5 - ((4 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 5
-normal! 025l
+normal! 026|
 lcd ~/projects/mru/src/plugins/ui/wxWidgetsUi
 wincmd w
-exe 'vert 1resize ' . ((&columns * 105 + 105) / 211)
-exe 'vert 2resize ' . ((&columns * 105 + 105) / 211)
+exe '1resize ' . ((&lines * 43 + 24) / 49)
+exe 'vert 1resize ' . ((&columns * 73 + 78) / 157)
+exe '2resize ' . ((&lines * 43 + 24) / 49)
+exe 'vert 2resize ' . ((&columns * 74 + 78) / 157)
 tabnext 1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
