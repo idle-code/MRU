@@ -6,6 +6,7 @@
 #include "plugins/TagPlugin.hpp"
 #undef NDEBUG_L
 #include <debug_l.h>
+#include <unistd.h>
 
 namespace mru
 {
@@ -14,7 +15,7 @@ MruCore::MruCore(void)
   : m_ui(NULL), m_out_driver(NULL),
     m_base_directory("/home/idlecode/projects/mru/src/tests/files"), m_current_directory(m_base_directory),
     m_include_directories(false), m_include_filenames(true), m_work_on_directories(false),
-    m_bindings_outdated(true)
+    m_bindings_outdated(true), m_worker_thread_state(stopped)
 
 {
   FO("MruCore::MruCore(void)");
@@ -318,25 +319,88 @@ MruCore::reset_state(void)
   m_metatag_expression.reset();
 }
 
+MruCore::worker_state_kind
+MruCore::get_worker_state(void)
+{
+  return m_worker_thread_state;
+}
+
+/* ------------------------------------------------------------------------- */
+
+void *
+worker_thread_main(void *a_core_pointer)
+{
+  FO("worker_thread_main(void *a_core_pointer)");
+  MruCore *core = reinterpret_cast<MruCore*>(a_core_pointer);
+  FileIterator dir_iterator = core->get_directory_iterator();
+  FileIterator end_iterator;
+  filepath_type old_path;
+  filepath_type new_path;
+
+  core->rename_started();
+  //while(core->m_worker_thread_state != MruCore::stopped) {
+    while(core->m_worker_thread_state == MruCore::started &&
+          dir_iterator != end_iterator)
+    {
+      sleep(1);
+      WARN(glue_cast<std::string>(dir_iterator.filename()));
+      old_path = glue_cast<filepath_type>(dir_iterator.absolute_filename());
+      try {
+        new_path = glue_cast<filepath_type>(core->generate_filepath(dir_iterator));  
+      } catch(MetatagException me) {
+        ERR("Metatag exception: " << glue_cast<std::string>(me.message()));
+        core->rename_error_occured(me.message());
+      }
+
+      VAL(glue_cast<std::string>(old_path));
+      VAL(glue_cast<std::string>(new_path));
+      
+      try { 
+        bfs::rename(old_path, new_path);  
+      } catch(std::exception &e) {
+        ERR("Filesystem exception: " << e.what());
+        core->rename_error_occured(glue_cast<UnicodeString>(e.what()));
+      }
+      //core->filename_changed();
+      ++dir_iterator;
+    }
+    //TODO: sleep, mutex?
+  //}
+  core->rename_stopped();
+  return NULL;
+}
+
 void
 MruCore::start_rename(void)
 {
   FO("MruCore::start_rename(void)");
   reset_state();
+  m_worker_thread_state = started;
+  if(0 != pthread_create(&m_worker_thread, NULL, &worker_thread_main, this)) {
+    ERR("Couldn't create worker thread!");
+    m_worker_thread_state = stopped;
+  }
 }
 
 void
 MruCore::pause_rename(void)
 {
   FO("MruCore::pause_rename(void)");
+  m_worker_thread_state = paused;
 }
 
 void
 MruCore::stop_rename(void)
 {
   FO("MruCore::stop_rename(void)");
+  m_worker_thread_state = stopped;
+  if(0 != pthread_join(m_worker_thread, NULL)) {
+    ERR("Error while stopping worker thread");
+  }
   reset_state();
 }
+
+/* ------------------------------------------------------------------------- */
 
 FileIterator
 MruCore::get_directory_iterator(void)
@@ -350,14 +414,28 @@ MruCore::get_directory_iterator(void)
   }
 }
 
-UnicodeString
+filepath_type
 MruCore::generate_filepath(const FileIterator &a_iterator)
 {
-  //FO("MruCore::generate_filepath(const FileIterator &a_iterator)");
+  FO("MruCore::generate_filepath(const FileIterator &a_iterator)");
   if(a_iterator == FileIterator()) // if invalid iterator
-    return UnicodeString();
+    return filepath_type();
   bind_metatags();
-  return m_metatag_expression.evaluate(a_iterator); 
+  filepath_type old_path;
+  filepath_type new_path;
+
+  old_path = glue_cast<filepath_type>(a_iterator.absolute_filename());
+  new_path = glue_cast<filepath_type>(m_metatag_expression.evaluate(a_iterator));
+
+  if(work_on_directories())
+    new_path = glue_cast<filepath_type>(a_iterator.base_directory()) / new_path;
+  else
+    new_path = glue_cast<filepath_type>(a_iterator.absolute_directory()) / new_path;
+
+  VAL(glue_cast<std::string>(old_path));
+  VAL(glue_cast<std::string>(new_path));
+
+  return new_path;
 }
 
 /* ------------------------------------------------------------------------- */

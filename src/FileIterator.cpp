@@ -49,9 +49,15 @@ FileIterator::base_directory(void) const
 }
 
 UnicodeString
-FileIterator::base_filename(void) const
+FileIterator::absolute_filename(void) const
 {
   return glue_cast<UnicodeString>(m_bfs_iterator->path());
+}
+
+UnicodeString
+FileIterator::absolute_directory(void) const
+{
+  return glue_cast<UnicodeString>(m_bfs_iterator->path().parent_path());
 }
 
 UnicodeString

@@ -2,12 +2,12 @@ let SessionLoad = 1
 if &cp | set nocp | endif
 let s:cpo_save=&cpo
 set cpo&vim
-inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_complete) unite#sources#neocomplcache#start_complete()
-inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_quick_match) unite#sources#neocomplcache#start_quick_match()
-inoremap <silent> <Plug>(neocomplcache_start_auto_complete) =neocomplcache#popup_post()
-inoremap <silent> <Plug>(neocomplcache_start_auto_complete_no_select) 
-inoremap <silent> <Plug>(neocomplcache_start_omni_complete) 
 imap <F11> :wa
+inoremap <silent> <Plug>(neocomplcache_start_omni_complete) 
+inoremap <silent> <Plug>(neocomplcache_start_auto_complete_no_select) 
+inoremap <silent> <Plug>(neocomplcache_start_auto_complete) =neocomplcache#popup_post()
+inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_quick_match) unite#sources#neocomplcache#start_quick_match()
+inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_complete) unite#sources#neocomplcache#start_complete()
 inoremap <silent> <C-Tab> =UltiSnips_ListSnippets()
 xnoremap 	 :call UltiSnips_SaveLastVisualSelection()gvs
 snoremap <silent> 	 :call UltiSnips_ExpandSnippet()
@@ -15,10 +15,10 @@ snoremap <silent> <NL> :call UltiSnips_JumpForwards()
 snoremap <silent>  :call UltiSnips_JumpBackwards()
 nmap <silent> \ig <Plug>IndentGuidesToggle
 nmap gx <Plug>NetrwBrowseX
-map <F4> :tabnew 
-map <F5> :tabprevious
-map <F6> :tabnext
 map <F11> :wa
+map <F6> :tabnext
+map <F5> :tabprevious
+map <F4> :tabnew 
 nnoremap <silent> <Plug>NetrwBrowseX :call netrw#NetrwBrowseX(expand("<cWORD>"),0)
 snoremap <silent> <BS> c
 snoremap <silent> <C-Tab> :call UltiSnips_ListSnippets()
@@ -48,7 +48,6 @@ set showcmd
 set tabstop=2
 set wildmenu
 set wildmode=longest,list,full
-set window=48
 let s:so_save = &so | let s:siso_save = &siso | set so=0 siso=0
 let v:this_session=expand("<sfile>:p")
 silent only
@@ -57,10 +56,10 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +34 MainWindow.cpp
+badd +413 MainWindow.cpp
 badd +1 MainWindow.hpp
 badd +1 wxWidgetsUi.hpp
-badd +28 wxWidgetsUi.cpp
+badd +23 wxWidgetsUi.cpp
 args MainWindow.cpp
 edit MainWindow.cpp
 set splitbelow splitright
@@ -173,50 +172,60 @@ setlocal nowinfixwidth
 set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
-15
+16
 normal! zo
-20
+21
 normal! zo
-36
+37
 normal! zo
-177
+182
 normal! zo
-209
+214
 normal! zo
-244
-normal! zo
-285
+257
 normal! zo
 298
 normal! zo
-301
+311
 normal! zo
-345
+314
 normal! zo
-354
+367
 normal! zo
-356
+369
 normal! zo
-386
+400
 normal! zo
-354
+417
 normal! zo
-356
+441
 normal! zo
-378
+182
 normal! zo
-381
+214
 normal! zo
-387
+257
 normal! zo
-387
+298
 normal! zo
-let s:l = 382 - ((11 * winheight(0) + 23) / 46)
+311
+normal! zo
+314
+normal! zo
+367
+normal! zo
+369
+normal! zo
+400
+normal! zo
+417
+normal! zo
+let s:l = 477 - ((41 * winheight(0) + 23) / 46)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-382
-normal! 028|
+477
+normal! 03|
 lcd ~/projects/mru/src/plugins/ui/wxWidgetsUi
 wincmd w
 argglobal
@@ -321,12 +330,12 @@ setlocal nowrap
 setlocal wrapmargin=0
 9
 normal! zo
-let s:l = 65 - ((44 * winheight(0) + 23) / 46)
+let s:l = 63 - ((33 * winheight(0) + 23) / 46)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-65
-normal! 03|
+63
+normal! 022|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 73 + 78) / 157)
 exe 'vert 2resize ' . ((&columns * 83 + 78) / 157)
@@ -341,7 +350,7 @@ set nosplitright
 wincmd t
 set winheight=1 winwidth=1
 exe '1resize ' . ((&lines * 43 + 24) / 49)
-exe 'vert 1resize ' . ((&columns * 73 + 78) / 157)
+exe 'vert 1resize ' . ((&columns * 82 + 78) / 157)
 exe '2resize ' . ((&lines * 43 + 24) / 49)
 exe 'vert 2resize ' . ((&columns * 74 + 78) / 157)
 argglobal
@@ -560,7 +569,7 @@ normal! 026|
 lcd ~/projects/mru/src/plugins/ui/wxWidgetsUi
 wincmd w
 exe '1resize ' . ((&lines * 43 + 24) / 49)
-exe 'vert 1resize ' . ((&columns * 73 + 78) / 157)
+exe 'vert 1resize ' . ((&columns * 82 + 78) / 157)
 exe '2resize ' . ((&lines * 43 + 24) / 49)
 exe 'vert 2resize ' . ((&columns * 74 + 78) / 157)
 tabnext 1

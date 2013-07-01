@@ -18,8 +18,8 @@ CountTag::reset(void)
   m_counter = m_start;
 }
 
-static UnicodeString start_param_prefix = glue_cast<UnicodeString>("start=");
-static UnicodeString step_param_prefix = glue_cast<UnicodeString>("step=");
+static const UnicodeString start_param_prefix = glue_cast<UnicodeString>("start=");
+static const UnicodeString step_param_prefix = glue_cast<UnicodeString>("step=");
 
 int
 CountTag::UnicodeStringToInt(const UnicodeString &a_value)

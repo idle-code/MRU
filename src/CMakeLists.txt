@@ -6,6 +6,8 @@ include_directories ("./")
 include_directories ("/usr/local/include")
 link_directories ("/usr/local/lib")
 
+find_package (Threads REQUIRED)
+set (LIBS ${LIBS} ${CMAKE_THREAD_LIBS_INIT})
 find_package (ICU 50.1 COMPONENTS uc i18n REQUIRED)
 include_directories (${ICU_INCLUDE_DIRS})
 set (LIBS ${LIBS} ${ICU_LIBRARIES})
