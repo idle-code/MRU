@@ -236,14 +236,19 @@ MainWindow::fill_filelist(void)
     after_entry.SetColumn(1);
 
     //if(m_core->include_directories())
-    filepath_type new_path = m_core->generate_filepath(dir_iter);
-    if(m_core->work_on_directories())
-      new_path = bfs::make_relative(glue_cast<filepath_type>(dir_iter.base_directory()), glue_cast<filepath_type>(new_path));
-    else if(!bfs::is_directory(new_path))
-      new_path = new_path.filename();
-    else
-      new_path = filepath_type();
-    after_entry.SetText(glue_cast<wxString>(new_path));
+    try {
+      filepath_type new_path = m_core->generate_filepath(dir_iter);
+      if(m_core->work_on_directories())
+        new_path = bfs::make_relative(glue_cast<filepath_type>(dir_iter.base_directory()), glue_cast<filepath_type>(new_path));
+      else if(!bfs::is_directory(new_path))
+        new_path = new_path.filename();
+      else
+        new_path = filepath_type();
+      after_entry.SetText(glue_cast<wxString>(new_path));
+    } catch(MetatagException &me) {
+      after_entry.SetBackgroundColour(wxColour(210, 0, 0));
+      after_entry.SetText(glue_cast<wxString>(me.message()));
+    }
 
     if(!m_file_listctrl->SetItem(after_entry)) {
       WARN("SetItem failed");
@@ -403,12 +408,13 @@ MainWindow::OnPreviewButtonClick(wxCommandEvent &a_evt)
     m_core->set_metatag_expression(glue_cast<UnicodeString>(m_metatag_textctrl->GetValue()));
     fill_filelist();
   } catch(MetatagExpressionException &mee) {
-    wxMessageDialog *error_messagebox = new wxMessageDialog(this, glue_cast<wxString>(mee.message()), wxT("Metatag error"), wxOK);
+    wxMessageDialog *error_messagebox = new wxMessageDialog(this, glue_cast<wxString>(mee.message()), wxT("Metatag expression error"), wxOK);
     error_messagebox->ShowModal();
-    VAL(mee.range().first);
-    VAL(mee.range().second);
     if(mee.range().first >= 0)
       m_metatag_textctrl->SetSelection(mee.range().first, mee.range().first + mee.range().second);
+  } catch(MetatagException &me) {
+    wxMessageDialog *error_messagebox = new wxMessageDialog(this, glue_cast<wxString>(me.message()), wxT("Metatag error"), wxOK);
+    error_messagebox->ShowModal();
   }
 }
 

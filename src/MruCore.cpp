@@ -102,54 +102,6 @@ MruCore::work_on_directories(void) const
   return m_work_on_directories;
 }
 
-namespace
-{
-
-void
-parse_argument(char *a_string)
-{
-  if(a_string == NULL)
-    return;
-
-  /*
-  MSG("Parsing: " << a_string);
-  mru::string_type arg = a_string;
-
-  if(arg.startsWith(UNICODE_STRING_SIMPLE("--"))) {
-    arg.remove(0, 2); //remove prefix 
-  } else if(arg.startsWith(UNICODE_STRING_SIMPLE("-"))) {
-    arg.remove(0, 1); //FIXME: differently treat options shortcuts?
-  }
-
-  if(arg.length() < 1)
-    return;
-
-  int32_t equal_sign_index = arg.indexOf('=');
-  if(equal_sign_index != -1) { //key=value syntax
-    mru::string_type key = arg.tempSubString(0, equal_sign_index); 
-    mru::string_type value = arg.tempSubString(equal_sign_index + 1); 
-
-    if(key.length() > 0) {
-      //FIXME: conversion is needed to store UTF strings into registry tree:
-      registry::value_type::text_type bare_key;
-      key.toUTF8String(bare_key);
-      registry::value_type::text_type bare_value;
-      value.toUTF8String(bare_value);
-
-      if(registry::path_type().is_valid_name(bare_key))
-        reg.set(bare_key, bare_value);
-    }
-  } else { //simple property
-      registry::value_type::text_type bare_key;
-      arg.toUTF8String(bare_key);
-      if(registry::path_type().is_valid_name(bare_key))
-        reg.set(bare_key, registry::value_type::None);
-  }
-  //*/
-}
-
-} /* unnamed namespace */
-
 //TODO: rewrite using boost::tokenizer
 void
 MruCore::parse_command_line(int a_argc, char **a_argv)
@@ -166,9 +118,9 @@ MruCore::parse_command_line(int a_argc, char **a_argv)
   //po::store(po::parse_command_line(a_argc, a_argv, desc), vm);
   //po::notify(vm);
 
-  for(int i = 0; i < a_argc; ++i) {
-    parse_argument(a_argv[i]); 
-  }
+  //for(int i = 0; i < a_argc; ++i) {
+  //  parse_argument(a_argv[i]); 
+  //}
 }
 
 bool
@@ -231,6 +183,7 @@ MruCore::load_tags(void)
   TagPluginManager *tag_manager = TagPluginManager::get_instance();
   int tags_loaded = 0;
   tags_loaded += tag_manager->load_module("plugins/tags/StandardTags/StandardTags");
+  tags_loaded += tag_manager->load_module("plugins/tags/AudioTag/AudioTag");
 
   return tags_loaded;
 }
@@ -347,21 +300,16 @@ worker_thread_main(void *a_core_pointer)
       old_path = glue_cast<filepath_type>(dir_iterator.absolute_filename());
       try {
         new_path = glue_cast<filepath_type>(core->generate_filepath(dir_iterator));  
+        bfs::rename(old_path, new_path);  
+        core->filename_changed(old_path, new_path);
       } catch(MetatagException me) {
         ERR("Metatag exception: " << glue_cast<std::string>(me.message()));
         core->rename_error_occured(me.message());
-      }
-
-      VAL(glue_cast<std::string>(old_path));
-      VAL(glue_cast<std::string>(new_path));
-      
-      try { 
-        bfs::rename(old_path, new_path);  
       } catch(std::exception &e) {
         ERR("Filesystem exception: " << e.what());
         core->rename_error_occured(glue_cast<UnicodeString>(e.what()));
       }
-      //core->filename_changed();
+      
       ++dir_iterator;
     }
     //TODO: sleep, mutex?
@@ -417,7 +365,7 @@ MruCore::get_directory_iterator(void)
 filepath_type
 MruCore::generate_filepath(const FileIterator &a_iterator)
 {
-  FO("MruCore::generate_filepath(const FileIterator &a_iterator)");
+  //FO("MruCore::generate_filepath(const FileIterator &a_iterator)");
   if(a_iterator == FileIterator()) // if invalid iterator
     return filepath_type();
   bind_metatags();
