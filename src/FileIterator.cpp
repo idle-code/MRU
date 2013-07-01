@@ -1,6 +1,8 @@
 #include "FileIterator.hpp"
 #include "glue.hpp"
 #include "make_relative_fix.hpp"
+#undef NDEBUG_L
+#include <debug_l.h>
 
 namespace mru
 {
@@ -26,7 +28,6 @@ FileIterator::FileIterator(const filepath_type &a_path, bool a_directory, bool a
   : m_bfs_iterator(a_path), m_base_path(a_path),
     m_include_directories(a_directory), m_include_files(a_file), m_filter(a_filter)
 {
-
   //m_filter.findAndReplace(glue_cast<UnicodeString>("*"), glue_cast<UnicodeString>(".*"));
   //m_filter.findAndReplace(glue_cast<UnicodeString>("?"), glue_cast<UnicodeString>(".?"));
   if(!(a_directory + a_file))
@@ -109,8 +110,10 @@ FileIterator::progress_if_needed(void)
   bfs::recursive_directory_iterator end_iterator;
 
   if(m_filter.length() > 0) {
-    UErrorCode status;
+    UErrorCode status = U_ZERO_ERROR;
+    //VAL(glue_cast<std::string>(m_filter));
     icu::RegexMatcher matcher(m_filter, 0, status);
+    //VAL(u_errorName(status));
     if(!U_FAILURE(status)) {
       while(m_bfs_iterator != end_iterator) {
         matcher.reset(bare_filename());
@@ -119,11 +122,13 @@ FileIterator::progress_if_needed(void)
         }
 
         if(U_FAILURE(status)) {
-          //ERR("RegexMatcher error");
+          ERR("RegexMatcher error");
           break;
         } 
         ++m_bfs_iterator;
       }
+    } else {
+      ERR("RegexMatcher setup failed");
     }
   }
 

@@ -102,6 +102,18 @@ MruCore::work_on_directories(void) const
   return m_work_on_directories;
 }
 
+void
+MruCore::reset_on_directory_change(bool enable)
+{
+  m_reset_on_directory_change = enable;
+}
+
+bool
+MruCore::reset_on_directory_change(void) const
+{
+  return m_reset_on_directory_change;
+}
+
 //TODO: rewrite using boost::tokenizer
 void
 MruCore::parse_command_line(int a_argc, char **a_argv)
@@ -295,8 +307,8 @@ worker_thread_main(void *a_core_pointer)
     while(core->m_worker_thread_state == MruCore::started &&
           dir_iterator != end_iterator)
     {
-      sleep(1);
-      WARN(glue_cast<std::string>(dir_iterator.filename()));
+      //sleep(1);
+      //WARN(glue_cast<std::string>(dir_iterator.filename()));
       old_path = glue_cast<filepath_type>(dir_iterator.absolute_filename());
       try {
         new_path = glue_cast<filepath_type>(core->generate_filepath(dir_iterator));  
@@ -366,11 +378,17 @@ filepath_type
 MruCore::generate_filepath(const FileIterator &a_iterator)
 {
   //FO("MruCore::generate_filepath(const FileIterator &a_iterator)");
+  static UnicodeString last_directory;
   if(a_iterator == FileIterator()) // if invalid iterator
     return filepath_type();
   bind_metatags();
   filepath_type old_path;
   filepath_type new_path;
+
+  if(m_reset_on_directory_change && a_iterator.absolute_directory() != last_directory) {
+    reset_state();
+    last_directory = a_iterator.absolute_directory();
+  }
 
   old_path = glue_cast<filepath_type>(a_iterator.absolute_filename());
   new_path = glue_cast<filepath_type>(m_metatag_expression.evaluate(a_iterator));
@@ -380,8 +398,8 @@ MruCore::generate_filepath(const FileIterator &a_iterator)
   else
     new_path = glue_cast<filepath_type>(a_iterator.absolute_directory()) / new_path;
 
-  VAL(glue_cast<std::string>(old_path));
-  VAL(glue_cast<std::string>(new_path));
+  //VAL(glue_cast<std::string>(old_path));
+  //VAL(glue_cast<std::string>(new_path));
 
   return new_path;
 }

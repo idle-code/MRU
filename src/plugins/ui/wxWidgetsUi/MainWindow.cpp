@@ -78,24 +78,34 @@ MainWindow::MainWindow(MruCore *a_mru_core)
 
   { // top panel checkboxes
     wxBoxSizer *settings_panel_sizer = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer *settings_panel_sizer2 = new wxBoxSizer(wxHORIZONTAL);
 
     m_work_on_directories_checkbox = new wxCheckBox(this, wxID_ANY, wxT("Work on directories"));
     m_include_directories_checkbox = new wxCheckBox(this, wxID_ANY, wxT("Include directories"));
     m_include_files_checkbox = new wxCheckBox(this, wxID_ANY, wxT("Include files"));
+    m_reset_on_directory_change = new wxCheckBox(this, wxID_ANY, wxT("Reset tags on directory change"));
 
     m_work_on_directories_checkbox->SetValue(m_core->work_on_directories());
     m_include_directories_checkbox->SetValue(m_core->include_directories());
     m_include_files_checkbox->SetValue(m_core->include_filenames());
 
     settings_panel_sizer->Add(m_work_on_directories_checkbox, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 3);
-    settings_panel_sizer->Add(m_include_directories_checkbox, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 3);
-    settings_panel_sizer->Add(m_include_files_checkbox, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 3);
+    settings_panel_sizer->Add(m_reset_on_directory_change, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 3);
+    settings_panel_sizer2->Add(m_include_directories_checkbox, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 3);
+    settings_panel_sizer2->Add(m_include_files_checkbox, 0, wxALIGN_CENTER_VERTICAL, 3);
 
     settings_sizer->Add(settings_panel_sizer, 0, wxEXPAND, 0);
+    settings_sizer->Add(settings_panel_sizer2, 0, wxEXPAND, 0);
+
+    m_work_on_directories_checkbox->SetValue(m_core->work_on_directories());
+    m_include_directories_checkbox->SetValue(m_core->include_directories());
+    m_include_files_checkbox->SetValue(m_core->include_filenames());
+    m_reset_on_directory_change->SetValue(m_core->reset_on_directory_change());
 
     Connect(m_work_on_directories_checkbox->GetId(), wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(MainWindow::OnWorkOnDirectoriesCheckboxClick));
     Connect(m_include_directories_checkbox->GetId(), wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(MainWindow::OnIncludeDirectoriesCheckboxClick));
     Connect(m_include_files_checkbox->GetId(), wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(MainWindow::OnIncludeFilesCheckboxClick));
+    Connect(m_reset_on_directory_change->GetId(), wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(MainWindow::OnResetOnDirectoryChangeCheckboxClick));
   }
 
   settings_sizer->Add(-1, 3);
@@ -105,12 +115,18 @@ MainWindow::MainWindow(MruCore *a_mru_core)
 
     wxStaticText *metatag_label = new wxStaticText(this, wxID_ANY, wxT("Expression:"));
     m_metatag_textctrl = new wxTextCtrl(this, wxID_ANY, glue_cast<wxString>(m_core->get_metatag_expression()));
+    //wxTextAttr style = m_metatag_textctrl->GetDefaultStyle();
+    //wxFont font = style.GetFont();
+    //font.SetWeight(20);
+    //style.SetFont(font);
+    //m_metatag_textctrl->SetDefaultStyle(style);
     m_metatag_load_template_button = new wxButton(this, wxID_ANY, wxT("Load template"));
+    m_metatag_load_template_button->Hide();
     m_metatag_load_template_button->SetMinSize(wxSize(-1, 20));
 
     metatag_sizer->Add(metatag_label, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxRIGHT, 3);
     metatag_sizer->Add(m_metatag_textctrl, 1, wxALIGN_CENTER_VERTICAL | wxRIGHT, 3);
-    metatag_sizer->Add(m_metatag_load_template_button, 0, wxALIGN_CENTER_VERTICAL, 0);
+    //metatag_sizer->Add(m_metatag_load_template_button, 0, wxALIGN_CENTER_VERTICAL, 0);
 
     settings_sizer->Add(metatag_sizer, 0, wxEXPAND, 0);
 
@@ -348,6 +364,14 @@ MainWindow::OnIncludeFilesCheckboxClick(wxCommandEvent &a_evt)
 {
   FO("MainWindow::OnIncludeFilesCheckboxClick(wxCommandEvent &a_evt)");
   m_core->include_filenames(m_include_files_checkbox->GetValue());
+  fill_filelist();
+}
+
+void
+MainWindow::OnResetOnDirectoryChangeCheckboxClick(wxCommandEvent &a_evt)
+{
+  FO("MainWindow::OnResetOnDirectoryChangeCheckboxClick(wxCommandEvent &a_evt)");
+  m_core->reset_on_directory_change(m_reset_on_directory_change->GetValue());
   fill_filelist();
 }
 
