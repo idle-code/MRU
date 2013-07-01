@@ -49,6 +49,8 @@ private:
   void OnIncludeDirectoriesCheckboxClick(wxCommandEvent &a_evt);
   wxCheckBox *m_include_files_checkbox;
   void OnIncludeFilesCheckboxClick(wxCommandEvent &a_evt);
+  wxCheckBox *m_reset_on_directory_change;
+  void OnResetOnDirectoryChangeCheckboxClick(wxCommandEvent &a_evt);
 
   // bottom panel
   wxCheckBox *m_auto_preview_checkbox;

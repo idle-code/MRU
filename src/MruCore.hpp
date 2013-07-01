@@ -35,7 +35,8 @@ public:
   bool include_filenames(void) const;
   void work_on_directories(bool enable);
   bool work_on_directories(void) const;
-
+  void reset_on_directory_change(bool enable);
+  bool reset_on_directory_change(void) const;
 
   int start(int a_argc, char **a_argv);
   void parse_command_line(int a_argc, char **a_argv);
@@ -98,6 +99,7 @@ private:
   bool m_include_directories;
   bool m_include_filenames;
   bool m_work_on_directories;
+  bool m_reset_on_directory_change;
 
   int load_modules_directory(const filepath_type &a_directory, bool a_recursively =true);
   int load_default_modules(void);
