@@ -198,43 +198,84 @@ setlocal nowinfixwidth
 set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
-11
+12
 normal! zo
-105
+41
 normal! zo
-109
+106
 normal! zo
-155
+110
 normal! zo
-204
+156
 normal! zo
-206
+205
 normal! zo
-270
+207
 normal! zo
-293
+271
 normal! zo
-343
+294
 normal! zo
-373
+344
+normal! zo
+374
+normal! zo
+380
+normal! zo
+294
+normal! zo
+324
+normal! zo
+332
+normal! zo
+347
+normal! zo
+366
 normal! zo
 379
 normal! zo
-293
+415
 normal! zo
-343
+344
 normal! zo
-379
+348
 normal! zo
-let s:l = 356 - ((32 * winheight(0) + 23) / 46)
+374
+normal! zo
+393
+normal! zo
+406
+normal! zo
+456
+normal! zo
+358
+normal! zo
+375
+normal! zo
+394
+normal! zo
+407
+normal! zo
+457
+normal! zo
+375
+normal! zo
+394
+normal! zo
+407
+normal! zo
+457
+normal! zo
+let s:l = 360 - ((35 * winheight(0) + 23) / 46)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-356
-normal! 04|
+360
+normal! 034|
+lcd ~/projects/mru/src
 wincmd w
 argglobal
-edit MruCore.hpp
+edit ~/projects/mru/src/MruCore.hpp
 setlocal noautoindent
 setlocal balloonexpr=
 setlocal nobinary
@@ -333,14 +374,14 @@ setlocal nowinfixwidth
 set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
-12
+13
 normal! zo
-let s:l = 47 - ((3 * winheight(0) + 23) / 46)
+let s:l = 76 - ((36 * winheight(0) + 23) / 46)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-47
-normal! 016|
+76
+normal! 042|
 lcd ~/projects/mru/src
 wincmd w
 exe 'vert 1resize ' . ((&columns * 73 + 78) / 157)
@@ -1477,28 +1518,46 @@ normal! zo
 normal! zo
 130
 normal! zo
-102
-normal! zo
-105
+59
 normal! zo
 108
 normal! zo
-109
-normal! zo
 111
+normal! zo
+114
 normal! zo
 115
 normal! zo
-124
+117
+normal! zo
+121
 normal! zo
 130
 normal! zo
-let s:l = 29 - ((13 * winheight(0) + 23) / 46)
+136
+normal! zo
+108
+normal! zo
+111
+normal! zo
+114
+normal! zo
+115
+normal! zo
+117
+normal! zo
+121
+normal! zo
+130
+normal! zo
+136
+normal! zo
+let s:l = 69 - ((42 * winheight(0) + 23) / 46)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-29
-normal! 0
+69
+normal! 012|
 lcd ~/projects/mru/src
 wincmd w
 argglobal
@@ -1603,11 +1662,11 @@ setlocal nowrap
 setlocal wrapmargin=0
 8
 normal! zo
-let s:l = 49 - ((34 * winheight(0) + 23) / 46)
+let s:l = 22 - ((9 * winheight(0) + 23) / 46)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-49
+22
 normal! 0
 lcd ~/projects/mru/src
 wincmd w
@@ -1752,12 +1811,12 @@ normal! zo
 normal! zo
 57
 normal! zo
-let s:l = 31 - ((23 * winheight(0) + 23) / 47)
+let s:l = 22 - ((14 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-31
-normal! 021|
+22
+normal! 013|
 lcd ~/projects/mru/src
 tabedit ~/projects/mru/src/glue_impl.hpp
 set splitbelow splitright

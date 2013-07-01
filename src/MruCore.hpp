@@ -7,6 +7,7 @@
 #include <sigc++/sigc++.h>
 #include <boost/filesystem.hpp>
 #include "metatag/expression.hpp"
+#include <pthread.h>
 
 namespace mru
 {
@@ -20,12 +21,7 @@ class OutputPlugin;
 class MruCore : public singleton<MruCore> {
 public:
   typedef MruCore self_type;
-public: //slots/signals
-  //error occured
-  //rename started
-  //rename ended
-  //modules loaded
-  //configuration changed
+  enum worker_state_kind { started, paused, stopped };
   
 public:
   MruCore(void);
@@ -64,9 +60,11 @@ public:
   sigc::signal<void, UnicodeString, int, int> expression_error_occured; //(expression, position, length, type)
 
   FileIterator get_directory_iterator(void);
-  UnicodeString generate_filepath(const FileIterator &a_iterator);
+  filepath_type generate_filepath(const FileIterator &a_iterator);
 
   void reset_state(void);
+
+  worker_state_kind get_worker_state(void);
 
   void start_rename(void);
   sigc::signal<void> rename_started;
@@ -75,7 +73,7 @@ public:
   void stop_rename(void);
   sigc::signal<void> rename_stopped;
 
-  sigc::signal<void> rename_error_occured;
+  sigc::signal<void, const UnicodeString &> rename_error_occured;
   sigc::signal<void, filepath_type, filepath_type> filename_changed; //(filename_before, filename_after)
 
   UiPlugin* get_ui_plugin(void);
@@ -92,6 +90,10 @@ private:
   UnicodeString m_file_filter;
 
   MetatagExpression m_metatag_expression;
+
+  friend void* worker_thread_main(void *a_core_pointer);
+  pthread_t m_worker_thread;
+  volatile worker_state_kind m_worker_thread_state;
 
   bool m_include_directories;
   bool m_include_filenames;

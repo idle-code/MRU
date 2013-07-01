@@ -55,9 +55,13 @@ private:
   void OnAutoPreviewCheckboxClick(wxCommandEvent &a_evt);
   wxButton *m_preview_button;
   void OnPreviewButtonClick(wxCommandEvent &a_evt);
+  wxButton *m_start_button;
   void OnStartButtonClick(wxCommandEvent &a_evt);
   wxSpinCtrl *m_preview_size_spinctrl;
   void OnPreviewSizeSpinCtrlSpin(wxCommandEvent &a_evt);
+
+  void OnRenameStarted(void);
+  void OnRenameStopped(void);
 
   // file list
   wxListCtrl *m_file_listctrl;

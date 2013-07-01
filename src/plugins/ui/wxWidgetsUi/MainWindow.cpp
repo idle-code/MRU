@@ -10,6 +10,7 @@
 #include "PathValidator.hpp"
 #include "types.hpp"
 #include "glue.hpp"
+#include <make_relative_fix.hpp>
 
 namespace mru
 {
@@ -145,22 +146,26 @@ MainWindow::MainWindow(MruCore *a_mru_core)
     m_preview_size_spinctrl->SetValue(m_preview_size);
     m_auto_preview_checkbox = new wxCheckBox(this, wxID_ANY, wxT("Automatically update preview list"));
     m_preview_button = new wxButton(this, wxID_ANY, wxT("Preview"));
-    wxButton *start_button = new wxButton(this, wxID_ANY, wxT("Start"));
+    m_start_button = new wxButton(this, wxID_ANY, wxT("Start"));
 
     bottom_hsizer->Add(preview_size_label,      0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxRIGHT, 3);
     bottom_hsizer->Add(m_preview_size_spinctrl, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxRIGHT, 3);
     bottom_hsizer->AddStretchSpacer();
     bottom_hsizer->Add(m_auto_preview_checkbox, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT | wxRIGHT, 3);
     bottom_hsizer->Add(m_preview_button,        0, wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT | wxRIGHT, 3);
-    bottom_hsizer->Add(start_button,            0, wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT, 0);
+    bottom_hsizer->Add(m_start_button,            0, wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT, 0);
     
     vsizer->Add(bottom_hsizer, 0, wxEXPAND | wxALL, 5);
 
     Connect(m_auto_preview_checkbox->GetId(), wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(MainWindow::OnAutoPreviewCheckboxClick));
     Connect(m_preview_button->GetId(), wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainWindow::OnPreviewButtonClick));
-    Connect(start_button->GetId(), wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainWindow::OnStartButtonClick));
+    Connect(m_start_button->GetId(), wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainWindow::OnStartButtonClick));
     Connect(m_preview_size_spinctrl->GetId(), wxEVT_COMMAND_SPINCTRL_UPDATED, wxCommandEventHandler(MainWindow::OnPreviewSizeSpinCtrlSpin));
   }
+
+
+  m_core->rename_started.connect(sigc::mem_fun(this, &MainWindow::OnRenameStarted));
+  m_core->rename_stopped.connect(sigc::mem_fun(this, &MainWindow::OnRenameStopped));
 
   SetSizer(vsizer);
 
@@ -230,7 +235,15 @@ MainWindow::fill_filelist(void)
     after_entry.SetId(i);
     after_entry.SetColumn(1);
 
-    after_entry.SetText(glue_cast<wxString>(m_core->generate_filepath(dir_iter)));
+    //if(m_core->include_directories())
+    filepath_type new_path = m_core->generate_filepath(dir_iter);
+    if(m_core->work_on_directories())
+      new_path = bfs::make_relative(glue_cast<filepath_type>(dir_iter.base_directory()), glue_cast<filepath_type>(new_path));
+    else if(!bfs::is_directory(new_path))
+      new_path = new_path.filename();
+    else
+      new_path = filepath_type();
+    after_entry.SetText(glue_cast<wxString>(new_path));
 
     if(!m_file_listctrl->SetItem(after_entry)) {
       WARN("SetItem failed");
@@ -403,7 +416,17 @@ void
 MainWindow::OnStartButtonClick(wxCommandEvent &a_evt)
 {
   FO("MainWindow::OnStartButtonClick(wxCommandEvent &a_evt)");
-
+  switch(m_core->get_worker_state()) {
+    case MruCore::started:
+      m_core->stop_rename();
+      //m_
+      break;
+    case MruCore::paused:
+      break;
+    case MruCore::stopped:
+      m_core->start_rename();
+      break;
+  }
 }
 
 void
@@ -411,6 +434,49 @@ MainWindow::OnPreviewSizeSpinCtrlSpin(wxCommandEvent &a_evt)
 {
   m_preview_size = m_preview_size_spinctrl->GetValue();
   fill_filelist();
+}
+
+void
+MainWindow::OnRenameStarted(void)
+{
+  FO("MainWindow::OnRenameStarted(void)");
+
+  bool enabled = false;
+  m_include_directories_checkbox->Enable(enabled);
+  m_include_files_checkbox->Enable(enabled);
+  m_work_on_directories_checkbox->Enable(enabled);
+  m_metatag_listbox->Enable(enabled);
+  m_metatag_textctrl->Enable(enabled);
+  m_metatag_load_template_button->Enable(enabled);
+  m_source_directory_button->Enable(enabled);
+  m_source_directory_mask_textctrl->Enable(enabled);
+  m_source_directory_textctrl->Enable(enabled);
+  m_auto_preview_checkbox->Enable(enabled);
+  m_preview_button->Enable(enabled);
+  m_preview_size_spinctrl->Enable(enabled);
+
+  m_start_button->SetLabel(wxT("Stop"));
+}
+
+void
+MainWindow::OnRenameStopped(void)
+{
+  FO("MainWindow::OnRenameStopped(void)");
+  bool enabled = true;
+  m_include_directories_checkbox->Enable(enabled);
+  m_include_files_checkbox->Enable(enabled);
+  m_work_on_directories_checkbox->Enable(enabled);
+  m_metatag_listbox->Enable(enabled);
+  m_metatag_textctrl->Enable(enabled);
+  m_metatag_load_template_button->Enable(enabled);
+  m_source_directory_button->Enable(enabled);
+  m_source_directory_mask_textctrl->Enable(enabled);
+  m_source_directory_textctrl->Enable(enabled);
+  m_auto_preview_checkbox->Enable(enabled);
+  m_preview_button->Enable(!m_auto_preview_checkbox->GetValue());
+  m_preview_size_spinctrl->Enable(enabled);
+
+  m_start_button->SetLabel(wxT("Start"));
 }
 
 } /* namespace mru */

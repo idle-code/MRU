@@ -23,11 +23,12 @@ public:
   const UnicodeString& filter_expression(void) const;
   const UnicodeString& filter_expression(const UnicodeString &a_expr);
   
-  UnicodeString directory(void) const; //!< returns path to relative root directory of created iterator
-  UnicodeString filename(void) const; //!< returns sole filename targeted by iterator
-  UnicodeString bare_filename(void) const; //!< returns sole filename targeted by iterator
-  UnicodeString base_filename(void) const; //!< returns fully-qualified, absolute filename of targeted file
-  UnicodeString base_directory(void) const; //!< return absolute directory of targeted file
+  UnicodeString directory(void) const;
+  UnicodeString filename(void) const;
+  UnicodeString bare_filename(void) const;
+  UnicodeString absolute_filename(void) const;
+  UnicodeString absolute_directory(void) const;
+  UnicodeString base_directory(void) const;
 
   void set_new_filename(const UnicodeString &a_filename);
   void set_new_directory(const UnicodeString &a_directory);
