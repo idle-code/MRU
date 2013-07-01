@@ -6,13 +6,13 @@ Z każdym rokiem ludzie oraz same komputery generują coraz większą ilość in
 Mimo że duża część z nich jest przechowywana w dobrze strukturyzowanych bazach danych, to ciągle, większość ludzi ma bezpośredni dostęp jedynie to tego co przechowuje w systemie plików własnego komputera.
 \par
 Od dziesięcioleci dysk twardy pozostaje głównym kontenerem danych dla komputerów na całym świecie.
-Wiele osób na przestrzeni lat tworzy swoistego rodzaju kolekcje danych --- albumy zdjęć, biblioteki muzyczne czy filmowe, a także duże ilości dokumentów na potrzeby działalności gospodarczej czy prywatnej pracy. Niektórzy administratorzy zarządzający serwerami aplikacji zmagają się z problemem wielkiej ilości plików generowanych przez użytkowników.
+Wiele osób na przestrzeni lat tworzy swoistego rodzaju kolekcje danych --- albumy zdjęć, biblioteki muzyczne czy filmowe, a także duże ilości dokumentów na potrzeby działalności gospodarczej czy prywatnej pracy. Dodatkowo, niektórzy administratorzy zarządzający serwerami aplikacji zmagają się z problemem wielkiej ilości plików generowanych przez użytkowników ich systemów.
 
 \section{Motywacja}
 \label{motywacja}
 \par
 Tysiące plików mogą stworzyć gąszcz informacyjny w którym człowiek będzie czuł się zagubiony. Przy coraz większej ilości informacji nie bez znaczenia pozostaje czynnik ludzki którego możliwości percepcji są ograniczone.
-Istnieje wiele programów ułatwiających katalogowanie danych jednak skierowane są one zwykle na pojedyncze typy plików i wymagają od użytkownika przyzwyczajenia się do ich używania. Z drugiej strony, przeciętny użytkownik jest zwykle przyzwyczajony do standardowego programu systemów operacyjnych --- przeglądarki plików.\\
+Istnieje wiele programów ułatwiających katalogowanie danych jednak skierowane są one często na pojedyncze typy plików, a także wymagają od użytkownika przyzwyczajenia się do ich używania. Z drugiej strony, przeciętny użytkownik jest zwykle przyzwyczajony do standardowego programu oferowanego przez większość systemów operacyjnych --- przeglądarki plików.\\
 
 Problemem jednak jest fakt że programy rzadko generują przyjazne użytkownikowi nazwy plików, zwykle ograniczając się do prostego prefiksu i grupy kolejnych numerów zapewniających unikalność.\\
 W przypadku obrazów, często bywa iż kolekcja musi być trzymana w wielu katalogach ponieważ nazwy plików się pokrywają.\\
@@ -21,7 +21,7 @@ Wreszcie istnieją też sytuacje gdy wiele różnych plików jest trzymanych w p
 
 \section{Cel i zakres pracy}
 \par
-Niniejsza praca ma na celu stworzenie programu narzędziowego pozwalającego na automatyczne generowanie identyfikatorów (nazw) plików na podstawie (meta)danych w nich zawartych, a także ich stosowanie do zbiorów plików.
+Niniejsza praca ma na celu stworzenie programu narzędziowego pozwalającego na automatyczne generowanie identyfikatorów (nazw) plików na podstawie metadanych w nich zawartych, a także ich stosowanie do zbiorów plików wybranych przez użytkownika.
 
 \par
 Zakres pracy obejmuje:
@@ -38,7 +38,7 @@ Zakres pracy obejmuje:
 
 \section{Założenia}
 \label{zalozenia}
-Gotowa aplikacja powinna być niezależna od systemu operacyjnego w stopniu w jakim pozwalają na to zależności użytych bibliotek. Dzięki modułowej budowie powinna także udostępniać interfejs pozwalający na jej łatwą rozbudowę.
+Gotowa aplikacja powinna być niezależna od systemu operacyjnego w stopniu w jakim pozwalają na to zależności użytych bibliotek. Dzięki modułowej budowie powinna także udostępniać interfejs pozwalający na jej łatwą rozbudowę bez ingerencji w istniejący kod źródłowy.
 
 \section{Plan pracy}
 \label{plan-pracy}
