@@ -2,32 +2,32 @@
 \label{wstep}
 
 \par
-Z każdym rokiem ludzie oraz same komputery generują coraz większą ilość informacji.
-Mimo że duża część z nich jest przechowywana w dobrze strukturyzowanych bazach danych, to ciągle, większość ludzi ma bezpośredni dostęp jedynie to tego co przechowuje w systemie plików własnego komputera.
+ Z~każdym rokiem ludzie oraz same komputery generują coraz większą ilość informacji.
+Mimo że duża część z~nich jest przechowywana w~dobrze strukturyzowanych bazach danych, to ciągle, większość ludzi ma bezpośredni dostęp jedynie to tego co przechowuje w~systemie plików własnego komputera.
 \par
 Od dziesięcioleci dysk twardy pozostaje głównym kontenerem danych dla komputerów na całym świecie.
-Wiele osób na przestrzeni lat tworzy swoistego rodzaju kolekcje danych --- albumy zdjęć, biblioteki muzyczne czy filmowe, a także duże ilości dokumentów na potrzeby działalności gospodarczej czy prywatnej pracy. Dodatkowo, niektórzy administratorzy zarządzający serwerami aplikacji zmagają się z problemem wielkiej ilości plików generowanych przez użytkowników ich systemów.
+Wiele osób na przestrzeni lat tworzy swoistego rodzaju kolekcje danych --- albumy zdjęć, biblioteki muzyczne czy filmowe, a~także duże ilości dokumentów na potrzeby działalności gospodarczej czy prywatnej pracy. Dodatkowo, niektórzy administratorzy zarządzający serwerami aplikacji zmagają się z~problemem wielkiej ilości plików generowanych przez użytkowników ich systemów.
 
 \section{Motywacja}
 \label{motywacja}
 \par
-Tysiące plików mogą stworzyć gąszcz informacyjny w którym człowiek będzie czuł się zagubiony. Przy coraz większej ilości informacji nie bez znaczenia pozostaje czynnik ludzki którego możliwości percepcji są ograniczone.
-Istnieje wiele programów ułatwiających katalogowanie danych jednak skierowane są one często na pojedyncze typy plików, a także wymagają od użytkownika przyzwyczajenia się do ich używania. Z drugiej strony, przeciętny użytkownik jest zwykle przyzwyczajony do standardowego programu oferowanego przez większość systemów operacyjnych --- przeglądarki plików.\\
+Tysiące plików mogą stworzyć gąszcz informacyjny w~którym człowiek będzie czuł się zagubiony. Przy coraz większej ilości informacji nie bez znaczenia pozostaje czynnik ludzki którego możliwości percepcji są ograniczone.
+Istnieje wiele programów ułatwiających katalogowanie danych jednak skierowane są one często na pojedyncze typy plików, a~także wymagają od użytkownika przyzwyczajenia się do ich używania. Z~drugiej strony, przeciętny użytkownik jest zwykle przyzwyczajony do standardowego programu oferowanego przez większość systemów operacyjnych --- przeglądarki plików.\\
 
-Problemem jednak jest fakt że programy rzadko generują przyjazne użytkownikowi nazwy plików, zwykle ograniczając się do prostego prefiksu i grupy kolejnych numerów zapewniających unikalność.\\
-W przypadku obrazów, często bywa iż kolekcja musi być trzymana w wielu katalogach ponieważ nazwy plików się pokrywają.\\
-Rzadko można również znaleźć interesujący utwór w bibliotece muzycznej której pliki posiadają nazwy różniące się jedynie numerem ścieżki.\\
-Wreszcie istnieją też sytuacje gdy wiele różnych plików jest trzymanych w pojedynczym katalogu co skutecznie utrudnia nawigację i znalezienie tego czego użytkownik faktycznie poszukuje.
+Problemem jednak jest fakt że programy rzadko generują przyjazne użytkownikowi nazwy plików, zwykle ograniczając się do prostego prefiksu i~grupy kolejnych numerów zapewniających unikalność.\\
+ W~przypadku obrazów, często bywa iż kolekcja musi być trzymana w~wielu katalogach ponieważ nazwy plików się pokrywają.\\
+Rzadko można również znaleźć interesujący utwór w~bibliotece muzycznej której pliki posiadają nazwy różniące się jedynie numerem ścieżki.\\
+Wreszcie istnieją też sytuacje gdy wiele różnych plików jest trzymanych w~pojedynczym katalogu co skutecznie utrudnia nawigację i~znalezienie tego czego użytkownik faktycznie poszukuje.
 
-\section{Cel i zakres pracy}
+\section{Cel i~zakres pracy}
 \par
-Niniejsza praca ma na celu stworzenie programu narzędziowego pozwalającego na automatyczne generowanie identyfikatorów (nazw) plików na podstawie metadanych w nich zawartych, a także ich stosowanie do zbiorów plików wybranych przez użytkownika.
+Niniejsza praca ma na celu stworzenie programu narzędziowego pozwalającego na automatyczne generowanie identyfikatorów (nazw) plików na podstawie metadanych w~nich zawartych, a~także ich stosowanie do zbiorów plików wybranych przez użytkownika.
 
 \par
 Zakres pracy obejmuje:
 \begin{itemize}
-\item Przegląd istniejących rozwiązań - programów i technik wspomagających masową zmianę identyfikatorów plików.
-\item Porównanie funkcjonalności istniejących narzędzi i ich ograniczeń.
+\item Przegląd istniejących rozwiązań - programów i~technik wspomagających masową zmianę identyfikatorów plików.
+\item Porównanie funkcjonalności istniejących narzędzi i~ich ograniczeń.
 \item Projekt oraz implementacja wieloplatformowej architektury modułów.
 \item Stworzenie parsera wyrażeń zawierających metatagi.
 \item Projekt graficznego interfejsu użytkownika opartego na bibliotece wxWidgets.
@@ -38,12 +38,12 @@ Zakres pracy obejmuje:
 
 \section{Założenia}
 \label{zalozenia}
-Gotowa aplikacja powinna być niezależna od systemu operacyjnego w stopniu w jakim pozwalają na to zależności użytych bibliotek. Dzięki modułowej budowie powinna także udostępniać interfejs pozwalający na jej łatwą rozbudowę bez ingerencji w istniejący kod źródłowy.
+Gotowa aplikacja powinna być niezależna od systemu operacyjnego w~stopniu w~jakim pozwalają na to zależności użytych bibliotek. Dzięki modułowej budowie powinna także udostępniać interfejs pozwalający na jej łatwą rozbudowę bez ingerencji w~istniejący kod źródłowy.
 
 \section{Plan pracy}
 \label{plan-pracy}
-W rozdziale \ref{teoria} opisano teoretyczny schemat przechowywania danych oraz genezę systemów oraz identyfikacji plików. Rozdział \ref{srodowisko} zawiera opis środowiska wykorzystanego do stworzenia projektu i implementacji aplikacji.
-Rozdział \ref{implementacja} zawiera szczegółowy opis architektury aplikacji wraz z rozwiązaniami wykorzystanymi do jej stworzenia.
+ W~rozdziale \ref{teoria} opisano teoretyczny schemat przechowywania danych oraz genezę systemów oraz identyfikacji plików. Rozdział \ref{srodowisko} zawiera opis środowiska wykorzystanego do stworzenia projektu i~implementacji aplikacji.
+Rozdział \ref{implementacja} zawiera szczegółowy opis architektury aplikacji wraz z~rozwiązaniami wykorzystanymi do jej stworzenia.
 Ostatni rozdział --- \ref{wnioski} --- zawiera wnioski na temat wykonanego projektu.
 
 \clearpage
