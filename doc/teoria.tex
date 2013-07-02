@@ -1,66 +1,66 @@
 \chapter{Teoria}
 \label{teoria}
 \par
-W niniejszym rozdziale postaram się przybliżyć obraz problemu identyfikatorów (zwanych również nazwami) plików opisując środowisko i w którym występuje.
+ W~niniejszym rozdziale postaram się przybliżyć obraz problemu identyfikatorów (zwanych również nazwami) plików opisując środowisko i~w którym występuje.
 
-\section{Dane w systemie komputerowym}
+\section{Dane w~systemie komputerowym}
 \par
-Jednym z podstawowych elementów systemu komputerowego jest jego pamięć. Od początku istnienia komputerów istniała potrzeba składowania danych wymaganych przy praktycznie każdych operacjach wykonywanych przez jednostkę centralną komputera. Jako że pierwsze systemy komputerowe były wykorzystywane do obliczeń typowo matematycznych, algorytmy na nich uruchamiane nie wymagały wielkich kontenerów na dane. W tych czasach wbudowane rejestry oraz ulotna pamięć RAM zaspokajały potrzemy rynku. Jednak wraz z rozwojem sprzętu i algorytmów na nim uruchamianych pojawiła się potrzeba przechowywania coraz to większej ilości danych jak i (dzięki zastosowaniu architektury von Neumanna) samych programów przez coraz dłuższy czas. Pojawiła się idea nieulotnej oraz bardziej pojemnej pamięci --- dysku twardego.\\
+Jednym z~podstawowych elementów systemu komputerowego jest jego pamięć. Od początku istnienia komputerów istniała potrzeba składowania danych wymaganych przy praktycznie każdych operacjach wykonywanych przez jednostkę centralną komputera. Jako że pierwsze systemy komputerowe były wykorzystywane do obliczeń typowo matematycznych, algorytmy na nich uruchamiane nie wymagały wielkich kontenerów na dane. W~tych czasach wbudowane rejestry oraz ulotna pamięć RAM zaspokajały potrzemy rynku. Jednak wraz z~rozwojem sprzętu i~algorytmów na nim uruchamianych pojawiła się potrzeba przechowywania coraz to większej ilości danych jak i~(dzięki zastosowaniu architektury von Neumanna) samych programów przez coraz dłuższy czas. Pojawiła się idea nieulotnej oraz bardziej pojemnej pamięci --- dysku twardego.\\
 
 \par
-Pojemności pierwszych dysków twardych stanowiły promil dzisiejszych jednostek toteż nie wymagały stosowania systemów plików --- były po prostu nieulotnym rozszerzeniem pamięci operacyjnej RAM. Jednak wraz ze zwiększeniem ich pojemności oraz generalizacją oprogramowania, pojawiła się potrzeba standaryzowania i kategoryzacji przechowywanych na dyskach danych, która spowodowała powstanie systemów plików.
+Pojemności pierwszych dysków twardych stanowiły promil dzisiejszych jednostek toteż nie wymagały stosowania systemów plików --- były po prostu nieulotnym rozszerzeniem pamięci operacyjnej RAM. Jednak wraz ze zwiększeniem ich pojemności oraz generalizacją oprogramowania, pojawiła się potrzeba standaryzowania i~kategoryzacji przechowywanych na dyskach danych, która spowodowała powstanie systemów plików.
 
-\section{Systemy plików i identyfikacja danych}
+\section{Systemy plików i~identyfikacja danych}
 \par
-System plików stanowi warstwę abstrakcji między programami, a danymi zapisanymi na nośniku --- dysku twardym, karcie pamięci czy też płycie CD. System plików jest metodą zapisu danych --- schematem --- dzięki któremu programy nie muszą operować na surowych blokach danych lecz mogą korzystać z bardziej wysokopoziomowych deskryptorów plików --- węzłów bądź ścieżek dostępu.\\
-Zwykle systemem plików zarządza system operacyjny udostępniający API\footnote{API --- Application Programming Interface}, a także blokuje lub zezwala na dostęp do danych ze względu na uprawnienia użytkownika, programu lub samego zasobu będącego podmiotem zapytania programu.\\
+System plików stanowi warstwę abstrakcji między programami, a~danymi zapisanymi na nośniku --- dysku twardym, karcie pamięci czy też płycie CD. System plików jest metodą zapisu danych --- schematem --- dzięki któremu programy nie muszą operować na surowych blokach danych lecz mogą korzystać z~bardziej wysokopoziomowych deskryptorów plików --- węzłów bądź ścieżek dostępu.\\
+Zwykle systemem plików zarządza system operacyjny udostępniający API\footnote{API --- Application Programming Interface}, a~także blokuje lub zezwala na dostęp do danych ze względu na uprawnienia użytkownika, programu lub samego zasobu będącego podmiotem zapytania programu.\\
 
 \par
 Istnieje wiele typów oraz implementacji systemów plików, które można podzielić na dwie kategorie:
 
 \begin{itemize}
-\item tradycyjne - znajdujące zastosowanie przy przechowywaniu dowolnych (ogólnych) danych w postaci plików
+\item tradycyjne - znajdujące zastosowanie przy przechowywaniu dowolnych (ogólnych) danych w~postaci plików
 \item specjalne - dostosowane do specyficznych rozwiązań (jak na przykład bazy danych)
 \end{itemize}
 
-Oddzielną kategorię mogą stanowić zdobywające coraz większą popularność wirtualne systemy plików --- różnią się one od tradycyjnych i specjalistycznych tym że nie przechowują danych fizycznie na nośniku, a są raczej aplikacjami udostępniającymi (generującymi) struktury danych na żądanie programu. Przykładem takich systemów mogą być: \texttt{procfs} --- udostępniający dostęp do procesów systemowych i ich atrybutów w systemach rodziny GNU/Linux oraz *BSD, czy też \texttt{NFS} (Network File System) --- pozwalający na dostęp do systemów plików znajdujących się na innych komputerach w sieci.
+Oddzielną kategorię mogą stanowić zdobywające coraz większą popularność wirtualne systemy plików --- różnią się one od tradycyjnych i~specjalistycznych tym że nie przechowują danych fizycznie na nośniku, a~są raczej aplikacjami udostępniającymi (generującymi) struktury danych na żądanie programu. Przykładem takich systemów mogą być: \texttt{procfs} --- udostępniający dostęp do procesów systemowych i~ich atrybutów w~systemach rodziny GNU/Linux oraz *BSD, czy też \texttt{NFS} (Network File System) --- pozwalający na dostęp do systemów plików znajdujących się na innych komputerach w~sieci.
 
-\subsection{Katalogi i ścieżki do plików}
+\subsection{Katalogi i~ścieżki do plików}
 \par
-Niniejsza praca skupia się na problemie opisywania danych w tradycyjnych systemach plików za pomocą tak zwanych ścieżek do plików, które identyfikują zasób w drzewie katalogów systemu plików.
+Niniejsza praca skupia się na problemie opisywania danych w~tradycyjnych systemach plików za pomocą tak zwanych ścieżek do plików, które identyfikują zasób w~drzewie katalogów systemu plików.
 
 \par
-Tradycyjne systemy plików pozwalają na przechowywanie danych w drzewiastej strukturze danych zwanej drzewem katalogów. W większości implementacji każdy węzeł takiego drzewa może być katalogiem albo plikiem albo dowiązaniem do innego węzła. Dodatkowo węzły katalogów jako jedyne mogę posiadać węzły podległe --- podkatalogi.\\
+Tradycyjne systemy plików pozwalają na przechowywanie danych w~drzewiastej strukturze danych zwanej drzewem katalogów. W~większości implementacji każdy węzeł takiego drzewa może być katalogiem albo plikiem albo dowiązaniem do innego węzła. Dodatkowo węzły katalogów jako jedyne mogę posiadać węzły podległe --- podkatalogi.\\
 Każdy węzeł prócz węzła-korzenia jest identyfikowany przez unikalny względem węzła-rodzica identyfikator zwany nazwą pliku/katalogu.\\
-Warto zauważyć iż struktura drzewa katalogów nie wymusza sposobu rozkładu danych w systemie plików --- tak długo jak identyfikatory pozostają unikalne, pliki przez nie opisywane mogą znajdować się w tym samym katalogu\footnote{W praktyce ilość plików które mogą należeć do jednego węzła zależy od rozmiaru licznika użytego w implementacji.}.
+Warto zauważyć iż struktura drzewa katalogów nie wymusza sposobu rozkładu danych w~systemie plików --- tak długo jak identyfikatory pozostają unikalne, pliki przez nie opisywane mogą znajdować się w~tym samym katalogu\footnote{W praktyce ilość plików które mogą należeć do jednego węzła zależy od rozmiaru licznika użytego w~implementacji.}.
 
-\subsection{Różnice w identyfikacji plików wśród różnych systemów operacyjnych}
+\subsection{Różnice w~identyfikacji plików wśród różnych systemów operacyjnych}
 \par
 Format ścieżki do pliku narzucany jest niezależnie od zastosowanego systemu plików przez system operacyjny.
 
 \par
-Systemy kompatybilne ze standardem \texttt{POSIX}, takie jak Apple MacOS, rodzina BSD, a także rodzina GNU/Linux używają drzew katalogów z pojedynczym, nienazwanym korzeniem oznaczanym symbolem prawego ukośnika (slash)~---~'\texttt{/}'.\\
-Symbol prawego ukośnika jest również używany jako separator elementów (poziomów) ścieżki i nie może stanowić elementu identyfikatora węzła w wymienionych środowiskach.\\
+Systemy kompatybilne ze standardem \texttt{POSIX}, takie jak Apple MacOS, rodzina BSD, a~także rodzina GNU/Linux używają drzew katalogów z~pojedynczym, nienazwanym korzeniem oznaczanym symbolem prawego ukośnika (slash)~---~'\texttt{/}'.\\
+Symbol prawego ukośnika jest również używany jako separator elementów (poziomów) ścieżki i~nie może stanowić elementu identyfikatora węzła w~wymienionych środowiskach.\\
 Przykład ścieżki zgodnej ze standardem \texttt{POSIX}:
 \begin{center}
 \texttt{/home/idlecode/projects/mru/doc/main.tex}
 \end{center}
 
 \par
-Systemy operacyjne z rodziny Windows korporacji Microsoft\footnote{Istnieje  więcej systemów operacyjnych używających podobnego schematu} wykorzystują natomiast lewy ukośnik (backslash) --- '\texttt{\textbackslash}' --- jako separator komponentów ścieżki oraz uniemożliwiają stosowanie większej ilości symboli w nazwach.\\
-System plików systemu Windows może posiadać kilka korzeni (po jednym dla każdego wolumenu/dysku) oznaczanych pojedynczymi, zwykle dużymi literami alfabetu łacińskiego. Litera dysku wraz z symbolem dwukropka poprzedza właściwą ścieżkę do pliku:\\
-%Przykład ścieżki używanej w systemach operacyjnych Windows korporacji Microsoft:
+Systemy operacyjne z~rodziny Windows korporacji Microsoft\footnote{Istnieje  więcej systemów operacyjnych używających podobnego schematu} wykorzystują natomiast lewy ukośnik (backslash) --- '\texttt{\textbackslash}' --- jako separator komponentów ścieżki oraz uniemożliwiają stosowanie większej ilości symboli w~nazwach.\\
+System plików systemu Windows może posiadać kilka korzeni (po jednym dla każdego wolumenu/dysku) oznaczanych pojedynczymi, zwykle dużymi literami alfabetu łacińskiego. Litera dysku wraz z~symbolem dwukropka poprzedza właściwą ścieżkę do pliku:\\
+%Przykład ścieżki używanej w~systemach operacyjnych Windows korporacji Microsoft:
 \begin{center}
 \texttt{C:\textbackslash Users\textbackslash idlecode\textbackslash My Documents\textbackslash Projects\textbackslash MRU\textbackslash doc\textbackslash main.tex}
 \end{center}
 
 \par
-Dodatkowo w przypadku obu\footnote{System MacOS nie posiada tego ograniczenia} wyżej wymienionych schematów, nazwy elementów nie mogą zawierać znaku zerowego (NUL --- o kodzie heksadecymalnym \texttt{0x00}), który może zostać zinterpretowany jako koniec łańcucha znaków.
+Dodatkowo w~przypadku obu\footnote{System MacOS nie posiada tego ograniczenia} wyżej wymienionych schematów, nazwy elementów nie mogą zawierać znaku zerowego (NUL --- o~kodzie heksadecymalnym \texttt{0x00}), który może zostać zinterpretowany jako koniec łańcucha znaków.
 
 \par
-Większość implementacji pozwala zawrzeć pełen zakres symboli (znaków) w ścieżce za pomocą kodowań z rodziny \texttt{UTF} przy czym pojedynczy identyfikator może mieć maksymalną długość 255 bajtów.
+Większość implementacji pozwala zawrzeć pełen zakres symboli (znaków) w~ścieżce za pomocą kodowań z~rodziny \texttt{UTF} przy czym pojedynczy identyfikator może mieć maksymalną długość 255 bajtów.
 %Ograniczenie długości całkowitej ścieżki, jeśli istnieje jest wynosi ustawione na poziomie.
-Warto tu zauważyć iż systemy z rodziny Windows zachowują wielkość liter w identyfikatorach lecz przy interpretacji ścieżek --- rozwijaniu ich do odpowiadających węzłów --- nie gra ona znaczenia. Takie zachowanie nie występuje w systemach kompatybilnych ze standardem \texttt{POSIX}. Istnieje również możliwość stosowania ukośników prawych do rozdzielania komponentów ścieżki tak jak to ma miejsce w systemach \texttt{POSIX}-owych.
+Warto tu zauważyć iż systemy z~rodziny Windows zachowują wielkość liter w~identyfikatorach lecz przy interpretacji ścieżek --- rozwijaniu ich do odpowiadających węzłów --- nie gra ona znaczenia. Takie zachowanie nie występuje w~systemach kompatybilnych ze standardem \texttt{POSIX}. Istnieje również możliwość stosowania ukośników prawych do rozdzielania komponentów ścieżki tak jak to ma miejsce w~systemach \texttt{POSIX}-owych.
 
 \par
 Istnieje jeszcze kilka schematów zapisu ścieżek, które nie zostały przybliżone ze względu na zakres niniejszej pracy.
@@ -70,21 +70,21 @@ Istnieje jeszcze kilka schematów zapisu ścieżek, które nie zostały przybli�
 \section{Metadane}
 %Co to są metadane
 \par
-Metadane z definicji są danymi opisującymi inne dane. Metadane stosowane są w przypadkach gdy nie istnieje fizyczna możliwość dołączenia lub dodatkowe informacje są zbyt luźno powiązane z opisywanymi danymi.
-Przykładem metadanych mogą być karty biblioteczne --- informują one o statusie i historii np. książki nie będąc jej integralną częścią.
+Metadane z~definicji są danymi opisującymi inne dane. Metadane stosowane są w~przypadkach gdy nie istnieje fizyczna możliwość dołączenia lub dodatkowe informacje są zbyt luźno powiązane z~opisywanymi danymi.
+Przykładem metadanych mogą być karty biblioteczne --- informują one o~statusie i~historii np. książki nie będąc jej integralną częścią.
 
 %Metadane na poziomie systemu plikow
 \par
-W systemach plików, metadane dostarczają informacji o plikach zapisanych w drzewie katalogów.
+ W~systemach plików, metadane dostarczają informacji o~plikach zapisanych w~drzewie katalogów.
 Przykładem komputerowych metadanych może być wspominana wcześniej nazwa czy ścieżka do pliku, która nie jest jego integralną częścią --- może zostać zmieniona bez naruszania struktury przechowywanego dokumentu.
-Dodatkowo systemy plików często dostarczają ogólnych atrybutów --- meta-informacji możliwych do uzyskania z dowolnego typu pliku takich jak jego rozmiar, czas utworzenia lub ostatniej modyfikacji czy też prawa dostępu.
+Dodatkowo systemy plików często dostarczają ogólnych atrybutów --- meta-informacji możliwych do uzyskania z~dowolnego typu pliku takich jak jego rozmiar, czas utworzenia lub ostatniej modyfikacji czy też prawa dostępu.
 \par
-Ciekawym przykładem metadanych są rozszerzenia nazw plików --- sufiksy rozpoczynające się od ostatniego znaku kropki w nazwie. Rozszerzenia odgrywały ważną rolę w systemach operacyjnych korporacji Microsoft gdzie stanowiły integralną część nazwy i pozwalały systemowi skojarzyć typ pliku z programem go obsługującym. W systemach \texttt{POSIX}-owych informacja o typie pliku jest zwykle przekazywana wraz z kontekstem uruchomienia aplikacji operującej na pliku (za pomocą linii komend) lub pomijana całkowicie --- wiele aplikacji takich systemów operuje na plikach jako ciągu bajtów i nie wymaga informacji o typie.
+Ciekawym przykładem metadanych są rozszerzenia nazw plików --- sufiksy rozpoczynające się od ostatniego znaku kropki w~nazwie. Rozszerzenia odgrywały ważną rolę w~systemach operacyjnych korporacji Microsoft gdzie stanowiły integralną część nazwy i~pozwalały systemowi skojarzyć typ pliku z~programem go obsługującym. W~systemach \texttt{POSIX}-owych informacja o~typie pliku jest zwykle przekazywana wraz z~kontekstem uruchomienia aplikacji operującej na pliku (za pomocą linii komend) lub pomijana całkowicie --- wiele aplikacji takich systemów operuje na plikach jako ciągu bajtów i~nie wymaga informacji o~typie.
 
-%Metadane w plikach i obok nich
+%Metadane w~plikach i~obok nich
 \par
-Niektóre formaty plików (szczególnie multimedialnych) pozwalają na integracje metadanych z samym plikiem. Jako że pliki (szczególnie binarne) mogą stosować dowolną strukturę zapisu, nie istnieje ogólny algorytm wyciągnięcia zawartych w ten sposób informacji. Na szczęście popularne formaty plików posiadają wiele implementacji bibliotek umożliwiających dostęp do danych w nich zawartych.
+Niektóre formaty plików (szczególnie multimedialnych) pozwalają na integracje metadanych z~samym plikiem. Jako że pliki (szczególnie binarne) mogą stosować dowolną strukturę zapisu, nie istnieje ogólny algorytm wyciągnięcia zawartych w~ten sposób informacji. Na szczęście popularne formaty plików posiadają wiele implementacji bibliotek umożliwiających dostęp do danych w~nich zawartych.
 
 \par
-Do metadanych można zaliczyć także dane generowane takie jak sumy kontrolne, które są wartościami liczonymi na podstawie zawartości samego pliku. Sumy kontrolne używane są w celu testów integralności czy identyczności.
+Do metadanych można zaliczyć także dane generowane takie jak sumy kontrolne, które są wartościami liczonymi na podstawie zawartości samego pliku. Sumy kontrolne używane są w~celu testów integralności czy identyczności.
 
