@@ -2,11 +2,11 @@ let SessionLoad = 1
 if &cp | set nocp | endif
 let s:cpo_save=&cpo
 set cpo&vim
-inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_complete) unite#sources#neocomplcache#start_complete()
-inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_quick_match) unite#sources#neocomplcache#start_quick_match()
-inoremap <silent> <Plug>(neocomplcache_start_auto_complete) =neocomplcache#popup_post()
-inoremap <silent> <Plug>(neocomplcache_start_auto_complete_no_select) 
 inoremap <silent> <Plug>(neocomplcache_start_omni_complete) 
+inoremap <silent> <Plug>(neocomplcache_start_auto_complete_no_select) 
+inoremap <silent> <Plug>(neocomplcache_start_auto_complete) =neocomplcache#popup_post()
+inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_quick_match) unite#sources#neocomplcache#start_quick_match()
+inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_complete) unite#sources#neocomplcache#start_complete()
 inoremap <silent> <C-Tab> =UltiSnips_ListSnippets()
 imap <F11> :wa
 xnoremap 	 :call UltiSnips_SaveLastVisualSelection()gvs
@@ -57,12 +57,12 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +102 MruCore.hpp
-badd +392 MruCore.cpp
+badd +76 MruCore.hpp
+badd +311 MruCore.cpp
 badd +1 glue.hpp
 badd +166 glue_impl.hpp
 badd +1 FileIterator.hpp
-badd +83 FileIterator.cpp
+badd +104 FileIterator.cpp
 badd +1 metatag/expression.hpp
 badd +476 metatag/expression.cpp
 badd +1 tests/metatag_test.cpp
@@ -115,7 +115,7 @@ setlocal colorcolumn=
 setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
 setlocal commentstring=/*%s*/
 setlocal complete=.,w,b,u,t,i
-setlocal completefunc=neocomplcache#auto_complete
+setlocal completefunc=neocomplcache#manual_complete
 setlocal nocopyindent
 setlocal cryptmethod=
 setlocal nocursorbind
@@ -1449,36 +1449,24 @@ setlocal nowrap
 setlocal wrapmargin=0
 8
 normal! zo
-109
+111
 normal! zo
-112
+116
 normal! zo
 117
 normal! zo
-118
+119
 normal! zo
-120
+123
 normal! zo
-124
+123
 normal! zo
-135
-normal! zo
-141
-normal! zo
-135
-normal! zo
-141
-normal! zo
-135
-normal! zo
-141
-normal! zo
-let s:l = 104 - ((1 * winheight(0) + 23) / 47)
+let s:l = 125 - ((20 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-104
-normal! 012l
+125
+normal! 015l
 lcd ~/projects/mru/src
 wincmd w
 argglobal
@@ -1583,12 +1571,12 @@ setlocal nowrap
 setlocal wrapmargin=0
 8
 normal! zo
-let s:l = 22 - ((9 * winheight(0) + 23) / 47)
+let s:l = 45 - ((32 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-22
-normal! 0
+45
+normal! 07l
 lcd ~/projects/mru/src
 wincmd w
 exe 'vert 1resize ' . ((&columns * 98 + 105) / 211)
@@ -2067,7 +2055,7 @@ lcd ~/projects/mru/src
 wincmd w
 exe 'vert 1resize ' . ((&columns * 98 + 105) / 211)
 exe 'vert 2resize ' . ((&columns * 112 + 105) / 211)
-tabnext 1
+tabnext 7
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
 endif
