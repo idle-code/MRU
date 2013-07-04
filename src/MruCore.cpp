@@ -15,11 +15,13 @@ MruCore::MruCore(void)
   : m_ui(NULL), m_out_driver(NULL),
     m_base_directory("/home/idlecode/projects/mru/src/tests/files"), m_current_directory(m_base_directory),
     //m_base_directory("."), m_current_directory(m_base_directory),
-    m_include_directories(false), m_include_filenames(true), m_work_on_directories(true),
+    m_include_directories(false), m_include_filenames(true), m_work_on_directories(false),
     m_bindings_outdated(true), m_worker_thread_state(stopped)
 {
   FO("MruCore::MruCore(void)");
 
+
+  m_metatag_expression = MetatagExpression::parse("%Name()%Ext()");
   // create all managers (it is need to be done before any dynamic module could be loaded):
   UiPluginManager::set_instance(new UiPluginManager("UiPlugin"));
   OutputPluginManager::set_instance(new OutputPluginManager("OutputPlugin"));
@@ -52,6 +54,9 @@ MruCore::start(int a_argc, char **a_argv)
   UiPluginManager *ui_manager = UiPluginManager::get_instance();
   m_ui = ui_manager->create_plugin(reg.get<std::string>(".config.ui", "wxWidgetsUi"));
   m_ui->Init(this);
+
+  OutputPluginManager *output_manager = OutputPluginManager::get_instance();
+  m_out_driver = output_manager->create_plugin(reg.get<std::string>(".config.output_driver", "GenericBoost"));
 
   if(m_ui == NULL) {
     ERR("Couldn't initialize UI plugin");
@@ -305,6 +310,12 @@ worker_thread_main(void *a_core_pointer)
   filepath_type old_path;
   filepath_type new_path;
 
+  OutputPlugin *output_driver = core->get_output_plugin();
+  if(output_driver == NULL) {
+    ERR("No valid output driver configured"); 
+    return NULL;
+  }
+
   core->rename_started();
   //while(core->m_worker_thread_state != MruCore::stopped) {
     while(core->m_worker_thread_state == MruCore::started &&
@@ -317,10 +328,8 @@ worker_thread_main(void *a_core_pointer)
       old_path = glue_cast<filepath_type>(dir_iterator.absolute_filename());
       try {
         new_path = glue_cast<filepath_type>(core->generate_filepath(dir_iterator));  
-        if(bfs::exists(new_path))
-          throw std::runtime_error("Cannot rename: \"" + glue_cast<std::string>(old_path) + "\"\nDestination file: \"" + glue_cast<std::string>(new_path) + "\" already exists");
-        bfs::rename(old_path, new_path);  
-        core->filename_changed(old_path, new_path);
+        if(output_driver->rename(old_path, new_path))
+          core->filename_changed(old_path, new_path);
       } catch(MetatagException me) {
         ERR("Metatag exception: " << glue_cast<std::string>(me.message()));
         //m_worker_thread_state = stopped;
