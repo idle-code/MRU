@@ -1,7 +1,10 @@
 #include "GenericBoost.hpp"
+#include "glue.hpp"
 
 namespace GenericBoost_OutputPlugin
 {
+
+namespace bfs = boost::filesystem;
 
 GenericBoost::GenericBoost(void)
   : mru::OutputPlugin(static_implementation_name()), m_current_directory("/")
@@ -26,9 +29,15 @@ GenericBoost::change_directory(const filepath_type &a_path)
 }
 
 bool
-GenericBoost::rename(const filepath_type &a_name, const filepath_type &a_new_name)
+GenericBoost::rename(const filepath_type &a_old_path, const filepath_type &a_new_path)
 {
-  FO("GenericBoost::rename(const filepath_type &a_name, const filepath_type &a_new_name)");
+  FO("GenericBoost::rename(const filepath_type &a_old_path, const filepath_type &a_new_path)");
+  if(a_old_path == a_new_path)
+    return false;
+
+  if(bfs::exists(a_new_path))
+    throw std::runtime_error("Cannot rename: \"" + mru::glue_cast<std::string>(a_old_path) + "\"\nDestination file: \"" + mru::glue_cast<std::string>(a_new_path) + "\" already exists");
+  bfs::rename(a_old_path, a_new_path);  
 
   return true;
 }
