@@ -23,14 +23,14 @@ Istnieje wiele typów oraz implementacji systemów plików, które można podzie
 \item specjalne - dostosowane do specyficznych rozwiązań (jak na przykład bazy danych)
 \end{itemize}
 
-Oddzielną kategorię mogą stanowić zdobywające coraz większą popularność wirtualne systemy plików --- różnią się one od tradycyjnych i~specjalistycznych tym że nie przechowują danych fizycznie na nośniku, a~są raczej aplikacjami udostępniającymi (generującymi) struktury danych na żądanie programu. Przykładem takich systemów mogą być: \texttt{procfs} --- udostępniający dostęp do procesów systemowych i~ich atrybutów w~systemach rodziny GNU/Linux oraz *BSD, czy też \texttt{NFS} (Network File System) --- pozwalający na dostęp do systemów plików znajdujących się na innych komputerach w~sieci.
+Oddzielną kategorię mogą stanowić zdobywające coraz większą popularność wirtualne systemy plików --- różnią się one od tradycyjnych i~specjalistycznych tym że nie przechowują danych fizycznie na nośniku, a~są raczej aplikacjami udostępniającymi (generującymi) struktury danych na żądanie programu. Przykładem takich systemów mogą być: \texttt{procfs} --- udostępniający dostęp do procesów systemowych i~ich atrybutów w~systemach rodziny GNU/Linux oraz *BSD, czy też \texttt{NFS} (Network File System) --- pozwalający na dostęp do systemów plików znajdujących się na innych komputerach w~sieci\cite{website:filesystems-howto}.
 
 \subsection{Katalogi i~ścieżki do plików}
 \par
-Niniejsza praca skupia się na problemie opisywania danych w~tradycyjnych systemach plików za pomocą tak zwanych ścieżek do plików, które identyfikują zasób w~drzewie katalogów systemu plików.
+Niniejsza praca skupia się na problemie opisywania danych w~tradycyjnych systemach plików za pomocą tak zwanych ścieżek do plików, które identyfikują zasób w~drzewie katalogów systemu plików\cite{wiki:path}.
 
 \par
-Tradycyjne systemy plików pozwalają na przechowywanie danych w~drzewiastej strukturze danych zwanej drzewem katalogów. W~większości implementacji każdy węzeł takiego drzewa może być katalogiem albo plikiem albo dowiązaniem do innego węzła. Dodatkowo węzły katalogów jako jedyne mogę posiadać węzły podległe --- podkatalogi.\\
+Tradycyjne systemy plików pozwalają na przechowywanie danych w~drzewiastej strukturze danych zwanej drzewem katalogów. W~większości implementacji każdy węzeł takiego drzewa może być katalogiem albo plikiem albo dowiązaniem do innego węzła. Dodatkowo węzły katalogów jako jedyne mogę posiadać węzły podległe --- podkatalogi\cite{website:filesystems-howto}.\\
 Każdy węzeł prócz węzła-korzenia jest identyfikowany przez unikalny względem węzła-rodzica identyfikator zwany nazwą pliku/katalogu.\\
 Warto zauważyć iż struktura drzewa katalogów nie wymusza sposobu rozkładu danych w~systemie plików --- tak długo jak identyfikatory pozostają unikalne, pliki przez nie opisywane mogą znajdować się w~tym samym katalogu\footnote{W praktyce ilość plików które mogą należeć do jednego węzła zależy od rozmiaru licznika użytego w~implementacji.}.
 
@@ -39,7 +39,7 @@ Warto zauważyć iż struktura drzewa katalogów nie wymusza sposobu rozkładu d
 Format ścieżki do pliku narzucany jest niezależnie od zastosowanego systemu plików przez system operacyjny.
 
 \par
-Systemy kompatybilne ze standardem \texttt{POSIX}, takie jak Apple MacOS, rodzina BSD, a~także rodzina GNU/Linux używają drzew katalogów z~pojedynczym, nienazwanym korzeniem oznaczanym symbolem prawego ukośnika (slash)~---~'\texttt{/}'.\\
+Systemy kompatybilne ze standardem \texttt{POSIX}, takie jak Apple MacOS, rodzina BSD, a~także rodzina GNU/Linux używają drzew katalogów z~pojedynczym, nienazwanym korzeniem oznaczanym symbolem prawego ukośnika (slash)~---~'\texttt{/}' \cite{website:posix-standard}.\\
 Symbol prawego ukośnika jest również używany jako separator elementów (poziomów) ścieżki i~nie może stanowić elementu identyfikatora węzła w~wymienionych środowiskach.\\
 Przykład ścieżki zgodnej ze standardem \texttt{POSIX}:
 \begin{center}
@@ -55,10 +55,10 @@ System plików systemu Windows może posiadać kilka korzeni (po jednym dla każ
 \end{center}
 
 \par
-Dodatkowo w~przypadku obu\footnote{System MacOS nie posiada tego ograniczenia} wyżej wymienionych schematów, nazwy elementów nie mogą zawierać znaku zerowego (NUL --- o~kodzie heksadecymalnym \texttt{0x00}), który może zostać zinterpretowany jako koniec łańcucha znaków.
+Dodatkowo w~przypadku obu\footnote{System MacOS nie posiada tego ograniczenia} wyżej wymienionych schematów, nazwy elementów nie mogą zawierać znaku zerowego (NUL --- o~kodzie heksadecymalnym \texttt{0x00}), który może zostać zinterpretowany jako koniec łańcucha znaków\cite{website:fixing-unix-linux-filenames}.
 
 \par
-Większość implementacji pozwala zawrzeć pełen zakres symboli (znaków) w~ścieżce za pomocą kodowań z~rodziny \texttt{UTF} przy czym pojedynczy identyfikator może mieć maksymalną długość 255 bajtów.
+Większość implementacji pozwala zawrzeć pełen zakres symboli (znaków) w~ścieżce za pomocą kodowań z~rodziny \texttt{UTF} przy czym pojedynczy identyfikator może mieć maksymalną długość 255 bajtów\cite{wiki:path}.
 %Ograniczenie długości całkowitej ścieżki, jeśli istnieje jest wynosi ustawione na poziomie.
 Warto tu zauważyć iż systemy z~rodziny Windows zachowują wielkość liter w~identyfikatorach lecz przy interpretacji ścieżek --- rozwijaniu ich do odpowiadających węzłów --- nie gra ona znaczenia. Takie zachowanie nie występuje w~systemach kompatybilnych ze standardem \texttt{POSIX}. Istnieje również możliwość stosowania ukośników prawych do rozdzielania komponentów ścieżki tak jak to ma miejsce w~systemach \texttt{POSIX}-owych.
 
