@@ -6,7 +6,7 @@ Rozdział ten zawiera opis środowiska które zostało użyte do stworzenia impl
 \section{Język C++}
 \par
 Do implementacji aplikacji \texttt{MRU} został użyty język C++ w~standardzie z~roku 2003 (ISO/IEC 14882:2003).
-Język C++ jest dojrzałym, wieloplatformowym językiem programowania średniego poziomu, używanym od wielu lat przez programistów na całym świecie do tworzenia aplikacji, sterowników czy nawet systemów operacyjnych. Dzięki kompatybilności z~C\footnote{C++ nie jest całkowicie kompatybilny z~C, jednak różnice w~obu tych językach są na tyle małe że zwykle nie wpływają negatywnie na kompatybilność (szczególnie na poziomie ABI).} pozwala na wykorzystanie wielu istniejących bibliotek napisanych zarówno w~C jak i~C++.
+Język C++ jest dojrzałym, wieloplatformowym językiem programowania średniego poziomu, używanym od wielu lat przez programistów na całym świecie do tworzenia aplikacji, sterowników czy nawet systemów operacyjnych. Dzięki kompatybilności z~C\footnote{C++ nie jest całkowicie kompatybilny z~C, jednak różnice w~obu tych językach są na tyle małe że zwykle nie wpływają negatywnie na kompatybilność (szczególnie na poziomie ABI).} pozwala na wykorzystanie wielu istniejących bibliotek napisanych zarówno w~C jak i~C++\cite{thinking-in-cpp}.
 
 \subsection{LLVM Clang}
 %\begin{wrapfigure}{r}{0.4\textwidth}
@@ -41,7 +41,7 @@ System FreeBSD jest darmowym i~otwartym systemem operacyjnym z~rodziny BSD wywod
 \par
 Do zarządzania plikami źródłowymi oraz kopią zapasową został wykorzystany rozproszony system kontroli wersji Mercurial. Wraz z~serwisem \url{bitbucket.org} pozwala on na synchronizację kodów źródłowych między wieloma maszynami, ułatwiając tym samym pracę nad pojedynczym projektem wielu programistów.
 \par
- W~odróżnieniu od scentralizowanych systemów kontroli wersji takich jak SVN, Mercurial, podobnie jak Git nie wymaga pojedynczego serwera, ani serwera w~ogóle. Pełne repozytorium może być trzymane na każdej maszynie z~której korzysta programista, a~praca różnych programistów (zmiany w~kodzie) może być synchronizowana między nimi samymi.
+ W~odróżnieniu od scentralizowanych systemów kontroli wersji takich jak SVN, Mercurial, podobnie jak Git nie wymaga pojedynczego serwera, ani serwera w~ogóle. Pełne repozytorium może być trzymane na każdej maszynie z~której korzysta programista, a~praca różnych programistów (zmiany w~kodzie) może być synchronizowana między nimi samymi\cite{version-control-example}.
 
 \section{CMake}
 \begin{wrapfigure}{r}{0.4\textwidth}
