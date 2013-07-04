@@ -1,7 +1,8 @@
 cmake_minimum_required (VERSION 2.8)
 
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
-set (CMAKE_CXX_FLAGS "-g -ferror-limit=3 -fPIC")
+#set (CMAKE_CXX_FLAGS "-g -ferror-limit=3 -fPIC")
+set (CMAKE_CXX_FLAGS "-g -ferror-limit=3")
 include_directories ("./")
 include_directories ("/usr/local/include")
 link_directories ("/usr/local/lib")
@@ -27,10 +28,13 @@ include_directories (${Boost_INCLUDE_DIRS})
 set (LIBS ${LIBS} ${Boost_LIBRARIES})
 
 if (NOT TARGET debug_l)
-  add_library (debug_l SHARED IMPORTED)
-  set_target_properties(debug_l PROPERTIES IMPORTED_LOCATION "/usr/local/lib/libdebug_l.a")
-  add_definitions (-DDEBUG_L)
+  #add_library (debug_l SHARED IMPORTED)
+  #set_target_properties(debug_l PROPERTIES IMPORTED_LOCATION "/usr/local/lib/libdebug_l.a")
+
+  add_subdirectory ("debug_l")
+  include_directories ("debug_l")
   set (LIBS ${LIBS} debug_l)
+  add_definitions (-DDEBUG_L)
 endif()
 
 #TODO: make registry library

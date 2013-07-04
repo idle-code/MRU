@@ -2,11 +2,11 @@ let SessionLoad = 1
 if &cp | set nocp | endif
 let s:cpo_save=&cpo
 set cpo&vim
-inoremap <silent> <Plug>(neocomplcache_start_omni_complete) 
-inoremap <silent> <Plug>(neocomplcache_start_auto_complete_no_select) 
-inoremap <silent> <Plug>(neocomplcache_start_auto_complete) =neocomplcache#popup_post()
-inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_quick_match) unite#sources#neocomplcache#start_quick_match()
 inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_complete) unite#sources#neocomplcache#start_complete()
+inoremap <silent> <expr> <Plug>(neocomplcache_start_unite_quick_match) unite#sources#neocomplcache#start_quick_match()
+inoremap <silent> <Plug>(neocomplcache_start_auto_complete) =neocomplcache#popup_post()
+inoremap <silent> <Plug>(neocomplcache_start_auto_complete_no_select) 
+inoremap <silent> <Plug>(neocomplcache_start_omni_complete) 
 inoremap <silent> <C-Tab> =UltiSnips_ListSnippets()
 imap <F11> :wa
 xnoremap 	 :call UltiSnips_SaveLastVisualSelection()gvs
@@ -48,6 +48,7 @@ set showcmd
 set tabstop=2
 set wildmenu
 set wildmode=longest,list,full
+set window=49
 let s:so_save = &so | let s:siso_save = &siso | set so=0 siso=0
 let v:this_session=expand("<sfile>:p")
 silent only
@@ -56,7 +57,7 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +101 MainWindow.cpp
+badd +139 MainWindow.cpp
 badd +1 MainWindow.hpp
 badd +1 wxWidgetsUi.hpp
 badd +23 wxWidgetsUi.cpp
@@ -71,8 +72,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 98 + 105) / 211)
-exe 'vert 2resize ' . ((&columns * 112 + 105) / 211)
+exe 'vert 1resize ' . ((&columns * 111 + 105) / 211)
+exe 'vert 2resize ' . ((&columns * 99 + 105) / 211)
 argglobal
 setlocal noautoindent
 setlocal balloonexpr=
@@ -178,54 +179,60 @@ normal! zo
 normal! zo
 37
 normal! zo
-113
+200
 normal! zo
-198
+232
 normal! zo
-230
+280
 normal! zo
-278
+321
 normal! zo
-319
+334
 normal! zo
-332
-normal! zo
-335
-normal! zo
-396
+337
 normal! zo
 398
 normal! zo
-429
+400
 normal! zo
-447
+431
 normal! zo
-198
+449
 normal! zo
-230
+200
 normal! zo
-278
+232
 normal! zo
-319
+280
 normal! zo
-332
+321
 normal! zo
-335
+334
 normal! zo
-396
+337
 normal! zo
 398
 normal! zo
-429
+400
 normal! zo
-447
+431
 normal! zo
-let s:l = 139 - ((45 * winheight(0) + 23) / 47)
+433
+normal! zo
+449
+normal! zo
+525
+normal! zo
+449
+normal! zo
+525
+normal! zo
+let s:l = 500 - ((6 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-139
-normal! 02l
+500
+normal! 049l
 lcd ~/projects/mru/src/plugins/ui/wxWidgetsUi
 wincmd w
 argglobal
@@ -330,15 +337,15 @@ setlocal nowrap
 setlocal wrapmargin=0
 9
 normal! zo
-let s:l = 63 - ((33 * winheight(0) + 23) / 47)
+let s:l = 67 - ((37 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-63
-normal! 021l
+67
+normal! 0
 wincmd w
-exe 'vert 1resize ' . ((&columns * 98 + 105) / 211)
-exe 'vert 2resize ' . ((&columns * 112 + 105) / 211)
+exe 'vert 1resize ' . ((&columns * 111 + 105) / 211)
+exe 'vert 2resize ' . ((&columns * 99 + 105) / 211)
 tabedit ~/projects/mru/src/plugins/ui/wxWidgetsUi/wxWidgetsUi.cpp
 set splitbelow splitright
 wincmd _ | wincmd |
@@ -349,10 +356,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe '1resize ' . ((&lines * 44 + 25) / 50)
-exe 'vert 1resize ' . ((&columns * 111 + 105) / 211)
-exe '2resize ' . ((&lines * 44 + 25) / 50)
-exe 'vert 2resize ' . ((&columns * 99 + 105) / 211)
+exe 'vert 1resize ' . ((&columns * 114 + 105) / 211)
+exe 'vert 2resize ' . ((&columns * 96 + 105) / 211)
 argglobal
 setlocal noautoindent
 setlocal balloonexpr=
@@ -368,7 +373,7 @@ setlocal colorcolumn=
 setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
 setlocal commentstring=/*%s*/
 setlocal complete=.,w,b,u,t,i
-setlocal completefunc=neocomplcache#manual_complete
+setlocal completefunc=neocomplcache#auto_complete
 setlocal nocopyindent
 setlocal cryptmethod=
 setlocal nocursorbind
@@ -452,12 +457,18 @@ setlocal nowinfixwidth
 set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
-let s:l = 23 - ((17 * winheight(0) + 22) / 44)
+10
+normal! zo
+36
+normal! zo
+40
+normal! zo
+let s:l = 20 - ((19 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-23
-normal! 02l
+20
+normal! 042l
 lcd ~/projects/mru/src/plugins/ui/wxWidgetsUi
 wincmd w
 argglobal
@@ -560,7 +571,7 @@ setlocal nowinfixwidth
 set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
-let s:l = 5 - ((4 * winheight(0) + 22) / 44)
+let s:l = 5 - ((4 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -568,10 +579,8 @@ normal! zt
 normal! 025l
 lcd ~/projects/mru/src/plugins/ui/wxWidgetsUi
 wincmd w
-exe '1resize ' . ((&lines * 44 + 25) / 50)
-exe 'vert 1resize ' . ((&columns * 111 + 105) / 211)
-exe '2resize ' . ((&lines * 44 + 25) / 50)
-exe 'vert 2resize ' . ((&columns * 99 + 105) / 211)
+exe 'vert 1resize ' . ((&columns * 114 + 105) / 211)
+exe 'vert 2resize ' . ((&columns * 96 + 105) / 211)
 tabnext 1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf

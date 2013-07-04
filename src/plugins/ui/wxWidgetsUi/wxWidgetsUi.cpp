@@ -2,6 +2,7 @@
 #undef NDEBUG_L
 #include <debug_l.h>
 #include "MainWindow.hpp"
+#include <X11/Xlib.h>
 #include <wx/app.h>
 #include <wx/init.h>
 
@@ -36,7 +37,9 @@ namespace detail
 
 wxWidgetsUiApp::wxWidgetsUiApp(MruCore *a_mru_core)
   : wxApp(), m_core(a_mru_core)
-{ }
+{
+  int result = XInitThreads();
+}
 
 wxWidgetsUiApp::~wxWidgetsUiApp(void)
 { }

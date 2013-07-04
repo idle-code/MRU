@@ -74,6 +74,7 @@ public:
   void stop_rename(void);
   sigc::signal<void> rename_stopped;
 
+  sigc::signal<void, const UnicodeString &> rename_warning_occured;
   sigc::signal<void, const UnicodeString &> rename_error_occured;
   sigc::signal<void, filepath_type, filepath_type> filename_changed; //(filename_before, filename_after)
 
@@ -106,6 +107,9 @@ private:
   int load_tags(void);
   bool m_bindings_outdated;
   void bind_metatags(void);
+
+  void on_rename_started(void);
+  void on_rename_stopped(void);
 };
 
 } /* namespace mru */

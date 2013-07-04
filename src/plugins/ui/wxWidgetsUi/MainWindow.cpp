@@ -182,6 +182,8 @@ MainWindow::MainWindow(MruCore *a_mru_core)
 
   m_core->rename_started.connect(sigc::mem_fun(this, &MainWindow::OnRenameStarted));
   m_core->rename_stopped.connect(sigc::mem_fun(this, &MainWindow::OnRenameStopped));
+  m_core->rename_error_occured.connect(sigc::mem_fun(this, &MainWindow::OnRenameError));
+  m_core->filename_changed.connect(sigc::mem_fun(this, &MainWindow::OnFileRenamed));
 
   SetSizer(vsizer);
 
@@ -507,6 +509,25 @@ MainWindow::OnRenameStopped(void)
   m_preview_size_spinctrl->Enable(enabled);
 
   m_start_button->SetLabel(wxT("Start"));
+
+  fill_filelist();
+}
+
+void
+MainWindow::OnFileRenamed(filepath_type a_before, filepath_type a_after)
+{
+  FO("OnFileRenamed(filepath_type a_before, filepath_type a_after)");
+  
+}
+
+void
+MainWindow::OnRenameError(const UnicodeString &a_message)
+{
+  FO("OnRenameError(const UnicodeString &a_message)");
+  wxMessageDialog *error_messagebox = new wxMessageDialog(this, glue_cast<wxString>(a_message) + wxT("\n\nContinue rename?"), wxT("Rename error occured"), wxYES_NO | wxNO_DEFAULT);
+  if(wxID_NO == error_messagebox->ShowModal()) {
+    m_core->stop_rename();
+  }
 }
 
 } /* namespace mru */
