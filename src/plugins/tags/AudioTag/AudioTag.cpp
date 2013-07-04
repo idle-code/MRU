@@ -45,7 +45,7 @@ AudioTag::execute(const FileIterator &a_file_path, const UnicodeString &a_area_o
   //FO("AudioTag::execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect)");
   TagLib::FileRef file(glue_cast<std::string>(a_file_path.absolute_filename()).c_str());
   if(file.isNull())
-    throw MetatagException(name(), glue_cast<UnicodeString>("Couldn't open file: isNull"));
+    throw MetatagException(name(), glue_cast<UnicodeString>("Metadata not found - bad file type?"));
 
   switch(m_action) {
     case artist:
