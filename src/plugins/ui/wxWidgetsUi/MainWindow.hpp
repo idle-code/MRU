@@ -11,6 +11,7 @@ namespace mru
 class MainWindow : public wxFrame {
 public:
   typedef MainWindow self_type;
+  static MainWindow* get_instance(void);
 public:
   MainWindow(MruCore *a_mru_core);
   ~MainWindow(void);
@@ -18,6 +19,7 @@ public:
   void fill_filelist(void);
   
 private:
+  static MainWindow *m_instance;
   void OnClose(wxCommandEvent &a_evt);
 private:
   // metatag list
@@ -62,10 +64,13 @@ private:
   wxSpinCtrl *m_preview_size_spinctrl;
   void OnPreviewSizeSpinCtrlSpin(wxCommandEvent &a_evt);
 
-  void OnRenameStarted(void);
-  void OnRenameStopped(void);
+  void OnRenameStartedEvent(void);
+  void OnRenameStoppedEvent(void);
+  void OnRenameStarted(wxCommandEvent &a_evt);
+  void OnRenameStopped(wxCommandEvent &a_evt);
   void OnFileRenamed(filepath_type a_before, filepath_type a_after);
-  void OnRenameError(const UnicodeString &a_message);
+  void OnRenameErrorEvent(const UnicodeString &a_message);
+  void OnRenameError(wxCommandEvent &a_evt);
 
   // file list
   wxListCtrl *m_file_listctrl;
@@ -74,6 +79,9 @@ private:
 private:
   MruCore* m_core;
   int m_preview_size;
+  int RENAME_STARTED_ID;
+  int RENAME_STOPPED_ID;
+  int RENAME_ERROR_ID;
 };
 
 } /* namespace mru */

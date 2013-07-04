@@ -13,7 +13,8 @@ namespace mru
 
 MruCore::MruCore(void)
   : m_ui(NULL), m_out_driver(NULL),
-    m_base_directory("."), m_current_directory(m_base_directory),
+    m_base_directory("/home/idlecode/projects/mru/src/tests/files"), m_current_directory(m_base_directory),
+    //m_base_directory("."), m_current_directory(m_base_directory),
     m_include_directories(false), m_include_filenames(true), m_work_on_directories(true),
     m_bindings_outdated(true), m_worker_thread_state(stopped)
 {
@@ -309,7 +310,9 @@ worker_thread_main(void *a_core_pointer)
     while(core->m_worker_thread_state == MruCore::started &&
           dir_iterator != end_iterator)
     {
-      //sleep(1);
+      //sleep(4);
+      //core->rename_stopped();
+      //return NULL;
       //WARN(glue_cast<std::string>(dir_iterator.filename()));
       old_path = glue_cast<filepath_type>(dir_iterator.absolute_filename());
       try {

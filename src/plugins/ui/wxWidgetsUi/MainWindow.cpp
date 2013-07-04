@@ -15,11 +15,21 @@
 namespace mru
 {
 
+MainWindow*
+MainWindow::m_instance = NULL;
+
+MainWindow*
+MainWindow::get_instance(void)
+{
+  return m_instance;
+}
+
 MainWindow::MainWindow(MruCore *a_mru_core)
   : wxFrame(NULL, wxID_ANY, wxT("MRU - Multifile Renaming Utility"), wxPoint(-1, -1), wxSize(840, 520)),
     m_core(a_mru_core), m_preview_size(25) //TODO: replace by reg["ui.preview_size"] or something
 {
   FO("MainWindow::MainWindow(MruCore *a_mru_core)");
+  m_instance = this;
   if(m_core == NULL) {
     ERR("There is no valid MRU MruCore class instance passed to GUI");
     return;
@@ -179,11 +189,18 @@ MainWindow::MainWindow(MruCore *a_mru_core)
     Connect(m_preview_size_spinctrl->GetId(), wxEVT_COMMAND_SPINCTRL_UPDATED, wxCommandEventHandler(MainWindow::OnPreviewSizeSpinCtrlSpin));
   }
 
+  RENAME_STARTED_ID = wxNewId();
+  RENAME_STOPPED_ID = wxNewId();
+  RENAME_ERROR_ID = wxNewId();
 
-  m_core->rename_started.connect(sigc::mem_fun(this, &MainWindow::OnRenameStarted));
-  m_core->rename_stopped.connect(sigc::mem_fun(this, &MainWindow::OnRenameStopped));
-  m_core->rename_error_occured.connect(sigc::mem_fun(this, &MainWindow::OnRenameError));
+  m_core->rename_started.connect(sigc::mem_fun(this, &MainWindow::OnRenameStartedEvent));
+  m_core->rename_stopped.connect(sigc::mem_fun(this, &MainWindow::OnRenameStoppedEvent));
+  m_core->rename_error_occured.connect(sigc::mem_fun(this, &MainWindow::OnRenameErrorEvent));
   m_core->filename_changed.connect(sigc::mem_fun(this, &MainWindow::OnFileRenamed));
+
+  Connect(wxID_ANY, RENAME_STARTED_ID ,wxCommandEventHandler(MainWindow::OnRenameStarted));
+  Connect(wxID_ANY, RENAME_STOPPED_ID ,wxCommandEventHandler(MainWindow::OnRenameStopped));
+  //Connect(wxID_ANY, RENAME_ERROR_ID ,wxCommandEventHandler(MainWindow::OnRenameError));
 
   SetSizer(vsizer);
 
@@ -469,10 +486,20 @@ MainWindow::OnPreviewSizeSpinCtrlSpin(wxCommandEvent &a_evt)
 }
 
 void
-MainWindow::OnRenameStarted(void)
+MainWindow::OnRenameStartedEvent(void)
 {
-  FO("MainWindow::OnRenameStarted(void)");
+  FO("MainWindow::OnRenameStartedEvent(void)");
+  wxCommandEvent evt(RENAME_STARTED_ID, wxID_ANY); 
+  wxEvtHandler *window = MainWindow::get_instance();
+  VAL(this);
+  VAL(MainWindow::get_instance());
+  wxPostEvent(window, evt);
+}
 
+void
+MainWindow::OnRenameStarted(wxCommandEvent &a_event)
+{
+  FO("MainWindow::OnRenameStarted(wxCommandEvent &a_event)");
   bool enabled = false;
   m_include_directories_checkbox->Enable(enabled);
   m_include_files_checkbox->Enable(enabled);
@@ -486,14 +513,24 @@ MainWindow::OnRenameStarted(void)
   m_auto_preview_checkbox->Enable(enabled);
   m_preview_button->Enable(enabled);
   m_preview_size_spinctrl->Enable(enabled);
+  m_reset_on_directory_change->Enable(enabled);
 
   m_start_button->SetLabel(wxT("Stop"));
 }
 
 void
-MainWindow::OnRenameStopped(void)
+MainWindow::OnRenameStoppedEvent(void)
 {
-  FO("MainWindow::OnRenameStopped(void)");
+  FO("MainWindow::OnRenameStoppedEvent(void)");
+  wxCommandEvent evt(RENAME_STOPPED_ID, wxID_ANY); 
+  wxEvtHandler *window = MainWindow::get_instance();
+  wxPostEvent(window, evt);
+}
+
+void
+MainWindow::OnRenameStopped(wxCommandEvent &a_event)
+{
+  FO("MainWindow::OnRenameStopped(wxCommandEvent &a_event)");
   bool enabled = true;
   m_include_directories_checkbox->Enable(enabled);
   m_include_files_checkbox->Enable(enabled);
@@ -507,6 +544,7 @@ MainWindow::OnRenameStopped(void)
   m_auto_preview_checkbox->Enable(enabled);
   m_preview_button->Enable(!m_auto_preview_checkbox->GetValue());
   m_preview_size_spinctrl->Enable(enabled);
+  m_reset_on_directory_change->Enable(enabled);
 
   m_start_button->SetLabel(wxT("Start"));
 
@@ -521,14 +559,28 @@ MainWindow::OnFileRenamed(filepath_type a_before, filepath_type a_after)
 }
 
 void
-MainWindow::OnRenameError(const UnicodeString &a_message)
+MainWindow::OnRenameErrorEvent(const UnicodeString &a_message)
 {
-  FO("OnRenameError(const UnicodeString &a_message)");
+  FO("MainWindow::OnRenameErrorEvent(void)");
+  //wxCommandEvent evt(RENAME_ERROR_ID, wxID_ANY); 
+  //evt.SetString(glue_cast<wxString>(a_message));
+  //wxEvtHandler *window = MainWindow::get_instance();
+  //wxPostEvent(window, evt);
   wxMessageDialog *error_messagebox = new wxMessageDialog(this, glue_cast<wxString>(a_message) + wxT("\n\nContinue rename?"), wxT("Rename error occured"), wxYES_NO | wxNO_DEFAULT);
   if(wxID_NO == error_messagebox->ShowModal()) {
     m_core->stop_rename();
   }
 }
+
+//void
+//MainWindow::OnRenameError(wxCommandEvent &a_event)
+//{
+//  FO("OnRenameError(const UnicodeString &a_message)");
+//  wxMessageDialog *error_messagebox = new wxMessageDialog(this, glue_cast<wxString>(a_event.GetString()) + wxT("\n\nContinue rename?"), wxT("Rename error occured"), wxYES_NO | wxNO_DEFAULT);
+//  if(wxID_NO == error_messagebox->ShowModal()) {
+//    m_core->stop_rename();
+//  }
+//}
 
 } /* namespace mru */
 

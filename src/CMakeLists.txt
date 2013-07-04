@@ -1,8 +1,8 @@
 cmake_minimum_required (VERSION 2.8)
 
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
-#set (CMAKE_CXX_FLAGS "-g -ferror-limit=3 -fPIC")
-set (CMAKE_CXX_FLAGS "-g -ferror-limit=3")
+set (CMAKE_CXX_FLAGS "-g -ferror-limit=3 -fPIC")
+#set (CMAKE_CXX_FLAGS "-g -ferror-limit=3")
 include_directories ("./")
 include_directories ("/usr/local/include")
 link_directories ("/usr/local/lib")
