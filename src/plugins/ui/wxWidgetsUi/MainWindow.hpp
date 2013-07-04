@@ -64,6 +64,8 @@ private:
 
   void OnRenameStarted(void);
   void OnRenameStopped(void);
+  void OnFileRenamed(filepath_type a_before, filepath_type a_after);
+  void OnRenameError(const UnicodeString &a_message);
 
   // file list
   wxListCtrl *m_file_listctrl;

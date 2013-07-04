@@ -13,10 +13,9 @@ namespace mru
 
 MruCore::MruCore(void)
   : m_ui(NULL), m_out_driver(NULL),
-    m_base_directory("/home/idlecode/projects/mru/src/tests/files"), m_current_directory(m_base_directory),
-    m_include_directories(false), m_include_filenames(true), m_work_on_directories(false),
+    m_base_directory("."), m_current_directory(m_base_directory),
+    m_include_directories(false), m_include_filenames(true), m_work_on_directories(true),
     m_bindings_outdated(true), m_worker_thread_state(stopped)
-
 {
   FO("MruCore::MruCore(void)");
 
@@ -24,6 +23,9 @@ MruCore::MruCore(void)
   UiPluginManager::set_instance(new UiPluginManager("UiPlugin"));
   OutputPluginManager::set_instance(new OutputPluginManager("OutputPlugin"));
   TagPluginManager::set_instance(new TagPluginManager("TagPlugin"));
+
+  rename_started.connect(sigc::mem_fun(this, &MruCore::on_rename_started));
+  rename_stopped.connect(sigc::mem_fun(this, &MruCore::on_rename_stopped));
 }
 
 MruCore::~MruCore(void)
@@ -312,13 +314,17 @@ worker_thread_main(void *a_core_pointer)
       old_path = glue_cast<filepath_type>(dir_iterator.absolute_filename());
       try {
         new_path = glue_cast<filepath_type>(core->generate_filepath(dir_iterator));  
+        if(bfs::exists(new_path))
+          throw std::runtime_error("Cannot rename: \"" + glue_cast<std::string>(old_path) + "\"\nDestination file: \"" + glue_cast<std::string>(new_path) + "\" already exists");
         bfs::rename(old_path, new_path);  
         core->filename_changed(old_path, new_path);
       } catch(MetatagException me) {
         ERR("Metatag exception: " << glue_cast<std::string>(me.message()));
-        core->rename_error_occured(me.message());
+        //m_worker_thread_state = stopped;
+        core->rename_warning_occured(me.message());
       } catch(std::exception &e) {
-        ERR("Filesystem exception: " << e.what());
+        //ERR("Filesystem exception: " << e.what());
+        //m_worker_thread_state = stopped;
         core->rename_error_occured(glue_cast<UnicodeString>(e.what()));
       }
       
@@ -335,7 +341,7 @@ MruCore::start_rename(void)
 {
   FO("MruCore::start_rename(void)");
   reset_state();
-  m_worker_thread_state = started;
+  //m_worker_thread_state = started;
   if(0 != pthread_create(&m_worker_thread, NULL, &worker_thread_main, this)) {
     ERR("Couldn't create worker thread!");
     m_worker_thread_state = stopped;
@@ -355,7 +361,7 @@ MruCore::stop_rename(void)
   FO("MruCore::stop_rename(void)");
   m_worker_thread_state = stopped;
   if(0 != pthread_join(m_worker_thread, NULL)) {
-    ERR("Error while stopping worker thread");
+    WARN("pthread_join failed (thread might already be stopped)");
   }
   reset_state();
 }
@@ -427,6 +433,18 @@ MruCore::get_available_metatags(void)
     result.push_back(glue_cast<UnicodeString>(*tag_name));
   }
   return result;
+}
+
+void
+MruCore::on_rename_started(void)
+{
+  m_worker_thread_state = started;
+}
+
+void
+MruCore::on_rename_stopped(void)
+{
+  m_worker_thread_state = stopped;
 }
 
 } /* namespace mru */
