@@ -15,11 +15,12 @@ public:
   friend class MruCore;
 public:
   FileIterator(void); // creates end() iterator
-  FileIterator(const self_type &a_other); //FIXME: temporary
+  //FileIterator(const self_type &a_other); //FIXME: temporary
   //FileIterator(const filepath_type &a_path); // creates begin() iterator
   //FileIterator(const UnicodeString &a_path, const UnicodeString &a_metatag_expr = "%NAME()"); //TODO
   ~FileIterator(void);
 
+  bool is_end(void); 
   const UnicodeString& filter_expression(void) const;
   const UnicodeString& filter_expression(const UnicodeString &a_expr);
   
@@ -40,14 +41,15 @@ public:
   friend bool operator==(const self_type &a_a, const self_type &a_b); 
   friend bool operator!=(const self_type &a_a, const self_type &a_b); 
 protected:
-  bfs::recursive_directory_iterator m_bfs_iterator;
+  bfs::recursive_directory_iterator m_iterator;
+  const bfs::recursive_directory_iterator m_end_iterator;
   bfs::path m_base_path;
 protected:
-  const bfs::recursive_directory_iterator& bfs_iterator(void) const;
   FileIterator(const filepath_type &a_path, bool a_directory, bool a_file, const UnicodeString &a_filter);
 
   void progress_if_needed(void);
 private:
+  const bfs::recursive_directory_iterator& bfs_iterator(void) const;
   bool m_include_directories;
   bool m_include_files;
   UnicodeString m_filter;
