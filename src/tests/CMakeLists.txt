@@ -8,9 +8,9 @@ set (LIBS ${LIBS} ${CPPUNIT_LIBRARIES})
 
 add_definitions (-DSINGLE_TEST_MODE)
 
-#add_executable (unicode_path_test "unicode_path_test.cpp")
-#target_link_libraries (unicode_path_test ${LIBS})
-#add_test (unicode_path_test unicode_path_test)
+add_executable (BoostInputPlugin_test "BoostInputPlugin_test.cpp")
+target_link_libraries (BoostInputPlugin_test ${LIBS})
+add_test (BoostInputPlugin_test BoostInputPlugin_test)
 
 add_executable (metatag_test "metatag_test.cpp")
 target_link_libraries (metatag_test metatag ${LIBS})

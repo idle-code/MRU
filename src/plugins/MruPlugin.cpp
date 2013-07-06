@@ -27,14 +27,5 @@ MruPlugin::core(void)
   return m_core;
 }
 
-registry
-MruPlugin::reg(void)
-{
-  if(m_core == NULL)
-    return registry();
-
-  return m_core->get_registry();
-}
-
 } /* namespace mru */
 
