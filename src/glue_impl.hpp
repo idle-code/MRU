@@ -29,15 +29,15 @@ glue_cast<std::wstring, std::string>(const std::string &a_value)
 /* ------------------------------------------------------------------------- */
 
 template<> inline
-filepath_type
-glue_cast<filepath_type, wxString>(const wxString &a_value)
+FilePath
+glue_cast<FilePath, wxString>(const wxString &a_value)
 {
-  return filepath_type(a_value.mb_str());
+  return FilePath(a_value.mb_str());
 }
 
 template<> inline
 wxString
-glue_cast<wxString, filepath_type>(const filepath_type &a_value)
+glue_cast<wxString, FilePath>(const FilePath &a_value)
 {
   return wxString(a_value.c_str(), wxConvUTF8);
 }
@@ -117,23 +117,23 @@ glue_cast<std::wstring, wxString>(const wxString &a_value)
 
 template<> inline
 UnicodeString
-glue_cast<UnicodeString, filepath_type>(const filepath_type &a_value)
+glue_cast<UnicodeString, FilePath>(const FilePath &a_value)
 {
   return glue_cast<UnicodeString>(a_value.generic_wstring());
 }
 
 template<> inline
-filepath_type
-glue_cast<filepath_type, UnicodeString>(const UnicodeString &a_value)
+FilePath
+glue_cast<FilePath, UnicodeString>(const UnicodeString &a_value)
 {
-  return filepath_type(glue_cast<std::wstring>(a_value));
+  return FilePath(glue_cast<std::wstring>(a_value));
 }
 
 /* ------------------------------------------------------------------------- */
 
 template<> inline
 std::string
-glue_cast<std::string, filepath_type>(const filepath_type &a_value)
+glue_cast<std::string, FilePath>(const FilePath &a_value)
 {
   return a_value.generic_string();
 }

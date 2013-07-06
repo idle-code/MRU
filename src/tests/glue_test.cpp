@@ -8,10 +8,10 @@ glue_tests::wxString_and_filepath(void)
 {
   FO("glue_tests::wxString_and_filepath(void)");
   wxString wstr;
-  filepath_type fp;
+  FilePath fp;
 
   wstr = wxT(TEST_TEXT);
-  fp = glue_cast<filepath_type>(wstr);
+  fp = glue_cast<FilePath>(wstr);
   CPPUNIT_ASSERT(fp == TEST_TEXT);
 
   wstr = glue_cast<wxString>(fp);
@@ -23,12 +23,12 @@ glue_tests::UnicodeString_and_filepath(void)
 {
   FO("glue_tests::UnicodeString_and_filepath(void)");
   UnicodeString ustr;
-  filepath_type fp;
+  FilePath fp;
 
   ustr = UNICODE_STRING_SIMPLE(TEST_TEXT);
   VAL(glue_cast<std::string>(ustr));
 
-  fp = glue_cast<filepath_type>(ustr);
+  fp = glue_cast<FilePath>(ustr);
   VAL(glue_cast<std::string>(fp));
   CPPUNIT_ASSERT(fp == TEST_TEXT);
 

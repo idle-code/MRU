@@ -19,12 +19,12 @@ main(int argc, char const *argv[])
   VAL(my_pm);
   VAL(your_pm);
 
-  if(0 == my_pm->load_module("./test_module1")) {
+  if(0 == my_pm->load_module("./" "lib" "test_module1" ".so")) {
     ERR("No module named test_module1 found");
     //return 1;
   }
 
-  if(0 == your_pm->load_module("./test_module2")) {
+  if(0 == your_pm->load_module("./"  "lib" "test_module2" ".so")) {
     ERR("No module named test_module2 found");
     //return 2;
   }

@@ -78,13 +78,13 @@ plugin_manager<PluginClass>::~plugin_manager(void)
 
 template<typename PluginClass>
 int
-plugin_manager<PluginClass>::load_module(const filepath_type &a_path)
+plugin_manager<PluginClass>::load_module(const FilePath &a_path)
 {
-  FO("load(const filepath_type &a_path)");
+  FO("load(const FilePath &a_path)");
   VAL(a_path);
 
   dynamic_module_manager* mod_manager = dynamic_module_manager::get_instance();
-  dynamic_module *module = mod_manager->load(a_path);
+  dynamic_module *module = mod_manager->load(a_path.string());
 
   VAL(module);
   if(module == NULL || !module->is_loaded()) {
