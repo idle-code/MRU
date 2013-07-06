@@ -80,7 +80,7 @@ public:
   void destroy(void);
   ~plugin_manager(void);
 
-  int load_module(const filepath_type &a_path);
+  int load_module(const FilePath &a_path);
   void unload_module(dynamic_module *a_module); //FIXME: replace by unload_plugin or something
   //void unload_all(void);
 

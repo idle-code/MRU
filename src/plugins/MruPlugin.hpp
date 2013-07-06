@@ -19,9 +19,8 @@ public:
   virtual bool Init(MruCore *a_mru_core);
 
   virtual MruCore* core(void);
-  virtual registry reg(void);
 
-protected:
+private:
   MruCore *m_core;
 };
 
