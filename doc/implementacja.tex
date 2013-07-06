@@ -1,0 +1,477 @@
+\chapter{Implementacja}
+\label{implementacja}
+
+\section{Specyfikacja wymagań}
+\label{specyfikacja-wymagan}
+
+\subsection{Wymagania funkcjonalne}
+Użytkownikiem aplikacji jest administrator lub osoba posiadająca dużą kolekcję plików.
+Wymagane funkcjonalności:
+\begin{itemize}
+\item Możliwość wyboru katalogu zawierających pliki wymagające zmiany nazw
+\item Udostępnienie filtrów glob pozwalających na automatyczną selekcję plików
+%\item Sortowanie wybranych plików za pomocą metawyrażeń
+\item Możliwość ekstrakcji metadanych z~plików audio (MP3)
+%  \begin{itemize}
+%  \item MP3
+%  \item PNG
+%  %\item 
+%  \end{itemize}
+\item Wybór operacji na samych plikach lub pełnych ścieżkach (wraz z~katalogami)
+\item Automatyczna iteracja względem wybranych plików i~zmiana ich nazwy
+%\item Notyfikacja o~powtarzających się identyfikatorach plików
+%\item Notyfikacja o~możliwych problemach z~kompatybilnością spowodowanych zastosowanym zestawem znaków
+\item Notyfikacja o~błędach ekstrakcji metadanych
+%\item Zachowywanie konfiguracji programu między uruchomieniami
+\end{itemize}
+
+\subsection{Wymagania niefunkcjonalne}
+\begin{itemize}
+\item Minimalistyczny, skalowalny interfejs użytkownika
+\item Aplikacja powinna być przenośna na poziomie kodu źródłowego zarówno między platformami zgodnymi ze standardem \texttt{POSIX}.
+%z rodziny Microsoft Windows jak i~
+\end{itemize}
+
+%\section{Projekt}
+%\label{projekt}
+
+\section{Wykorzystane biblioteki}
+\label{wykorzystane-biblioteki}
+
+\subsection{SigC++}
+\begin{wrapfigure}{r}{0.4\textwidth}
+\begin{center}
+\includegraphics[scale=0.50]{img/sigcpp_logo.png}
+\end{center}
+\caption{Logo biblioteki SigC++}
+\end{wrapfigure}
+\par
+SigC++ jest biblioteką dla języka C++ implementującą bezpieczny (ze względu na typy) mechanizm sygnałów.
+Sygnały (zdarzenia) są wysokopoziomowym odpowiednikiem wywołań zwrotnych używanych do wstrzykiwania kodu programisty-użytkownika do istniejącej implementacji. W~językach niskopoziomowych, takich jak C często stosuje się do tego celu wskaźniki do funkcji, jednak ich niskopoziomowa natura może powodować trudne do wykrycia błędy spowodowane przekazaniem złego typu wskaźnika lub błędnej jego sygnatury. Biblioteka udostępnia wysokopoziomowe szablony obiektów sygnałów jak i~interfejsy do zastosowania w~klasach użytkownika, ułatwiające w~znaczny sposób zarządzanie podpiętymi zdarzeniami.\\
+\par
+SigC++ jest często używana w~projektach GUI takich jak projekt pulpitu GNOME; w~takim też celu zostanie ona użyta w~aplikacji MRU.
+
+\subsection{\texttt{boost::filesystem}}
+\par
+Biblioteka \texttt{boost::filesystem} pozwala na niezależny od systemu operacyjnego dostęp do drzewa katalogów\cite{wiecej-niz-cpp-boost}. Ze względu na swoją uniwersalność została użyta jako podstawowy sterownik (moduł wyjścia --- output module) w~aplikacji MRU.
+
+%\subsection{\texttt{boost::property\_tree}}
+%\par
+%\texttt{boost::property\_tree} jest drzewiastym (hierarchicznym) kontenerem ogólnego przeznaczenia\footnote{Z założenia biblioteka \texttt{boost::property\_tree} została stworzona do reprezentacji struktury ogólnych plików konfiguracyjnych lecz nic nie stoi na przeszkodzie aby traktować ją jako ogólny kontener}, który posłuży jako główne źródło informacji o~wtyczkach i~samym rdzeniu aplikacji MRU.
+
+%\subsection{\texttt{boost::program\_options}}
+%\par
+%Biblioteka \texttt{boost::program\_options} udostępnia wygodny i~rozszerzalny parser argumentów przekazanych programowi z~linii komend.
+
+\subsection{wxWidgets}
+\begin{wrapfigure}{r}{0.4\textwidth}
+\begin{center}
+\includegraphics[scale=0.50]{img/wxwidgets_logo.png}
+\end{center}
+\caption{Logo biblioteki wxWidgets}
+\end{wrapfigure}
+
+\par
+wxWidgets jest wieloplatformową biblioteką do tworzenia graficznych interfejsów użytkownika (ang. GUI). W~projekcie została wykorzystana do stworzenia wtyczki interfejsu (ui module) wxWidgetsUi. wxWidgets udostępnia i~pozwala tworzyć przenośny zestaw klas kontrolek, które są tłumaczone na natywne kontrolki środowiska uruchamiającego aplikacje.
+
+\subsection{ICU}
+\par
+ICU --- International Components for Unicode" --- jest biblioteką opracowaną przez IBM wspierającą lokalizacje, globalizacje i~umożliwiającą operacje na łańcuchach znaków w~kodowaniach UTF.\\
+Jako że główne operacje w~aplikacji MRU przeprowadzane są na łańcuchach znaków, istotne jest aby wykonywane były one z~należytą precyzją. ICU jest najbardziej zaawansowaną, ogólnie dostępną biblioteką tego typu z~długą historią zastosowań.
+
+\subsection{TagLib}
+TagLib jest biblioteką pozwalającą an ekstrakcje metadanych z~wielu typów plików multimedialnych. W~metatagu Audio umożliwia dostęp do informacji o~tytule, roku wydania, a~także wykonawcy i~albumie do którego należy utwór.
+
+\section{Rdzeń aplikacji - klasa MruCore}
+Rdzeniem aplikacji jest klasa \texttt{MruCore} stanowi ona interfejs do całej funkcjonalności programu i~udostępnia informacje o~jego działaniu.
+\par
+Klasa \texttt{MruCore} zawiera metody umożliwiające wtyczkom UI na kontrolę pracy programu bez implementacji powtarzalnej logiki, a~sygnały zdefiniowane w~klasie dostarczają informacji zwrotnej o~pracy aplikacji.
+
+\section{glue\_cast - łącznik technologii}
+Jako że w~aplikacji zostały wykorzystane różne biblioteki, wprowadziły one wiele wymagań co do obsługiwanych typów danych.
+Biblioteka ICU korzysta głównie z~klas takich jak \texttt{UnicodeString} podczas gdy biblioteki \texttt{boost} zostały oparte na strukturach ze standardowej biblioteki \texttt{STL} takich jak \texttt{std::string}. Do tego dochodzi niskopoziomowa warstwa API systemu operacyjnego która często operuje na surowych łańcuchach znaków --- \texttt{const char *}.
+\par
+Aby ułatwić konwersję między różnymi redundantnymi typami danych, został opracowany szablon \texttt{glue\_cast} podobny w~zastosowaniu do wbudowanych w~język język rzutowań takich jak \texttt{dynamic\_cast} czy \texttt{reinterpret\_cast}.
+
+\begin{lstlisting}[caption={ glue.hpp}, language=C++]
+template<typename DstType, typename SrcType> inline
+DstType
+glue_cast(const SrcType &a_value)
+{
+  return DstType(a_value);
+}
+\end{lstlisting}
+
+\par
+Przedstawiona powyżej generyczna implementacja szablonu często jest nieodpowiednia dla typów dla których realizowana jest jego specjalizacja jednak problem ten został rozwiązany --- każda para typów używanych w~aplikacji posiada dwie jawne specjalizacje szablonu umożliwiające ich konwersję.
+\clearpage
+\begin{lstlisting}[caption={ Fragment glue\_impl.hpp --- specjalizacja dla std::wstring i~wxString}, language=C++]
+template<> inline
+wxString
+glue_cast<wxString, std::wstring>(const std::wstring &a_value)
+{
+  return wxString(a_value.c_str(), wxConvUTF8);
+}
+
+template<> inline
+std::wstring
+glue_cast<std::wstring, wxString>(const wxString &a_value)
+{
+  return std::wstring(a_value.wc_str());
+}
+
+\end{lstlisting}
+
+\par
+Dzięki wykorzystaniu szablonów nie ma potrzeby tworzenia nowych funkcji konwersji, a~całość wygląda bardziej spójnie i~jest łatwiejsza w~utrzymaniu. Dodatkowym atutem użytego rozwiązania jest jego przenośność --- wybrane specjalizacje można wykorzystać w~jakimkolwiek projekcie używających specjalizowanych typów. Dodawanie nowych konwersji sprowadza się do dopisania kolejnej pary szablonów.
+
+\section{Wyrażenia zawierające metatagi}
+Najważniejszym elementem projektu MRU są metatagi wraz metawyrażeniami na które się składają.
+Metawyrażenia używane są jak wzorzec (szablon) na podstawie którego generowane są kolejne nazwy plików.
+
+\par
+Za każdym razem gdy MRU zmienia plik na którym operuje, metawyrażenie jest ewaluowane. Każde wystąpienie tagu jest przekładane na wywołanie odpowiedniej metody na obiekcie wtyczki, a~rezultat tego wywołania jest wstawiany w~miejsce wystąpienia tagu.
+Metatagi są reprezentacjami wywołań do odpowiadającym im wtyczek.
+
+\begin{wrapfigure}{r}{0.4\textwidth}
+\begin{center}
+\includegraphics[scale=0.50]{img/metatag_sample.png}
+\end{center}
+\caption{Metatag z~wyróżnionymi elemetami na niego się składającymi}
+\end{wrapfigure}
+
+\par
+Metatag jest identyfikatorem wprowadzonym do zwykłego tekstu, składającym się z~czterech elementów które nie mogą zostać rozdzielone białymi znakami. Metatag rozpoczyna się od symbolu procent --- '\%' --- po którym następuje nazwa metatagu składająca się ze znaków alfanumerycznych alfabetu łacińskiego\footnote{Z technicznego punktu widzenia nic nie stoi na przeszkodzie aby do zapisu nazwy metataga zastosować pełen zestaw znaków, lecz ze względu na globalizacje --- nie wszyscy użytkownicy potrafili by używać każdej nazwy --- zastosowano wyżej opisaną konwencję.}.
+Po nazwie następuje para nawiasów --- '(' wraz z~')' --- zawierających opcjonalnie listę parametrów inicjalizacyjnych metatag. Nie istnieją ograniczenia co do zawartości listy inizjalizującej --- może ona zawierać pełen zakres znaków włączając to znaki zakończenia listy (nawiasy zamykające) o~ile są odpowiednio oznaczone\footnote{Aby zignorować interpretację znaku specjalnego w~metawyrażeniu, można użyć ogólnie znanego schematu wyłączania znaków --- poprzedzania ich symbolem '\textbackslash'}.
+Ostatnim elementem jest opcjonalny zakres działania metatagu --- jest to obszar zawierający się między parą nawiasów klamrowych ('\{' oraz '\}') który sam w~sobie jest metawyrażeniem. Dzięki temu, efekty metatagów mogą się na siebie nakładać.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.55]{img/metatag_expr2.png}
+\end{center}
+\caption{Przykładowe metawyrażenie wraz z~wyróżnionymi elementami metatagów}
+\label{metatag-expr}
+\end{figure}
+
+\par
+Parsowanie metawyrażenia rozpoczyna się od tokenizacji --- wydzieleniu znaczących dla wyrażenia elementów takich jak symbole (procent, nawiasy), a~także ciągi znaków alfanumerycznych oraz białych. Na podstawie listy tokenów budowane jest drzewo wywołań, które jest strukturą zawierającą kolejność oraz zależności między metatagami.
+
+\begin{sidewaysfigure}
+\begin{center}
+\includegraphics[scale=0.55]{img/metatag_expr_tree4.png}
+\end{center}
+\caption{Drzewo wywołań stworzone z~przykładowego metawyrażenia}
+\label{metatag-expr-tree}
+\end{sidewaysfigure}
+
+\par
+Drzewo wywołań składa się jedynie z~metatagów. Aby otrzymać taką strukturę, ciągi surowego tekstu (nie będące metatagami) zostają zamienione na wywołania anonimowych (nienazwanych) metatagów, których argumentami inicjalizującymi są właśnie surowe ciągi tekstu, a~jedyną funkcją --- zwrócenie argumentów z~listy inicjalizującej. Dzięki temu ewaluacja wyrażeń jest prostsza, a~dodatkowy anonimowy metatag może zostać wykorzystany na przykład do zmiany kodowania surowego tekstu.
+\par
+Rysunek \ref{metatag-expr-tree} ukazuję strukturę drzewa zbudowanego z~przykładowego wyrażenia z~rysunku \ref{metatag-expr}. Widoczna tu jest wygenerowana hierarchia, na której szczycie znajduje się anonimowy tag. Pojedynczy korzeń ułatwia parsowanie i~wpasowuje się w~logiczną strukturę wyrażenia które nawet nie zagnieżdżone może składać się z~kilku następujących po sobie elementów.
+\par
+Drzewo wywołań przeszukiwane jest w~głąb (co zostało zaznaczone żółtą przerywaną linią), a~jego elementy są ewaluowane od lewej do prawej przy czym metawyrażenia zagnieżdżone w~zakresach operacyjnych innych wyrażeń są ewaluowane przed otaczającym je metatagiem-rodzicem. Kolejność ewaluacji jest widoczna na rysunku \ref{metatag-expr-tree} i~oznaczona czerwoną, przerywaną linią. W~ten sposób rezultat wykonania pod-wyrażenia jest dostępny dla tagu-rodzica, co pozwala na wiązanie wywołań niespotykane w~żadnym istniejącym programie.
+\par
+Każdy obiekt metatagu musi być zgodnym z~interfejsem klasy \texttt{Metatag}, która zawiera następujące metody wymagające implementacji:
+\begin{enumerate}
+\item \texttt{void initialize(const UnicodeString \&arguments)}
+\item \texttt{UnicodeString execute(const UnicodeString \&area\_of\_effect)}
+\end{enumerate}
+
+Pierwsza z~metod zostaje wywołana na obiekcie podczas łączenia drzewa wywołań z~listą fabryk metatagów i~pobiera jako parametr łańcuch znaków będący zawartością nawiasów tuż po nazwie metatagu. Proces tego typu nazywany jest często \textit{bindowaniem} (od ang. \textit{bind}).\\
+Metoda \texttt{execute} wywoływana jest za każdym razem podczas ewaluacji wyrażenia dla danego pliku. Jej argumentem jest zakres operacyjny (opcjonalne pod-wyrażenie zawarte w~nawiasach klamrowych za listą argumentów).\\
+Obie metody mogą wyrzucać wyjątki informując o~niepoprawnym argumencie lub błędzie ekstrakcji metadanych.
+
+\section{System modułów}
+\label{system-modulow}
+\par
+Aby ułatwić proces projektowania a~także zwiększyć rozszerzalność aplikacji, duża część funkcjonalności została oddelegowana do oddzielnych modułów zwanych również wtyczkami.
+Wtyczki są klasami ładowanymi w~trakcie działania programu z~bibliotek dynamicznych.
+ W~celu udostępnienia aplikacji funkcjonalności zawartych w~modułach wtyczek, niezbędne było zaprojektowanie menadżera wtyczek --- szablonu plugin\_manager.
+Klasy menadżera wtyczek umożliwiają programiście-użytkownikowi ładowanie modułów z~wcześniej zadeklarowanym interfejsem niezależnie od platformy systemowej na której uruchamiany jest program\footnote{Same moduły muszą być skompilowane pod platformę na której program ma być uruchamiany.}.
+
+\par
+Problemem który rozwiązuje menadżer wtyczek jest fakt że biblioteki dynamiczne przechowują głównie funkcje; klasy które istnieją jedynie w~trakcie kompilacji nie mogą zostać wyeksportowane do pliku jak ma to miejsce w~językach wspierających introspekcje/refleksje typów --- takich jak Java czy C\#.
+Aby umożliwić ładowanie wtyczek w~języku C++ należy najpierw zdefiniować czym właściwie jest sama wtyczka.\\
+
+ W~MRU (jak i~wielu innych programach) wtyczka jest obiektem udostępniającym metody określone przez interfejs wtyczki. Także biblioteka dynamiczna musi w~jakiś sposób udostępnić owe obiekty.
+
+\par
+Menadżer wtyczek po załadowaniu biblioteki dynamicznej przeszukuje ją pod kątem funkcji o~nazwie \texttt{register\_plugins} wyeksportowanej bez przesłaniania nazw (name mangling) na przykład za pomocą konstrukcji \texttt{extern ''C'' \{ ... \}} i~jeśli takowa istnieje --- uruchamia ją przekazując jako jedyny argument wskaźnik na własną instancje.
+\par
+Sama wtyczka natomiast rejestruje w~instancji przekazanego menadżera, fabryki klas w~niej zawartych.
+Dzięki temu, obiekty wtyczek nie są tworzone do czasu gdy są faktycznie potrzebne. Zmniejsza to obciążenie pamięciowe programu jak i~ułatwia pracę twórcom wtyczek, którzy mogą skupić się na implementowaniu faktycznej funkcjonalności modułów. Takie rozwiązanie pozwala również programowi-hostowi na decydowanie w~jakiej ilości i~kiedy mają być tworzone wybrane obiekty.
+\par
+ Z~założenia menadżer wtyczek powinien umożliwiać ładowanie wielu wtyczek z~jednej biblioteki dynamicznej.
+Problem ten został rozwiązany dzięki zastosowaniu klasy identyfikatorów interfejsów --- każdy menażer i~każda fabryka wtyczki posiada identyfikator informujący jaki typ interfejsu obsługuje. Dzięki zastosowaniu dystrybutora (brokera) fabryk, podczas ładowania modułu możliwe jest rejestrowanie fabryk wtyczek różnych interfejsów pod warunkiem że w~czasie ładowania stworzone zostały ich instancje.
+
+\par
+Poniżej został przedstawiony przykładowy interfejs wtyczki, jej implementacja oraz program ją wykorzystujący.
+
+\par
+Przykładowa wtyczka posiada jedynie jedną metodę wywoływaną przez aplikację-hosta: \texttt{say\_hello}.\\
+Aby umożliwić integracje klasy interfejsu MyPlugin z~menadżerem wtyczek, każdy interfejs musi dziedziczyć z~szablonu \texttt{mru::plugin}, który to udostępnia metody do pobrania identyfikatorów interfejsu.
+Makro \texttt{PLUGIN\_INTERFACE} używane jest do zdefiniowania statycznej funkcji \texttt{static\_interface\_name}, zwracającej identyfikator interfejsu klasy\footnote{Najwygodniejszym rozwiązaniem zdaje się być stosowanie nazwy typu (klasy) jako nazwy interfejsu.}.
+Konstruktor interfejsu wymaga natomiast przekazania identyfikatora konkretnej implementacji co ułatwia identyfikacje instancji wtyczek.
+\begin{lstlisting}[caption={ test\_module.hpp}, language=C++]
+#include <plugin_manager.hpp>
+
+class MyPlugin : public mru::plugin<MyPlugin> {
+public:
+  PLUGIN_INTERFACE("MyPlugin")
+  MyPlugin(const mru::name_type &a_name)
+    : mru::plugin<MyPlugin>(static_interface_name(), a_name)
+  { }
+  virtual void say_hello(void) = 0;
+};
+
+typedef mru::plugin_manager<MyPlugin> MyPluginManager;
+\end{lstlisting}
+
+\par
+Implementacja wtyczki typu \texttt{MyPlugin} o~nazwie \texttt{MPlg1} jest równie prosta i~wymaga od programisty-użytkownika biblioteki jedynie dostarczenia identyfikatora instancji --- metody \texttt{static\_implementation\_name}, która podobnie jak metoda do identyfikacji interfejsu zwykle zwraca nazwę typu klasy.\\
+Warto w~tym miejscu zauważyć że każda biblioteka dynamiczna zawierająca implementacje wtyczki powinna udostępniać funkcję \texttt{register\_plugins}. Aby zmniejszyć powtarzalność kodu, zastosowano w~tym celu makra: \texttt{EXPORT\_START}, \texttt{EXPORT\_END} i~\texttt{EXPORT\_PLUGIN}
+\begin{lstlisting}[caption={ test\_module.cpp}, language=C++]
+#include "test_module.hpp"
+
+class MPlg1 : public MyPlugin { 
+public:
+  PLUGIN_NAME("MPlg1");
+  MPlg1(void)
+    : MyPlugin(static_implementation_name()) { } 
+
+  void say_hello(void)
+  {
+    std::cout << "Hello from MPlg1!" << std::endl;
+  }
+};
+
+EXPORT_START
+  EXPORT_PLUGIN(MPlg1)
+EXPORT_END
+
+\end{lstlisting}
+
+\par
+Program korzystający z~wtyczek musi stworzyć instancję menadżera wtyczek --- w~tym przypadku specjalizacji szablonu \texttt{mru::plugin\_manager<MyPlugin>}.\\
+Po utworzeniu menadżer wtyczek umożliwia ładowanie bibliotek dynamicznych (za pomocą metody \texttt{load\_module}). Po załadowaniu biblioteki możliwe jest odpytanie menadżera o~nazwy dostępnych wtyczek, służy ku temu metoda \texttt{available\_plugins}.
+Zadaniem menadżera również jest zarządzanie czasem życia obiektu wtyczki, które tworzone są za pomocą metody \texttt{create\_plugin} i~niszczone z~użyciem \texttt{destroy\_plugin};
+\begin{lstlisting}[caption={ main.cpp}, language=C++]
+#define PLUGIN_HOST
+#include "test_module.hpp"
+
+int
+main(int argc, char const *argv[])
+{
+  using namespace mru;
+  MyPluginManager::set_instance(new MyPluginManager("MyPlugin"));
+
+  MyPluginManager* my_pm = MyPluginManager::get_instance();
+
+  if(0 == my_pm->load_module("./test_module")) {
+    //ERR("No module named test_module1 found");
+    return 1;
+  }
+
+  std::list<name_type> my_plugins = my_pm->available_plugins();
+  std::cout << my_plugins.size() << std::endl;
+  for(std::list<name_type>::iterator i~= my_plugins.begin(); i~!= my_plugins.end(); ++i) {
+    std::cout << *i << std::endl;
+  }
+
+  MyPlugin *mplg1 = my_pm->create_plugin("MPlg1");
+
+  if(mplg1)
+    mplg1->say_hello();
+
+  my_pm->destroy_plugin(mplg1); 
+  
+  my_pm->destroy();
+  my_pm = NULL;
+  
+  return 0;
+}
+\end{lstlisting}
+
+\section{Typy modułów w~MRU}
+\label{moduly}
+Aplikacja obsługuje trzy interfejsy wtyczek:
+\begin{itemize}
+\item UiPlugin --- moduły interfejsu --- pozwalają na implementacje różnych interfejsów użytkownika.
+\item OutputPlugin --- sterowniki wyjścia --- umożliwiają korzystanie z~różnych interfejsów do systemu plików.
+\item TagPlugin --- moduły udostępniające fabryki do tworzenia wszelkich metatagów.
+\end{itemize}
+
+\section{Moduły UI}
+\par
+Wtyczki interfejsu użytkownika pozwalają użytkownikowi końcowemu na interakcję z~programem.
+Pojedynczy proces aplikacji może posiadać aktywny tylko jeden moduł UI. 
+%Decyzja o~wyborze interfejsu użytkownika dokonywana jest na podstawie pliku konfiguracyjnego lub odpowiedniego przełącznika linii poleceń.
+Wtyczki interfejsu odpowiadają za całkowitą komunikację między użytkownikiem i~rdzeniem aplikacji --- MruCore; to one udostępniają większość funkcjonalności narzędzia, a~także informują użytkownika o~jego stanie.
+\par
+Jako że funkcjonalność aplikacji jest w~dużej mierze determinowana przez klasę rdzenia (MruCore), interfejs UiPlugin nie posiada z~góry zdefiniowanych metod jak inne wtyczki. Jedyna metoda w~nim zawarta --- \texttt{start} --- pozwala na reinterpretacje linii poleceń i~służy do przekazania kontroli nad programem (klasą MruCore) właśnie do samej wtyczki.
+
+\subsection{wxWidgetsUi}
+\par
+wxWidgetsUi jest implementacją graficznego interfejsu użytkownika opartego na wspomnianej bibliotece \texttt{wxWidgets}. Założeniem tego modułu jest udostępnienie użytkownikowi końcowemu prostego oraz szybkiego dostępu do funkcjonalności programu, a~także pomoc w~zapoznaniu się z~aplikacją.
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.50]{img/wxwidgetsui.png}
+\end{center}
+\caption{Okno aplikacji MRU --- wtyczka wxWidgetsUi}
+\end{figure}
+
+Okno aplikacji stworzone przez wtyczkę wxWidgetsUi jest podzielone na trzy sekcje:
+\begin{itemize}
+\item Sekcja górna odpowiada za selekcję plików oraz pozwala na edycję metawyrażenia które ma zostać zastosowane na wybranych plikach.
+ W~lewym górnym rogu widnieje lista dostępnych Metatagów, a~pola po prawej stronie pozwalają na wybór katalogu, filtru glob oraz samego metawyrażenia.
+
+\item Środkowa część okna stanowi podgląd wybranych plików jak i~efektów zastosowania edytowanego wyrażenia do nich. Lista plików może być ograniczona i~odświeżana w~zależności od opcji znajdujących się pod nią.
+
+\item Na dole okna widoczne są przyciski do (ręcznego) generowania podglądu, jego konfiguracji, a~także rozpoczęcia transformacji nazw dla wybranych plików.
+\end{itemize}
+
+%\subsection{TextUi}
+%\par
+%TextUi jest wtyczką interfejsu udostępniającą funkcjonalność programu z~poziomu linii komend. Pozwala ona na przekazanie parametrów konfiguracyjnych i~rozpoczęcie transformacji nazw bez interakcji z~użytkownikiem jak ma to miejsce w~przypadku graficznych interfejsów użytkownika. Dzięki zastosowaniu tej wtyczki istnieje możliwość wykorzystania aplikacji MRU z~poziomu skryptów powłoki, na maszynach nie wykorzystujących środowiska graficznego lub zdalnych.
+
+\section{Moduły output}
+\par
+Wtyczki wyjścia są warstwą abstrakcji pomiędzy systemem operacyjnym i~jego drzewem katalogów, a~rdzeniem aplikacji.
+%Udostępniają one iteratory pozwalające na przeszukiwanie  dysku w~celu znalezienia plików pasujących do wzorca wybranego przez użytkownika, oraz przekazują polecenia zmiany identyfikatora pliku do API używanego systemu.
+Każde żądanie zmiany nazwy zostaje przekazane do modułu wyjścia.
+Kontrolują one również poprawność wygenerowanych nazw, a~także zapewniają ich unikalność.
+
+\subsection{GenericBoost}
+Wtyczka GenericBoost została opracowana na podstawie biblioteki \texttt{boost::filesystem}. Stanowi ona sprawdzone oraz przenośne rozwiązaniem problemu dostępu do drzewa katalogów, bezpieczne do wykorzystania na wielu systemach bez zmian w~kodzie samej wtyczki.
+
+
+\section{Moduły metatagów}
+Główna funkcjonalność aplikacji została zawarta w~modułach tagów --- to one odpowiadają za ekstrakcje metadanych lub generowanie wartości, które rdzeń aplikacji jedynie składa i~przesyła wraz z~komunikatem zmiany do modułu wyjścia.
+\par
+Każdy z~poniżej wymienionych tagów może zostać dodany do wyrażenia po załadowaniu odpowiedniej biblioteki dynamicznej go zawierającej
+%\footnote{Część tagów nie wymaga ładowania --- są wbudowane w~plik wykonywalny aplikacji, natomiast część mimo iż jest dostarczana w~standardzie z~aplikacją może wymagać dodatkowej konfiguracji w~postaci określenia ścieżki ładowania bibliotek}.
+
+\subsection{Count}
+Metatag Count jest używany do numeracji wybranych plików.
+Dla każdego pliku generowany jest kolejny numer. Lista argumentów tagu pozwala na określenie wartości początkowej, prefiksu oraz systemu w~którym ma odbywać się numeracja.
+ W~poniższej tabeli zawarte zostały parametry obsługiwane przez metatag:
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{| c | p{13cm} |}
+\hline
+\textbf{Argument} & \textbf{Opis} \\
+\hline
+start=\textit{N} & Ustawia początkowy stan licznika na \textit{N}--- od tej wartości tag rozpocznie zliczanie \\
+step=\textit{N} & Ustawia rozmiar kroku --- kolejny numer będzie większy o~\textit{N} w~stosunku do poprzedniego \\
+\hline
+\end{tabular} \end{center}
+\caption{Zestaw argumentów inicjalizacyjnych dla metatagu Count}
+\end{table}
+
+Aby wykorzystać kilka argumentów jednocześnie należy oddzielić je od siebie za pomocą symbolu przecinka --- '\texttt{,}'.
+
+\subsection{Audio}
+Metatag Audio został oparty na bibliotece \texttt{TagLib} i~pozwala na ekstrakcję metadanych z~wielu plików multimedialnych.
+Tag ten obsługuje następujące argumenty:
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{| c | p{13cm} |}
+\hline
+\textbf{Argument} & \textbf{Opis} \\
+\hline
+title & Konfiguruje tag do ekstrakcji tytułu utworu \\
+artist & Konfiguruje tag do ekstrakcji nazwy artysty wykonującego utwór \\
+album & Konfiguruje tag do ekstrakcji nazwy albumu w~którym zawiera się utwór \\
+year & Konfiguruje tag do ekstrakcji roku powstania utworu \\
+comment & Konfiguruje tag do ekstrakcji komentarza \\
+\hline
+
+\end{tabular}
+\caption{Zestaw argumentów inicjalizacyjnych dla metatagu \textsf{Audio}}
+\end{center}
+\end{table}
+
+\subsection{Name}
+Metatag Name reprezentuje źródłową nazwę pliku bez rozszerzenia oraz katalogu zawierającego. Może być używany gdy zachodzi potrzeba dodania prefiksu lub sufiksu do istniejącej nazwy pliku. Dzięki składni metawyrażeń możliwa jest również modyfikacja źródłowego identyfikatora na przykład za pomocą tagu TextCase.
+
+\subsection{Ext}
+Metatag Ext reprezentuje rozszerzenie pliku. Jako że modyfikacja rozszerzenia może prowadzić to błędnej interpretacji pliku przez inne programy, często jest niepożądana. Metatag Ext użyty na końcu metawyrażenia stosowany jest w~celu zachowania rozszerzenia pliku.
+
+\subsection{Dir}
+Dir jest metatagiem reprezentującym samą ścieżkę (listę katalogów) w~której znajduje się przetwarzany plik. Ścieżka zwracana przez Dir jest ścieżką pośrednią w~stosunku do katalogu przetwarzania wybranego przez użytkownika --- dla plików znajdujących się bezpośrednio w~wybranym katalogu, metatag Dir zwraca pustą ścieżkę.
+
+\subsection{TextCase}
+Metatag TextCase jest używany do zmiany wielkości liter w~skojarzonym z~tagiem zakresie działania. Pewność działania dla pełnego zakresu kodów unicode jest zapewniona dzięki wykorzystaniu funkcji z~biblioteki ICU.
+
+%\subsection{Convert}
+
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{| c | p{13cm} |}
+\hline
+\textbf{Argument} & \textbf{Opis} \\
+\hline
+upper & Konfiguruje tag do zamiany wszystkich znaków w~zakresie na ich większe odpowiedniki \\
+lower & Konfiguruje tag do zamiany wszystkich znaków w~zakresie na ich mniejsze odpowiedniki \\
+title & Konfiguruje tag do zamiany znaków w~zakresie tak by wyglądały na tytuł (Pierwsze znaki każdego słowa są zamieniane na ich większe odpowiedniki \\
+\hline
+\end{tabular} \end{center}
+\caption{Zestaw argumentów inicjalizacyjnych dla metatagu TextCase}
+\end{table}
+
+\section{Testy}
+\label{testy}
+
+\par
+ W~celu przetestowania aplikacji ze strony \url{http://www.jamendo.com/pl/track/986557/pulsar} zostało pobrane archiwum zawierające album muzyczny z~plikami w~formacie \textit{MPEG-1/MPEG-2 Audio Layer 3} --- popularnie zwanym '\textit{MP3}' --- które to zawierają poprawnie sformatowane tagi ID3 w~wersji 2.4.0.\\
+Celem testu było sprawdzenia parsera metawyrażeń, filtra regex, a~także ogólnego działania programu.
+Na rysunku \ref{test-before} widać stan katalogu przed uruchomieniem programu.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.70]{img/test_before.png}
+\end{center}
+\caption{Stan plików przed zmianą}
+\label{test-before}
+\end{figure}
+
+\par
+Do testów zostało wybrane metawyrażenie wykorzystujące metatagi Audio, TextCase oraz Ext.
+Celem użytego metawyrażenia jest kompozycja nazwy składającej się z~nazwy albumu do którego utwór należy (metatag \texttt{\%Audio(album)}) pisanej dużymi literami, po której następuje tytuł (\texttt{\%Audio(title)}) oraz rok wydania utworu w~nawiasach kwadratowych (\texttt{[\%Audio(year)]}). Wykorzystany na końcu metatag Ext, zapewnia że pliki wynikowe będą posiadały takie samo rozszerzenia jak w~nazwa źródłowa.\\
+Dodatkowo w~celu zmniejszenia ilości błędów został zastosowany filtr z~wyrażeniem regularnym "\textit{.*mp3}", który zapewnia że program będzie przetwarzać pliki zakończone ciągiem znaków "\textit{mp3}".
+
+\begin{center}
+\texttt{\%TextCase(upper)\{\%Audio(album)\} - \%Audio(title) [\%Audio(year)]\%Ext()}
+\end{center}
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.45]{img/test_window.png}
+\end{center}
+\caption{Konfiguracja aplikacji użyta do zmiany identyfikatorów}
+\end{figure}
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.70]{img/test_after.png}
+\end{center}
+\caption{Stan plików po zmianie}
+\end{figure}
+
+\section{Możliwości rozwoju i~ponownego wykorzystania komponentów}
+\par
+Dzięki zastosowanej architekturze modułowej, części aplikacji nie posiadają dużych zależności między-modułowych co stwarza idealne warunki do ich rozwoju i~ponownego użycia istniejącego kodu (na przykład wtyczek) w~innych projektach.
+
+\par
+System wtyczek został zaimplementowany w~formie biblioteki niezależnej od platformy i~nie posiadającej rozwiązań specyficznych dla aplikacji w~której został wykorzystany. Dzięki temu jego wykorzystanie w~innych projektach nie wymaga dodatkowego narzutu związanego z~modyfikacją kodu.
+
+\par
+Moduły metatagów wymagają jedynie dostępu do pliku na którym mają operować i~same nie są świadome metawyrażeń w~których występują. Dzięki zastosowanie takiej izolacji, dodawanie nowych wtyczek nie wywiera wpływu na działający program, a~istniejące metatagi mogą zostać wykorzystane z~powodzeniem w~innych aplikacjach, które wymagają dostępu do metadanych pliku. Dzięki spójnemu interfejsowi, metatagi mogą stanowić alternatywę dla wykorzystywania dedykowanych bibliotek do obsługi formatów (plików), które często zawierają sporo narzutu związanego z~funkcjami bezpośrednio nie związanymi z~danymi --- jak na przykład zapisem faktycznych danych.\\
+Metatagi mogą znaleźć również zastosowanie przy porównywaniu plików w~celu identyfikacji duplikatów.
+
+\par
+Wtyczki wyjścia --- OutputPlugin --- nie mają w~żaden sposób narzuconej implementacji.
+%Ich zadaniem jest jedynie udostępnienie iteratora do faktycznych plików.
+Nic więc nie stoi na przeszkodzie aby stworzyć wtyczkę która generuje na przykład tekstowe raporty dla istniejących plików zawierające metadane w~nich zawarte.

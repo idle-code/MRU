@@ -1,0 +1,8 @@
+#!/usr/local/bin/zsh
+
+rm -rf CMakeFiles
+find ./ -name "*~" -delete
+find ./ -name "CMakeCache.txt" -delete
+find ./ -name "Makefile" -delete
+rm -rf `find ./ -name "CMakeFiles"`
+
