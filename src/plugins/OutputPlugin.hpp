@@ -1,8 +1,7 @@
-#ifndef OUTPUT_PLIGIN_HPP
-#define OUTPUT_PLIGIN_HPP
+#ifndef OUTPUT_PLUGIN_HPP
+#define OUTPUT_PLUGIN_HPP
 
 #include "plugins/MruPlugin.hpp"
-#include "plugin_manager.hpp"
 
 namespace mru
 {
@@ -18,15 +17,12 @@ public:
   virtual ~OutputPlugin(void)
   { }
 
-  virtual filepath_type get_directory(void) = 0;
-  virtual bool change_directory(const filepath_type &a_path) = 0;
-  virtual bool rename(const filepath_type &a_name, const filepath_type &a_new_name) = 0;
-  //virtual bool move(const filepath_type &a_location, const filepath_type &a_new_location) = 0;
+  virtual bool rename(const FilePath &a_name, const FilePath &a_new_name) = 0;
 };
 
 typedef plugin_manager<OutputPlugin> OutputPluginManager;
 
 } /* namespace mru */
 
-#endif /* OUTPUT_PLIGIN_HPP */
+#endif /* OUTPUT_PLUGIN_HPP */
 
