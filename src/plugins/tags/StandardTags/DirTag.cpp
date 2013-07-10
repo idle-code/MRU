@@ -19,10 +19,10 @@ DirTag::initialize(const UnicodeString &a_arguments)
 UnicodeString
 DirTag::execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect)
 {
-  if(a_file_path.directory().length() == 0)
+  if(bfs::is_empty(a_file_path.getFilePath().parent_path()) == 0)
     return UnicodeString();
   else
-    return a_file_path.directory() + glue_cast<UnicodeString>("/");
+    return glue_cast<UnicodeString>(a_file_path.getFilePath().parent_path()) + glue_cast<UnicodeString>("/");
 }
 
 } /* namespace mru */
