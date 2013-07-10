@@ -219,7 +219,7 @@ FileIterator *
 MruCore::getIterator(void)
 {
   try {
-    return m_input->getFileIterator(getDirectory());
+    return m_input->getFileIterator(getDirectory(), FileIterator::SortComparator());
   } catch(...) {
     ERR("Couldn't get directory iterator for: " << getDirectory());
     return NULL;

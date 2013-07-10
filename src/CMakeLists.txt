@@ -56,7 +56,10 @@ add_subdirectory ("metatag")
 include_directories ("metatag")
 set (LIBS ${LIBS} metatag)
 
-add_executable (mru "main.cpp" "MruCore.cpp" "FileIterator.cpp")
+add_library (FileIterator "FileIterator.cpp")
+set (LIBS ${LIBS} FileIterator)
+
+add_executable (mru "main.cpp" "MruCore.cpp")
 target_link_libraries (mru ${LIBS} ${CMAKE_DL_LIBS})
 set_target_properties (mru PROPERTIES ENABLE_EXPORTS TRUE)
 

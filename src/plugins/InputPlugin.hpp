@@ -18,7 +18,7 @@ public:
   virtual ~InputPlugin(void)
   { }
 
-  virtual FileIterator* getFileIterator(const FilePath &a_path /* other options here? */) = 0;
+  virtual FileIterator* getFileIterator(const FilePath &a_path, const FileIterator::SortComparator &a_sort_predicate) = 0;
 
 };
 

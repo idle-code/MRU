@@ -8,6 +8,21 @@ namespace mru
 
 class FileIterator {
 public:
+  class FilePredicate {
+  public:
+    virtual ~FilePredicate(void) { }
+    virtual bool operator()(const FilePath &a_path) = 0;
+  };
+
+  class SortComparator {
+  public:
+    virtual ~SortComparator(void) { }
+    virtual int operator()(const FilePath &a_path_a, const FilePath &a_path_b)
+    {
+      return a_path_a < a_path_b;
+    } 
+  };
+public:
   virtual ~FileIterator(void);
 
   virtual FilePath getFilePath(void) const = 0;

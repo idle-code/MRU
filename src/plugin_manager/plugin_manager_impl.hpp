@@ -54,7 +54,7 @@ template<typename PluginClass>
 plugin_manager<PluginClass>::plugin_manager(const name_type &a_interface)
   : generic_plugin_manager(a_interface)
 {
-  FO("plugin_manager<PluginClass>::plugin_manager(const name_type &a_interface)");
+  //FO("plugin_manager<PluginClass>::plugin_manager(const name_type &a_interface)");
   plugin_factory_distributor::get_instance()->register_manager(this);
 }
 
@@ -80,21 +80,21 @@ template<typename PluginClass>
 int
 plugin_manager<PluginClass>::load_module(const FilePath &a_path)
 {
-  FO("load(const FilePath &a_path)");
-  VAL(a_path);
+  //FO("load(const FilePath &a_path)");
+  //VAL(a_path);
 
   dynamic_module_manager* mod_manager = dynamic_module_manager::get_instance();
   dynamic_module *module = mod_manager->load(a_path.string());
 
-  VAL(module);
+  //VAL(module);
   if(module == NULL || !module->is_loaded()) {
     mod_manager->unload(module); 
     return 0;
   } 
 
-  MSG("Loading 'register_plugins' symbol...");
+  //MSG("Loading 'register_plugins' symbol...");
   void *register_plugins = module->get_symbol("register_plugins");
-  VAL(register_plugins);
+  //VAL(register_plugins);
   if(register_plugins == NULL) {
     ERR("Couldn't load 'register_plugins' symbol");
     mod_manager->unload(module); 
@@ -108,7 +108,7 @@ template<typename PluginClass>
 void
 plugin_manager<PluginClass>::unload_module(dynamic_module* a_module)
 {
-  FO("plugin_manager<PluginClass>::unload_module(dynamic_module* a_module)")
+  //FO("plugin_manager<PluginClass>::unload_module(dynamic_module* a_module)")
   dynamic_module_manager* mod_manager = dynamic_module_manager::get_instance();
   mod_manager->unload(a_module);
 }
@@ -155,8 +155,8 @@ template<typename PluginClass>
 typename plugin_manager<PluginClass>::plugin_type *
 plugin_manager<PluginClass>::create_plugin(const name_type &a_plugin_name)
 {
-  FO("plugin_manager<PluginClass>::create_plugin(const name_type &a_plugin_name)");
-  VAL(a_plugin_name);
+  //FO("plugin_manager<PluginClass>::create_plugin(const name_type &a_plugin_name)");
+  //VAL(a_plugin_name);
   if(m_factories.find(a_plugin_name) == m_factories.end())
     return NULL;
   else {
@@ -170,7 +170,7 @@ plugin_manager<PluginClass>::destroy_plugin(plugin_type *&a_instance)
 {
   if(a_instance == NULL)
     return;
-  VAL(m_factories.size());
+  //VAL(m_factories.size());
   if(m_factories.find(a_instance->implementation_name()) == m_factories.end()) {
     ERR("Plugin factory of name \'" << a_instance->implementation_name() << "\' is already unregistered. Cannot remove plugin's instance");
     return;

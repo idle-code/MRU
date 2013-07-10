@@ -28,6 +28,7 @@ Makefile
 *.dvi
 
 src/.todo
+src/tests/files
 mru
 hello
 hello_host
