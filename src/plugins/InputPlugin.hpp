@@ -3,6 +3,7 @@
 
 #include "plugins/MruPlugin.hpp"
 #include "FileIterator.hpp"
+#include <boost/shared_ptr.hpp>
 
 namespace mru
 {
@@ -18,8 +19,7 @@ public:
   virtual ~InputPlugin(void)
   { }
 
-  virtual FileIterator* getFileIterator(const FilePath &a_path, const FileIterator::SortComparator &a_sort_predicate) = 0;
-
+  virtual FileIterator::Pointer getFileIterator(const FilePath &a_path) = 0;
 };
 
 typedef plugin_manager<InputPlugin> InputPluginManager;

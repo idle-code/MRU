@@ -3,65 +3,40 @@
 namespace mru
 {
 
-template<typename ProgressPredicate>
 const bfs::directory_iterator
-BoostFileIterator<ProgressPredicate>::m_end_iterator;
+BoostFileIterator::m_end_iterator;
 
-template<typename ProgressPredicate>
-BoostFileIterator<ProgressPredicate>::BoostFileIterator(const FilePath &a_directory, const ProgressPredicate &a_predicate)
-  : m_iterator(a_directory), m_predicate(a_predicate)
+BoostFileIterator::BoostFileIterator(const FilePath &a_directory)
+  : m_directory(a_directory)
 {
-  while(!atEnd() && !m_predicate(m_iterator->path()))
-    ++m_iterator;
+  first();
 }
 
-template<typename ProgressPredicate>
-BoostFileIterator<ProgressPredicate>::~BoostFileIterator(void)
+BoostFileIterator::~BoostFileIterator(void)
 { }
 
-
-template<typename ProgressPredicate>
 FilePath
-BoostFileIterator<ProgressPredicate>::getFilePath(void) const
+BoostFileIterator::getFilePath(void) const
 {
   assert(!atEnd());
   return bfs::canonical(m_iterator->path());
 }
 
-
-template<typename ProgressPredicate>
 void
-BoostFileIterator<ProgressPredicate>::setNewFilePath(const FilePath &a_filename)
+BoostFileIterator::first(void)
 {
-  assert(!atEnd());
-  
+  m_iterator = bfs::directory_iterator(m_directory);
 }
 
-template<typename ProgressPredicate>
-FilePath
-BoostFileIterator<ProgressPredicate>::getNewFilePath(void) const
-{
-  assert(!atEnd());
-
-  return FilePath();
-}
-
-
-template<typename ProgressPredicate>
 bool
-BoostFileIterator<ProgressPredicate>::next(void)
+BoostFileIterator::next(void)
 {
   ++m_iterator;
-  while(!atEnd() && !m_predicate(m_iterator->path()))
-    ++m_iterator;
-  if(atEnd())
-    return false;
-  return true;
+  return !atEnd();
 }
 
-template<typename ProgressPredicate>
 bool
-BoostFileIterator<ProgressPredicate>::atEnd(void) const
+BoostFileIterator::atEnd(void) const
 {
   return m_iterator == m_end_iterator;
 }
@@ -80,46 +55,14 @@ BoostInputPlugin::~BoostInputPlugin(void)
   FO("BoostInputPlugin::~BoostInputPlugin(void)");
 }
 
-namespace {
-
-class SimplePredicate : public FileIterator::FilePredicate {
-public:
-  SimplePredicate(bool a_files, bool a_directories);
-  bool operator()(const FilePath &a_argument);
-protected:
-  bool m_files, m_directories;
-};
-
-SimplePredicate::SimplePredicate(bool a_files, bool a_directories)
-  : m_files(a_files), m_directories(a_directories)
-{ }
-
-bool
-SimplePredicate::operator()(const FilePath &a_argument)
+FileIterator::Pointer
+BoostInputPlugin::getFileIterator(const FilePath &a_path)
 {
-  //FO("Predicate::operator()(const FilePath &a_argument)");
-  VAL(a_argument);
-  VAL(m_files);
-  VAL(m_directories);
-  VAL(bfs::is_regular(a_argument));
-  VAL(bfs::is_directory(a_argument));
-  int result = 0;
-  result += (m_files && bfs::is_regular(a_argument));
-  result += (m_directories && bfs::is_directory(a_argument));
-  //if(!m_files && bfs::is_regular(a_argument))
-  //  return true;
-  //if(!m_directories && bfs::is_directory(a_argument))
-  //  return false;
-  VAL(result);
-  return result > 0;
-}
-
-} /* anonymous namespace */
-
-FileIterator *
-BoostInputPlugin::getFileIterator(const FilePath &a_path,  const FileIterator::SortComparator &a_sort_comparator)
-{
-  return new BoostFileIterator<SimplePredicate>(a_path, SimplePredicate(true, false));
+  try {
+    return FileIterator::Pointer(new BoostFileIterator(a_path));
+  } catch (bfs::filesystem_error) {
+    return FileIterator::Pointer();
+  }
 }
 
 } /* namespace mru */

@@ -59,6 +59,12 @@ set (LIBS ${LIBS} metatag)
 add_library (FileIterator "FileIterator.cpp")
 set (LIBS ${LIBS} FileIterator)
 
+add_library (SortingFileIterator "SortingFileIterator.cpp")
+set (LIBS ${LIBS} SortingFileIterator)
+
+add_library (FilteringFileIterator "FilteringFileIterator.cpp")
+set (LIBS ${LIBS} FilteringFileIterator)
+
 add_executable (mru "main.cpp" "MruCore.cpp")
 target_link_libraries (mru ${LIBS} ${CMAKE_DL_LIBS})
 set_target_properties (mru PROPERTIES ENABLE_EXPORTS TRUE)

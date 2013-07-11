@@ -56,7 +56,7 @@ public: // program state/configuration
   UnicodeString getMetatagExpression(void);
   sigc::signal<void, const UnicodeString &> SignalMetatagExpressionChanged;
 
-  FileIterator* getIterator(void);
+  FileIterator::Pointer getIterator(void);
   FilePath generateNewFilepath(const FileIterator *a_iterator);
 
 public: // ranaming process
