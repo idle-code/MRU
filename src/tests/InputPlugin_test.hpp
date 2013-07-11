@@ -1,5 +1,5 @@
-#ifndef BOOST_INPUT_PLUGIN_TEST_HPP
-#define BOOST_INPUT_PLUGIN_TEST_HPP
+#ifndef INPUT_PLUGIN_TEST_HPP
+#define INPUT_PLUGIN_TEST_HPP
 
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -7,14 +7,17 @@
 #define PLUGIN_HOST
 #include "plugins/InputPlugin.hpp"
 
+#include "plugins/input/BoostInputPlugin/BoostInputPlugin.hpp"
+
 using namespace CppUnit;
 using namespace mru;
 
-class BoostInputPlugin_tests : public TestCase {
+typedef BoostInputPlugin InputPluginTestClass;
+
+class InputPlugin_tests : public TestCase {
 public:
-  BoostInputPlugin_tests(void);
-  void setUp(void);
-  void tearDown(void);
+  InputPlugin_tests(void);
+  ~InputPlugin_tests(void);
 private:
   InputPlugin *input_plugin;
   FilePath test_directory;
@@ -33,7 +36,7 @@ public:
   void absolute_directory(void);
   void new_path(void);
 
-  CPPUNIT_TEST_SUITE(BoostInputPlugin_tests);
+  CPPUNIT_TEST_SUITE(InputPlugin_tests);
     CPPUNIT_TEST(construction);
     CPPUNIT_TEST(single_level_files);
     //CPPUNIT_TEST(multi_level);
@@ -50,5 +53,5 @@ public:
   CPPUNIT_TEST_SUITE_END();
 };
 
-#endif /* BOOST_INPUT_PLUGIN_TEST_HPP */
+#endif /* INPUT_PLUGIN_TEST_HPP */
 

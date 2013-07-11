@@ -179,7 +179,7 @@ worker_thread_main(void *a_core_pointer)
 {
   FO("worker_thread_main(void *a_core_pointer)");
   MruCore *core = reinterpret_cast<MruCore*>(a_core_pointer);
-  FileIterator *dir_iterator = core->getIterator();
+  FileIterator::Pointer dir_iterator = core->getIterator();
   FilePath old_path;
   FilePath new_path;
 
@@ -215,14 +215,14 @@ MruCore::stopRename(void)
 
 /* ------------------------------------------------------------------------- */
 
-FileIterator *
+FileIterator::Pointer
 MruCore::getIterator(void)
 {
   try {
-    return m_input->getFileIterator(getDirectory(), FileIterator::SortComparator());
+    return m_input->getFileIterator(getDirectory());
   } catch(...) {
     ERR("Couldn't get directory iterator for: " << getDirectory());
-    return NULL;
+    return FileIterator::Pointer();
   }
 }
 
