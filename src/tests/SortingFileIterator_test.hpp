@@ -18,9 +18,15 @@ public:
   FileIterator::Pointer getIterator(void);
 
   void no_sort(void);
+  void descending_sort(void);
+  void ascending_sort(void);
+  void length_sort(void);
 
   CPPUNIT_TEST_SUITE(SortingIterator_test);
     CPPUNIT_TEST(no_sort);
+    CPPUNIT_TEST(descending_sort);
+    CPPUNIT_TEST(ascending_sort);
+    CPPUNIT_TEST(length_sort);
   CPPUNIT_TEST_SUITE_END();
 };
 
