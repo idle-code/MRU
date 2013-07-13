@@ -7,50 +7,32 @@
 #define PLUGIN_HOST
 #include "plugins/InputPlugin.hpp"
 
-#include "plugins/input/BoostInputPlugin/BoostInputPlugin.hpp"
-
 using namespace CppUnit;
 using namespace mru;
-
-typedef BoostInputPlugin InputPluginTestClass;
 
 class InputPlugin_tests : public TestCase {
 public:
   InputPlugin_tests(void);
-  ~InputPlugin_tests(void);
+  virtual InputPlugin* getInputPlugin(void) = 0;
+  void setUp(void);
+  void tearDown(void);
 private:
-  InputPlugin *input_plugin;
   FilePath test_directory;
+  InputPlugin *input_plugin;
 public:
   void construction(void);
-  void single_level_files(void);
-  void multi_level(void);
-  void regex_filter(void);
-  void only_directories(void);
-  void only_files(void);
-  void directories_and_files(void);
-  void sorting(void);
-  void filename(void);
-  void directory(void);
-  void absolute_filename(void);
-  void absolute_directory(void);
-  void new_path(void);
+  void flat_files(void);
+  void flat_directories(void);
+  void recursive_files(void);
+  void recursive_directories(void);
 
   CPPUNIT_TEST_SUITE(InputPlugin_tests);
     CPPUNIT_TEST(construction);
-    CPPUNIT_TEST(single_level_files);
-    //CPPUNIT_TEST(multi_level);
-    //CPPUNIT_TEST(regex_filter);
-    //CPPUNIT_TEST(only_directories);
-    //CPPUNIT_TEST(only_files);
-    //CPPUNIT_TEST(directories_and_files);
-    //CPPUNIT_TEST(sorting);
-    //CPPUNIT_TEST(filename);
-    //CPPUNIT_TEST(directory);
-    //CPPUNIT_TEST(absolute_filename);
-    //CPPUNIT_TEST(absolute_directory);
-    //CPPUNIT_TEST(new_path);
-  CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST(flat_files);
+    CPPUNIT_TEST(flat_directories);
+    CPPUNIT_TEST(recursive_files);
+    CPPUNIT_TEST(recursive_directories);
+  CPPUNIT_TEST_SUITE_END_ABSTRACT();
 };
 
 #endif /* INPUT_PLUGIN_TEST_HPP */
