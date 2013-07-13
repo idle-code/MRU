@@ -18,65 +18,35 @@ FilteringFileIterator::wrap(FileIterator::Pointer a_iterator, FilterPredicate *a
 /* ------------------------------------------------------------------------- */
 
 FilteringFileIterator::FilteringFileIterator(FileIterator::Pointer a_iterator, boost::shared_ptr<FilterPredicate> a_predicate)
-  : m_iterator(a_iterator), m_predicate(a_predicate)
+  : FileIteratorDecorator(a_iterator), m_predicate(a_predicate)
 {
-  assert(m_iterator);
   assert(m_predicate);
   first();
-}
-
-FilteringFileIterator::FilteringFileIterator(const self_type &a_other)
-{
-  m_iterator = a_other.m_iterator;
-  m_predicate = a_other.m_predicate;
-  assert(m_iterator);
-  assert(m_predicate);
-}
-
-FilteringFileIterator::~FilteringFileIterator(void)
-{ }
-
-FilePath
-FilteringFileIterator::getFilePath(void) const
-{
-  assert(m_iterator);
-  return m_iterator->getFilePath();
 }
 
 void
 FilteringFileIterator::first(void)
 {
-  assert(m_iterator);
-  m_iterator->first();
+  FileIteratorDecorator::first();
   rewind();
 }
 
 bool
 FilteringFileIterator::next(void)
 {
-  assert(m_iterator);
-  m_iterator->next();
+  FileIteratorDecorator::next();
   rewind();
-  return !m_iterator->atEnd();
-}
-
-bool
-FilteringFileIterator::atEnd(void) const
-{
-  assert(m_iterator);
-  return m_iterator->atEnd();
+  return !atEnd();
 }
 
 void
 FilteringFileIterator::rewind(void)
 {
-  assert(m_iterator);
   assert(m_predicate);
-
-  while (!m_iterator->atEnd() &&
-         !(*m_predicate)(m_iterator->getFilePath()))
+  while (!atEnd() &&
+         !(*m_predicate)(getFilePath()))
   {
-    m_iterator->next();
+    FileIteratorDecorator::next();
   }
 }
 
