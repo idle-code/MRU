@@ -1,65 +1,97 @@
 #include "BoostInputPlugin.hpp"
+#include "FilteringFileIterator.hpp"
 
 namespace mru
 {
 
-const bfs::directory_iterator
-BoostFileIterator::m_end_iterator;
+template<typename IteratorType>
+class BoostFileIterator : public FileIterator {
+public:
+  BoostFileIterator(const FilePath &a_directory)
+    : m_directory(a_directory)
+  {
+    first();
+  }
 
-BoostFileIterator::BoostFileIterator(const FilePath &a_directory)
-  : m_directory(a_directory)
-{
-  first();
-}
+  FilePath getFilePath(void) const
+  {
+    assert(!atEnd());
+    return bfs::canonical(m_iterator->path());
+  }
 
-BoostFileIterator::~BoostFileIterator(void)
-{ }
+  void first(void)
+  {
+    m_iterator = IteratorType(m_directory);
+  }
 
-FilePath
-BoostFileIterator::getFilePath(void) const
-{
-  assert(!atEnd());
-  return bfs::canonical(m_iterator->path());
-}
+  bool next(void)
+  {
+    ++m_iterator;
+    return !atEnd();
+  }
 
-void
-BoostFileIterator::first(void)
-{
-  m_iterator = bfs::directory_iterator(m_directory);
-}
+  bool atEnd(void) const
+  {
+    return m_iterator == m_end_iterator;
+  }
+private:
+  FilePath m_directory;
+  IteratorType m_iterator;
+  const static IteratorType m_end_iterator;
+};
 
-bool
-BoostFileIterator::next(void)
-{
-  ++m_iterator;
-  return !atEnd();
-}
-
-bool
-BoostFileIterator::atEnd(void) const
-{
-  return m_iterator == m_end_iterator;
-}
+template<typename IteratorType>
+const IteratorType
+BoostFileIterator<IteratorType>::m_end_iterator;
 
 /* ------------------------------------------------------------------------- */
 
 BoostInputPlugin::BoostInputPlugin(void)
   : InputPlugin(static_implementation_name())
-{
-  FO("BoostInputPlugin::BoostInputPlugin(void)");
+{ }
 
-}
-
-BoostInputPlugin::~BoostInputPlugin(void)
+namespace
 {
-  FO("BoostInputPlugin::~BoostInputPlugin(void)");
-}
+
+struct FilesOnlyFilter : public FilteringFileIterator::FilterPredicate
+{
+  bool
+  operator()(const FilePath &a_path)
+  {
+    return bfs::is_regular(a_path);
+  }
+};
+
+struct DirectoriesOnlyFilter : public FilteringFileIterator::FilterPredicate
+{
+  bool
+  operator()(const FilePath &a_path)
+  {
+    return bfs::is_directory(a_path);
+  }
+};
+
+} /* anonymous namespace */
 
 FileIterator::Pointer
 BoostInputPlugin::getFileIterator(const FilePath &a_path)
 {
+  if(!includeFiles() && !includeDirectories())
+    return FileIterator::Pointer();
+  
   try {
-    return FileIterator::Pointer(new BoostFileIterator(a_path));
+    FileIterator::Pointer file_iterator;
+    if(searchRecursively())
+      file_iterator = FileIterator::Pointer(new BoostFileIterator<bfs::recursive_directory_iterator>(a_path));
+    else
+      file_iterator = FileIterator::Pointer(new BoostFileIterator<bfs::directory_iterator>(a_path));
+
+    if(includeFiles() && !includeDirectories())
+      file_iterator = FilteringFileIterator::wrap(file_iterator, new FilesOnlyFilter());
+    else if(!includeFiles() && includeDirectories())
+      file_iterator = FilteringFileIterator::wrap(file_iterator, new DirectoriesOnlyFilter());
+    //else include both    
+    return file_iterator;
   } catch (bfs::filesystem_error) {
     return FileIterator::Pointer();
   }

@@ -30,6 +30,7 @@ Makefile
 src/.todo
 src/tests/files
 mru
+Session.vim
 hello
 hello_host
 *_test
