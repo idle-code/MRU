@@ -1,5 +1,7 @@
 cmake_minimum_required (VERSION 2.8)
 
+enable_testing()
+
 find_package (CppUnit REQUIRED)
 include_directories (${CPPUNIT_INCLUDE_DIRS})
 set (LIBS ${LIBS} ${CPPUNIT_LIBRARIES})
@@ -19,15 +21,16 @@ target_link_libraries (SortingFileIterator_test SortingFileIterator MockFileIter
 add_test (SortingFileIterator_test SortingFileIterator_test)
 
 # InputPlugin tests:
-add_executable (BoostInputPlugin_test "BoostInputPlugin_test.cpp" "InputPlugin_test.cpp")
-target_link_libraries (BoostInputPlugin_test BoostInputPluginShared)
-target_link_libraries (BoostInputPlugin_test ${LIBS})
-add_test (BoostInputPlugin_test BoostInputPlugin_test)
+add_executable (BoostInput_test "BoostInput_test.cpp" "InputPlugin_test.cpp")
+target_link_libraries (BoostInput_test BoostInputShared)
+target_link_libraries (BoostInput_test ${LIBS})
+add_test (BoostInput_test BoostInput_test)
 
-# OutputPlugin tests: TODO
-#target_link_libraries (OutputPlugin_test BoostOutputPluginShared)
-#target_link_libraries (OutputPlugin_test ${LIBS})
-#add_test (OutputPlugin_test OututPlugin_test)
+# OutputPlugin tests:
+add_executable (BoostOutput_test "BoostOutput_test.cpp" "OutputPlugin_test.cpp")
+target_link_libraries (BoostOutput_test BoostOutputShared)
+target_link_libraries (BoostOutput_test ${LIBS})
+add_test (BoostOutput_test BoostOutput_test)
 
 # Metatags tests: TODO
 

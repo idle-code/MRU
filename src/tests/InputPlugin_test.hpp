@@ -21,6 +21,8 @@ private:
   InputPlugin *input_plugin;
 public:
   void construction(void);
+  void non_existing_exception(void);
+  void bad_config_exception(void);
   void flat_files(void);
   void flat_directories(void);
   void recursive_files(void);
@@ -28,6 +30,8 @@ public:
 
   CPPUNIT_TEST_SUITE(InputPlugin_tests);
     CPPUNIT_TEST(construction);
+    CPPUNIT_TEST_EXCEPTION(non_existing_exception, InputPluginException);
+    CPPUNIT_TEST_EXCEPTION(bad_config_exception, InputPluginException);
     CPPUNIT_TEST(flat_files);
     CPPUNIT_TEST(flat_directories);
     CPPUNIT_TEST(recursive_files);

@@ -12,7 +12,6 @@ public:
 public:
   PLUGIN_NAME("BoostOutput")
   BoostOutput(void);
-  ~BoostOutput(void);
 
   bool rename(const FilePath &a_name, const FilePath &a_new_name);
 };

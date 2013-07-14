@@ -12,6 +12,33 @@
 namespace mru
 {
 
+  /*
+MruException::MruException(const std::string &a_module, const UnicodeString &a_message)
+  : m_module(a_module), m_message(a_message)
+{ }
+
+MruException::MruException(const std::string &a_module, const std::string &a_message)
+  : m_module(a_module), m_message(glue_cast<UnicodeString>(a_message))
+{ }
+
+MruException::~MruException(void) throw()
+{ }
+
+const char *
+MruException::what(void) const throw()
+{
+  return glue_cast<std::string>(m_message).c_str();
+}
+
+const UnicodeString &
+MruException::message(void) const throw()
+{
+  return m_message;
+}
+*/
+
+/* ------------------------------------------------------------------------- */
+
 MruCore::MruCore(void)
   : m_ui(NULL), m_output(NULL),
     m_directory("/home/idlecode/projects/mru/src/tests/files"),

@@ -3,12 +3,8 @@
 namespace mru
 {
 
-
 BoostOutput::BoostOutput(void)
   : OutputPlugin(static_implementation_name())
-{ }
-
-BoostOutput::~BoostOutput(void)
 { }
 
 bool

@@ -1,4 +1,4 @@
-#include "BoostInputPlugin.hpp"
+#include "BoostInput.hpp"
 #include "FilteringFileIterator.hpp"
 
 namespace mru
@@ -46,7 +46,7 @@ BoostFileIterator<IteratorType>::m_end_iterator;
 
 /* ------------------------------------------------------------------------- */
 
-BoostInputPlugin::BoostInputPlugin(void)
+BoostInput::BoostInput(void)
   : InputPlugin(static_implementation_name())
 { }
 
@@ -74,10 +74,10 @@ struct DirectoriesOnlyFilter : public FilteringFileIterator::FilterPredicate
 } /* anonymous namespace */
 
 FileIterator::Pointer
-BoostInputPlugin::getFileIterator(const FilePath &a_path)
+BoostInput::getFileIterator(const FilePath &a_path)
 {
   if(!includeFiles() && !includeDirectories())
-    return FileIterator::Pointer();
+    throw InputPluginException(std::string("Bad input configuration - no files will ever met specified conditions"));
   
   try {
     FileIterator::Pointer file_iterator;
@@ -92,14 +92,14 @@ BoostInputPlugin::getFileIterator(const FilePath &a_path)
       file_iterator = FilteringFileIterator::wrap(file_iterator, new DirectoriesOnlyFilter());
     //else include both    
     return file_iterator;
-  } catch (bfs::filesystem_error) {
-    return FileIterator::Pointer();
+  } catch (bfs::filesystem_error fe) {
+    throw InputPluginException(std::string(fe.what()));
   }
 }
 
 } /* namespace mru */
 
 EXPORT_START
-  EXPORT_PLUGIN(mru::BoostInputPlugin)
+  EXPORT_PLUGIN(mru::BoostInput)
 EXPORT_END
 

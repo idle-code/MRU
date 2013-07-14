@@ -17,11 +17,21 @@
 namespace mru
 {
 
-namespace bfs = boost::filesystem;
+/*
+class MruException : public std::exception {
+public:
+  MruException(const std::string &a_module, const UnicodeString &a_message);
+  MruException(const std::string &a_module, const std::string &a_message);
+  virtual ~MruException(void) throw();
+  const char* what(void) const throw();
+  const UnicodeString& message(void) const throw();
+private:
+  std::string m_module; 
+  UnicodeString m_message; 
+};
+*/
 
-// forward declarations:
-class UiPlugin;
-class OutputPlugin;
+/* ------------------------------------------------------------------------- */
 
 class MruCore : public singleton<MruCore> {
 public:

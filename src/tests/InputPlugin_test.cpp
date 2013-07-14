@@ -37,14 +37,20 @@ InputPlugin_tests::construction(void)
   FileIterator::Pointer file_iterator = input_plugin->getFileIterator(test_directory);
   CPPUNIT_ASSERT(file_iterator != NULL);
   CPPUNIT_ASSERT(!file_iterator->atEnd());
+}
 
-  file_iterator = input_plugin->getFileIterator("./non_existing");
-  CPPUNIT_ASSERT(file_iterator == NULL);
-  
+void
+InputPlugin_tests::non_existing_exception(void)
+{
+  FileIterator::Pointer file_iterator = input_plugin->getFileIterator("./non_existing"); //throw InputPluginException
+}
+
+void
+InputPlugin_tests::bad_config_exception(void)
+{
   input_plugin->includeFiles(false);
   input_plugin->includeDirectories(false);
-  file_iterator = input_plugin->getFileIterator(test_directory);
-  CPPUNIT_ASSERT(file_iterator == NULL);
+  FileIterator::Pointer file_iterator = input_plugin->getFileIterator(test_directory); //throw InputPluginException
 }
 
 struct SimpleComparer : public SortingFileIterator::SortComparator
