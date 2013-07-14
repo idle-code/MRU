@@ -79,6 +79,11 @@ wxWidgets jest wieloplatformową biblioteką do tworzenia graficznych interfejs�
 ICU --- International Components for Unicode" --- jest biblioteką opracowaną przez IBM wspierającą lokalizacje, globalizacje i~umożliwiającą operacje na łańcuchach znaków w~kodowaniach UTF.\\
 Jako że główne operacje w~aplikacji MRU przeprowadzane są na łańcuchach znaków, istotne jest aby wykonywane były one z~należytą precyzją. ICU jest najbardziej zaawansowaną, ogólnie dostępną biblioteką tego typu z~długą historią zastosowań.
 
+\subsection{CppUnit}
+\par
+%TODO sprawdzić 'większość':
+Aby zapewnić najwyższą jakość produkowanego kodu i zmniejszyć ryzyko błędów (w tym opartych na regresji), większość z modułów i interfejsów aplikacji została zaprojektowana i zaimplementowana z użyciem testów jednostkowych. Testy zostały napisane w oparciu o bibliotekę \texttt{CppUnit}, która ułatwia ich uruchamianie, debugowanie i zarządzanie nimi.
+
 \subsection{TagLib}
 TagLib jest biblioteką pozwalającą an ekstrakcje metadanych z~wielu typów plików multimedialnych. W~metatagu Audio umożliwia dostęp do informacji o~tytule, roku wydania, a~także wykonawcy i~albumie do którego należy utwór.
 
@@ -294,10 +299,11 @@ main(int argc, char const *argv[])
 
 \section{Typy modułów w~MRU}
 \label{moduly}
-Aplikacja obsługuje trzy interfejsy wtyczek:
+Aplikacja obsługuje cztery interfejsy wtyczek:
 \begin{itemize}
 \item UiPlugin --- moduły interfejsu --- pozwalają na implementacje różnych interfejsów użytkownika.
-\item OutputPlugin --- sterowniki wyjścia --- umożliwiają korzystanie z~różnych interfejsów do systemu plików.
+\item InputPlugin --- moduły wejścia --- dostarczają programowi ścieżek z systemu plików.
+\item OutputPlugin --- sterowniki wyjścia --- odpowiadają za faktyczną zmianę identyfikatorów w systemie plików.
 \item TagPlugin --- moduły udostępniające fabryki do tworzenia wszelkich metatagów.
 \end{itemize}
 
@@ -335,7 +341,24 @@ Okno aplikacji stworzone przez wtyczkę wxWidgetsUi jest podzielone na trzy sekc
 %\par
 %TextUi jest wtyczką interfejsu udostępniającą funkcjonalność programu z~poziomu linii komend. Pozwala ona na przekazanie parametrów konfiguracyjnych i~rozpoczęcie transformacji nazw bez interakcji z~użytkownikiem jak ma to miejsce w~przypadku graficznych interfejsów użytkownika. Dzięki zastosowaniu tej wtyczki istnieje możliwość wykorzystania aplikacji MRU z~poziomu skryptów powłoki, na maszynach nie wykorzystujących środowiska graficznego lub zdalnych.
 
-\section{Moduły output}
+\section{InputPlugin}
+\par
+Jako że biblioteka standardowa języka C++ nie udostępnia mechanizmów pozwalających na iteracje po katalogach, aplikacja musi korzystać z dodatkowych bibliotek lub API systemu operacyjnego. W celu izolacji kodu zależnego od platformy i zmniejszenia zależności rdzenia aplikacji, MRU korzysta z wtyczek wejścia --- \texttt{InputPlugin} --- odpowiedzialnych za iteracje po wybranym przez użytkownika katalogu.
+\par
+Interfejs wtyczki wejścia pozwala aplikacji na jej prostą konfiguracje (wybór typów plików do iteracji i poziomu przeszukiwania), a także udostępnia iterator --- \texttt{FileIterator} --- generujący kolejne ścieżki do wybranych plików.
+\subsection{Dekoratory iteratora}
+\par
+W przypadku użycia 'surowego' iteratora plików\footnote{Problem występował przynajmniej przy użyciu wtyczki \texttt{BoostInput} opartej na module \texttt{boost::filesystem}} problemem okazała się kolejność generowanych ścieżek oraz typy plików przez nie wskazywanych.
+\par
+O ile iterator faktycznie generował poprawne ścieżki, to ich kolejność nie odpowiadała choćby leksykalnej kolejności plików w katalogu. Istnieje wiele sytuacji w których pozycja pliku nie wpływa na generowanie identyfikatora, jednak metatagi takie jak \ref{CountTag} biorą ją pod uwagę. Oczywistym rozwiązaniem zdaje się być sortowanie wejściowej listy ścieżek lecz w przypadku dużych kolekcji może to stanowić zbyt duży narzut czasowo-pamięciowy i jak wcześniej zostało wspomniane --- nie zawsze zachodzi potrzeba sortowania. Aby umożliwić użytkownikowi sortowanie wejściowej listy plików zastosowano dekorator \texttt{SortingFileIterator}, który można podłączyć lub odłączyć w zależności od wyboru użytkownika.
+%TODO dodać info o predykacie komparatora?
+
+\par
+Kolejnym problemem było zwracanie przez iterator praktycznie wszystkich plików znajdujących się w wybranym katalogu. Użytkownik aplikacji powinien mieć możliwość określenia które pliki mają podlegać zmianie.\\
+Dzięki wykorzystaniu dekoratora filtrującego \texttt{FilteringFileIterator} aplikacja może wykorzystać dowolny predykat do dynamicznego sprawdzenia czy plik powinien znaleźć się na liście wejściowej.
+%TODO dodać info o kolejności łączenia dekoratorów?
+
+\section{Moduł OutputPlugin --- BoostOutput}
 \par
 Wtyczki wyjścia są warstwą abstrakcji pomiędzy systemem operacyjnym i~jego drzewem katalogów, a~rdzeniem aplikacji.
 %Udostępniają one iteratory pozwalające na przeszukiwanie  dysku w~celu znalezienia plików pasujących do wzorca wybranego przez użytkownika, oraz przekazują polecenia zmiany identyfikatora pliku do API używanego systemu.
