@@ -6,6 +6,18 @@
 namespace mru
 {
 
+class OutputPluginException : public MruPluginException {
+public:
+  OutputPluginException(const UnicodeString &a_message)
+    : MruPluginException("OutputPlugin", a_message)
+  { }
+  OutputPluginException(const std::string &a_message)
+    : MruPluginException("OutputPlugin", a_message)
+  { }
+};
+
+/* ------------------------------------------------------------------------- */
+
 class OutputPlugin : public MruPlugin {
 public:
   typedef OutputPlugin self_type;

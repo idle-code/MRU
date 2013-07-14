@@ -1,20 +1,20 @@
 #include "InputPlugin_test.hpp"
-#include "plugins/input/BoostInputPlugin/BoostInputPlugin.hpp"
+#include "plugins/input/BoostInput/BoostInput.hpp"
 #include <cppunit/ui/text/TestRunner.h>
 
 namespace mru
 {
 
-class BoostInputPlugin_tests : public InputPlugin_tests {
+class BoostInput_tests : public InputPlugin_tests {
 public:
   InputPlugin* getInputPlugin(void)
   {
-    InputPlugin *plugin = new BoostInputPlugin;
+    InputPlugin *plugin = new BoostInput;
     CPPUNIT_ASSERT(plugin != NULL);
     return plugin;
   }
 
-  CPPUNIT_TEST_SUB_SUITE(BoostInputPlugin_tests, InputPlugin_tests);
+  CPPUNIT_TEST_SUB_SUITE(BoostInput_tests, InputPlugin_tests);
   CPPUNIT_TEST_SUITE_END();
 };
 
@@ -25,7 +25,7 @@ public:
 int main(int, char *[])
 {
   CppUnit::TextUi::TestRunner runner;
-  runner.addTest(BoostInputPlugin_tests::suite());
+  runner.addTest(BoostInput_tests::suite());
   
 	return !runner.run();
 }

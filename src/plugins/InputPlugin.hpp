@@ -8,6 +8,18 @@
 namespace mru
 {
 
+class InputPluginException : public MruPluginException {
+public:
+  InputPluginException(const UnicodeString &a_message)
+    : MruPluginException("InputPlugin", a_message)
+  { }
+  InputPluginException(const std::string &a_message)
+    : MruPluginException("InputPlugin", a_message)
+  { }
+};
+
+/* ------------------------------------------------------------------------- */
+
 class InputPlugin : public MruPlugin {
 public:
   typedef InputPlugin self_type;

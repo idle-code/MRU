@@ -31,6 +31,7 @@ src/.todo
 src/tests/files
 mru
 Session.vim
+Temporary
 hello
 hello_host
 *_test
