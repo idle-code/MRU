@@ -6,6 +6,8 @@ find_package (CppUnit REQUIRED)
 include_directories (${CPPUNIT_INCLUDE_DIRS})
 set (LIBS ${LIBS} ${CPPUNIT_LIBRARIES})
 
+set (LIBS ${LIBS} MruPlugin)
+
 add_definitions (-DSINGLE_TEST_MODE)
 
 # File Iterators tests:
@@ -27,6 +29,12 @@ target_link_libraries (BoostInput_test ${LIBS})
 add_test (BoostInput_test BoostInput_test)
 
 # OutputPlugin tests:
+add_library (MockOutput "MockOutput.cpp")
+add_executable (MockOutput_test "MockOutput_test.cpp" "OutputPlugin_test.cpp")
+target_link_libraries (MockOutput_test MockOutput)
+target_link_libraries (MockOutput_test ${LIBS})
+add_test (MockOutput_test MockOutput_test)
+
 add_executable (BoostOutput_test "BoostOutput_test.cpp" "OutputPlugin_test.cpp")
 target_link_libraries (BoostOutput_test BoostOutputShared)
 target_link_libraries (BoostOutput_test ${LIBS})

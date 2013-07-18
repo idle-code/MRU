@@ -25,8 +25,6 @@ class MruCore;
 
 class MruPlugin : public plugin<MruPlugin> {
 public:
-  typedef MruPlugin self_type;
-public:
   MruPlugin(const name_type &a_interface, const name_type &a_name);
   virtual ~MruPlugin(void);
   
