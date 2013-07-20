@@ -10,9 +10,6 @@ namespace mru
 
 class MockOutput : public OutputPlugin {
 public:
-  typedef enum { File, Directory } PathKind;
-  typedef std::list< std::pair<FilePath, PathKind> > FileList;
-public:
   PLUGIN_NAME("MockOutput")
   
   MockOutput(void);
@@ -20,17 +17,27 @@ public:
   void createDirectory(const FilePath &a_path);
   void removeDirectory(const FilePath &a_path);
   
-  void moveFile(const FilePath &a_source_path, const FilePath &a_destination_path);
-  void moveDirectory(const FilePath &a_source_path, const FilePath &a_destination_path);
+  bool exists(const FilePath &a_path) const;
 
-  bool fileExists(const FilePath &a_path) const;
-  bool directoryExists(const FilePath &a_path) const;
-public:
   void move(const FilePath &a_source_path, const FilePath &a_destination_path);
-  void createFile(const FilePath &a_path); // for testing purposes
+  void copy(const FilePath &a_source_path, const FilePath &a_destination_path);
+  void link(const FilePath &a_source_path, const FilePath &a_destination_path);
+  FilePath resolveLink(const FilePath &a_path) const;
 
 private:
+  typedef enum { File, Directory } PathKind;
+  typedef std::list< std::pair<FilePath, PathKind> > FileList;
+  typedef std::list< std::pair<FilePath, FilePath> > LinkList;
   FileList m_file_list;
+  LinkList m_link_list;
+private:
+  FileList::iterator getIterator(const FilePath &a_path);
+  FileList::const_iterator getIterator(const FilePath &a_path) const;
+  LinkList::iterator getLinkIterator(const FilePath &a_path);
+  LinkList::const_iterator getLinkIterator(const FilePath &a_path) const;
+
+public:
+  void createFile(const FilePath &a_path); // for testing purposes
 };
 
 } /* namespace mru */

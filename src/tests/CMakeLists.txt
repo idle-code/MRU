@@ -30,12 +30,12 @@ add_test (BoostInput_test BoostInput_test)
 
 # OutputPlugin tests:
 add_library (MockOutput "MockOutput.cpp")
-add_executable (MockOutput_test "MockOutput_test.cpp" "OutputPlugin_test.cpp")
+add_executable (MockOutput_test "MockOutput_test.cpp" "OutputPlugin_common_test.cpp" "OutputPlugin_move_test.cpp" "OutputPlugin_copy_test.cpp" "OutputPlugin_link_test.cpp")
 target_link_libraries (MockOutput_test MockOutput)
 target_link_libraries (MockOutput_test ${LIBS})
 add_test (MockOutput_test MockOutput_test)
 
-add_executable (BoostOutput_test "BoostOutput_test.cpp" "OutputPlugin_test.cpp")
+add_executable (BoostOutput_test "BoostOutput_test.cpp" "OutputPlugin_common_test.cpp" "OutputPlugin_move_test.cpp" "OutputPlugin_copy_test.cpp" "OutputPlugin_link_test.cpp")
 target_link_libraries (BoostOutput_test BoostOutputShared)
 target_link_libraries (BoostOutput_test ${LIBS})
 add_test (BoostOutput_test BoostOutput_test)

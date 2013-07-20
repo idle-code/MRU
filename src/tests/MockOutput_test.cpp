@@ -8,10 +8,10 @@ namespace mru
 
 class MockOutput_tests : public OutputPlugin_tests {
 public:
-  OutputPlugin *
+  MockOutput *
   getOutputPlugin(void)
   {
-    OutputPlugin *plugin = new MockOutput();
+    MockOutput *plugin = new MockOutput();
     CPPUNIT_ASSERT(plugin != NULL);
     return plugin;
   }
