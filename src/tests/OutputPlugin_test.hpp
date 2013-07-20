@@ -21,62 +21,98 @@ protected:
   FilePath test_directory;
   OutputPlugin *output_plugin;
 public:
+  void exists_file(void);
+  void exists_directory(void);
+  void exists_no_target(void);
+  void exists_empty(void);
+  
+  // directory operations
   void create_directory(void);
-  void create_existing_directory(void);
-  void create_existing_file(void);
+  void create_directory_no_target_path_exists(void);
+  void create_directory_no_target_path_exists_create_new(void);
+  void create_directory_target_exists(void);
+  void create_directory_target_file_exists(void);
+  void create_directory_target_exists_override(void);
   void remove_directory(void);
-  void remove_nonexisting_directory(void);
+  void remove_directory_no_source_exists(void);
   
-  // ModeRename tests
-  void move_mode_target_file_exists(void);
-  void move_mode_target_file_exists_override(void);
-  void move_mode_no_target_file_exists(void);
-
-  void move_mode_target_directory_exists(void);
-  void move_mode_target_directory_exists_override(void);
-  void move_mode_no_target_directory_exists(void);
-
-  void move_mode_no_source_file_exists(void);
-  void move_mode_no_source_directory_exists(void);
-
-  void move_mode_(void);
+  // move tests
+  void move_target_exists(void);
+  void move_target_exists_override(void);
+  void move_no_target_exists(void);
+  void move_no_source_exists(void);
+  void move_no_target_path_exists(void);
+  void move_no_target_path_exists_create_new(void);
   
-  // ModeCopy tests
-  //TODO
+  // copy tests
+  void copy_target_exists(void);
+  void copy_target_exists_override(void);
+  void copy_no_target_exists(void);
+  void copy_no_source_exists(void);
+  void copy_no_target_path_exists(void);
+  void copy_no_target_path_exists_create_new(void);
   
-  // ModeLink tests
-  //TODO
+  // link tests
+  void link_target_exists(void);
+  void link_target_exists_override(void);
+  void link_no_target_exists(void);
+  void link_no_source_exists(void);
+  void link_no_target_path_exists(void);
+  void link_no_target_path_exists_create_new(void);
 
-  //void nonexisting_source_exception(void);
-  //void existing_target_exception(void);
-  //void existing_target_noexception(void);
-  //void same_source_and_target(void);
-  //void file_move(void);
-  //void directory_move(void);
-  //void full_move(void);
+  void resolveLink_target_exists(void);
+  void resolveLink_not_link_target_exists(void);
+  void resolveLink_no_target_exists(void);
 
-
+#if 1
   CPPUNIT_TEST_SUITE(OutputPlugin_tests);
+    // file creation (for test only)
+    //CPPUNIT_TEST_EXCEPTION(create_existing_file, OutputPluginException);
+    CPPUNIT_TEST(exists_file);
+    CPPUNIT_TEST(exists_directory);
+    CPPUNIT_TEST(exists_no_target);
+    CPPUNIT_TEST(exists_empty);
+    // directory creation
     CPPUNIT_TEST(create_directory);
-    CPPUNIT_TEST_EXCEPTION(create_existing_directory, OutputPluginException);
-    CPPUNIT_TEST_EXCEPTION(create_existing_file, OutputPluginException);
+    CPPUNIT_TEST_EXCEPTION(create_directory_no_target_path_exists, OutputPluginException);
+    CPPUNIT_TEST(create_directory_no_target_path_exists_create_new);
+    CPPUNIT_TEST_EXCEPTION(create_directory_target_exists, OutputPluginException);
+    CPPUNIT_TEST_EXCEPTION(create_directory_target_file_exists, OutputPluginException);
+    CPPUNIT_TEST_EXCEPTION(create_directory_target_exists_override, OutputPluginException);
     CPPUNIT_TEST(remove_directory);
-    CPPUNIT_TEST_EXCEPTION(remove_nonexisting_directory, OutputPluginException);
-    // ModeRename
-    CPPUNIT_TEST_EXCEPTION(move_mode_target_file_exists, OutputPluginException);
-    CPPUNIT_TEST(move_mode_target_file_exists_override);
-    CPPUNIT_TEST(move_mode_no_target_file_exists);
-    CPPUNIT_TEST_EXCEPTION(move_mode_target_directory_exists, OutputPluginException);
-    CPPUNIT_TEST(move_mode_target_directory_exists_override);
-    CPPUNIT_TEST(move_mode_no_target_directory_exists);
-    CPPUNIT_TEST_EXCEPTION(move_mode_no_source_file_exists, OutputPluginException);
-    CPPUNIT_TEST_EXCEPTION(move_mode_no_source_directory_exists, OutputPluginException);
-    // ModeCopy
-    // ModeLink
-    //CPPUNIT_TEST_EXCEPTION(nonexisting_source_exception, OutputPluginException);
-    //CPPUNIT_TEST_EXCEPTION(existing_target_exception, OutputPluginException);
-    //CPPUNIT_TEST(existing_target_noexception);
+    CPPUNIT_TEST_EXCEPTION(remove_directory_no_source_exists, OutputPluginException);
+    // move
+    CPPUNIT_TEST_EXCEPTION(move_target_exists, OutputPluginException);
+    CPPUNIT_TEST(move_target_exists_override);
+    CPPUNIT_TEST(move_no_target_exists);
+    CPPUNIT_TEST_EXCEPTION(move_no_source_exists, OutputPluginException);
+    CPPUNIT_TEST_EXCEPTION(move_no_target_path_exists, OutputPluginException);
+    CPPUNIT_TEST(move_no_target_path_exists_create_new);
+    // copy
+    CPPUNIT_TEST_EXCEPTION(copy_target_exists, OutputPluginException);
+    CPPUNIT_TEST(copy_target_exists_override);
+    CPPUNIT_TEST(copy_no_target_exists);
+    CPPUNIT_TEST_EXCEPTION(copy_no_source_exists, OutputPluginException);
+    CPPUNIT_TEST_EXCEPTION(copy_no_target_path_exists, OutputPluginException);
+    CPPUNIT_TEST(copy_no_target_path_exists_create_new);
+    // link
+    CPPUNIT_TEST_EXCEPTION(link_target_exists, OutputPluginException);
+    CPPUNIT_TEST(link_target_exists_override);
+    CPPUNIT_TEST(link_no_target_exists);
+    CPPUNIT_TEST_EXCEPTION(link_no_source_exists, OutputPluginException);
+    CPPUNIT_TEST_EXCEPTION(link_no_target_path_exists, OutputPluginException);
+    CPPUNIT_TEST(link_no_target_path_exists_create_new);
+    
+    CPPUNIT_TEST(resolveLink_target_exists);
+    CPPUNIT_TEST_EXCEPTION(resolveLink_not_link_target_exists, OutputPluginException);
+    CPPUNIT_TEST_EXCEPTION(resolveLink_no_target_exists, OutputPluginException);
   CPPUNIT_TEST_SUITE_END_ABSTRACT();
+#else
+  CPPUNIT_TEST_SUITE(OutputPlugin_tests);
+    //CPPUNIT_TEST_EXCEPTION(create_directory_no_target_path_exists, OutputPluginException);
+    CPPUNIT_TEST(create_directory_no_target_path_exists_create_new);
+  CPPUNIT_TEST_SUITE_END_ABSTRACT();
+#endif
 };
 
 #endif /* OUTPUT_PLUGIN_TEST_HPP */

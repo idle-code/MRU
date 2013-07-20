@@ -14,6 +14,15 @@ public:
     return plugin;
   }
 
+  void
+  createFile(const FilePath &a_path)
+  {
+    assert(output_plugin != NULL);
+    std::ofstream empty_file(a_path.string().c_str());
+    empty_file << "File generated for tests" << std::endl;
+    empty_file.close();
+  }
+
   CPPUNIT_TEST_SUB_SUITE(BoostOutput_tests, OutputPlugin_tests);
   CPPUNIT_TEST_SUITE_END();
 };

@@ -14,11 +14,12 @@ public:
   void createDirectory(const FilePath &a_path);
   void removeDirectory(const FilePath &a_path);
 
-  void moveFile(const FilePath &a_source_path, const FilePath &a_destination_path);
-  void moveDirectory(const FilePath &a_source_path, const FilePath &a_destination_path);
+  bool exists(const FilePath &a_path) const;
 
-  bool fileExists(const FilePath &a_path) const;
-  bool directoryExists(const FilePath &a_path) const;
+  void move(const FilePath &a_source_path, const FilePath &a_destination_path);
+  void copy(const FilePath &a_source_path, const FilePath &a_destination_path);
+  void link(const FilePath &a_source_path, const FilePath &a_destination_path);
+  FilePath resolveLink(const FilePath &a_path) const;
 };
 
 } /* namespace mru */
