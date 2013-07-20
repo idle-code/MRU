@@ -52,7 +52,7 @@ MockOutput::move(const FilePath &a_source_path, const FilePath &a_destination_pa
 {
   if (!exists(a_source_path))
     throw OutputPluginException("Cannot move because source path doesn't exists");
-  if (!overwriteTarget() && exists(a_destination_path))
+  if (!overrideTarget() && exists(a_destination_path))
     throw OutputPluginException("Cannot move because target path exists");
 
   FilePath parent_dir = a_destination_path.parent_path();
@@ -74,7 +74,7 @@ MockOutput::copy(const FilePath &a_source_path, const FilePath &a_destination_pa
 {
   if (!exists(a_source_path))
     throw OutputPluginException("Cannot copy because source path doesn't exists");
-  if (!overwriteTarget() && exists(a_destination_path))
+  if (!overrideTarget() && exists(a_destination_path))
     throw OutputPluginException("Cannot copy because target path exists");
 
   FilePath parent_dir = a_destination_path.parent_path();
@@ -96,7 +96,7 @@ MockOutput::link(const FilePath &a_source_path, const FilePath &a_destination_pa
 {
   if (!exists(a_source_path))
     throw OutputPluginException("Cannot copy because source path doesn't exists");
-  if (!overwriteTarget() && exists(a_destination_path))
+  if (!overrideTarget() && exists(a_destination_path))
     throw OutputPluginException("Cannot copy because target path exists");
 
   FilePath parent_dir = a_destination_path.parent_path();

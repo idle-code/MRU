@@ -7,11 +7,25 @@ namespace mru
 
 class BoostInput_tests : public InputPlugin_tests {
 public:
-  InputPlugin* getInputPlugin(void)
+  InputPlugin *
+  getInputPlugin(void)
   {
     InputPlugin *plugin = new BoostInput;
     CPPUNIT_ASSERT(plugin != NULL);
     return plugin;
+  }
+
+  void
+  createDirectory(const FilePath &a_path)
+  {
+    bfs::create_directories(a_path);
+  }
+
+  void
+  removeDirectory(const FilePath &a_path)
+  {
+    if (bfs::exists(a_path))
+      bfs::remove_all(a_path);
   }
 
   CPPUNIT_TEST_SUB_SUITE(BoostInput_tests, InputPlugin_tests);

@@ -8,14 +8,26 @@ InputPlugin_tests::InputPlugin_tests(void)
 }
 
 void
+InputPlugin_tests::createFile(const FilePath &a_path)
+{
+  createDirectory(a_path.parent_path());
+  std::ofstream empty_file(a_path.string().c_str());
+  empty_file << "File generated for tests" << std::endl;
+  empty_file.close();
+}
+
+void
 InputPlugin_tests::setUp(void)
 {
+  createDirectory(test_directory);
+
   input_plugin = getInputPlugin();
   CPPUNIT_ASSERT(input_plugin != NULL);
   input_plugin->includeFiles(true);
   input_plugin->includeDirectories(false);
   input_plugin->searchRecursively(false);
 
+  // default configuration
   CPPUNIT_ASSERT_EQUAL(true, input_plugin->includeFiles());
   CPPUNIT_ASSERT_EQUAL(false, input_plugin->includeDirectories());
   CPPUNIT_ASSERT_EQUAL(false, input_plugin->searchRecursively());
@@ -27,6 +39,8 @@ InputPlugin_tests::tearDown(void)
   CPPUNIT_ASSERT(input_plugin != NULL);
   delete input_plugin;
   input_plugin = NULL;
+
+  removeDirectory(test_directory);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -36,7 +50,7 @@ InputPlugin_tests::construction(void)
 {
   FileIterator::Pointer file_iterator = input_plugin->getFileIterator(test_directory);
   CPPUNIT_ASSERT(file_iterator != NULL);
-  CPPUNIT_ASSERT(!file_iterator->atEnd());
+  CPPUNIT_ASSERT(file_iterator->atEnd());
 }
 
 void
@@ -72,13 +86,18 @@ InputPlugin_tests::flat_files(void)
   file_list.push_back(test_directory / "mru.log");
   file_list.push_back(test_directory / "other_app.log");
 
+  std::list<FilePath>::iterator i = file_list.begin();
+  for(; i != file_list.end(); ++i) {
+    createFile(*i);
+  }
+
   FileIterator::Pointer file_iterator = input_plugin->getFileIterator(test_directory);
   CPPUNIT_ASSERT(file_iterator != NULL);
   file_iterator = SortingFileIterator::wrap(file_iterator, new SimpleComparer());
   CPPUNIT_ASSERT(file_iterator != NULL);
   
   CPPUNIT_ASSERT(!file_iterator->atEnd());
-  std::list<FilePath>::iterator i = file_list.begin();
+  i = file_list.begin();
   for(; !file_iterator->atEnd() && i != file_list.end(); file_iterator->next(), ++i) {
     CPPUNIT_ASSERT(i != file_list.end());
     CPPUNIT_ASSERT_EQUAL(*i, file_iterator->getFilePath());
@@ -95,6 +114,11 @@ InputPlugin_tests::flat_directories(void)
   dir_list.push_back(test_directory / "dirB");
   dir_list.push_back(test_directory / "dirC");
 
+  std::list<FilePath>::iterator i = dir_list.begin();
+  for(; i != dir_list.end(); ++i) {
+    createDirectory(*i);
+  }
+
   input_plugin->includeFiles(false);
   input_plugin->includeDirectories(true);
 
@@ -104,7 +128,7 @@ InputPlugin_tests::flat_directories(void)
   CPPUNIT_ASSERT(file_iterator != NULL);
 
   CPPUNIT_ASSERT(!file_iterator->atEnd());
-  std::list<FilePath>::iterator i = dir_list.begin();
+  i = dir_list.begin();
   for(; !file_iterator->atEnd() && i != dir_list.end(); file_iterator->next(), ++i) {
     CPPUNIT_ASSERT(i != dir_list.end());
     CPPUNIT_ASSERT_EQUAL(*i, file_iterator->getFilePath());
@@ -133,6 +157,11 @@ InputPlugin_tests::recursive_files(void)
   file_list.push_back(test_directory / "mru.log");
   file_list.push_back(test_directory / "other_app.log");
 
+  std::list<FilePath>::iterator i = file_list.begin();
+  for(; i != file_list.end(); ++i) {
+    createFile(*i);
+  }
+
   input_plugin->searchRecursively(true);
 
   FileIterator::Pointer file_iterator = input_plugin->getFileIterator(test_directory);
@@ -141,7 +170,7 @@ InputPlugin_tests::recursive_files(void)
   CPPUNIT_ASSERT(file_iterator != NULL);
   
   CPPUNIT_ASSERT(!file_iterator->atEnd());
-  std::list<FilePath>::iterator i = file_list.begin();
+  i = file_list.begin();
   for(; !file_iterator->atEnd() && i != file_list.end(); file_iterator->next(), ++i) {
     CPPUNIT_ASSERT(i != file_list.end());
     CPPUNIT_ASSERT_EQUAL(*i, file_iterator->getFilePath());
@@ -159,6 +188,11 @@ InputPlugin_tests::recursive_directories(void)
   dir_list.push_back(test_directory / "dirB" / "spam");
   dir_list.push_back(test_directory / "dirC");
 
+  std::list<FilePath>::iterator i = dir_list.begin();
+  for(; i != dir_list.end(); ++i) {
+    createDirectory(*i);
+  }
+
   input_plugin->includeFiles(false);
 
   input_plugin->includeDirectories(true);
@@ -170,7 +204,7 @@ InputPlugin_tests::recursive_directories(void)
   CPPUNIT_ASSERT(file_iterator != NULL);
 
   CPPUNIT_ASSERT(!file_iterator->atEnd());
-  std::list<FilePath>::iterator i = dir_list.begin();
+  i = dir_list.begin();
   for(; !file_iterator->atEnd() && i != dir_list.end(); file_iterator->next(), ++i) {
     CPPUNIT_ASSERT(i != dir_list.end());
     CPPUNIT_ASSERT_EQUAL(*i, file_iterator->getFilePath());

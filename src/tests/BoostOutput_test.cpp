@@ -17,7 +17,6 @@ public:
   void
   createFile(const FilePath &a_path)
   {
-    assert(output_plugin != NULL);
     std::ofstream empty_file(a_path.string().c_str());
     empty_file << "File generated for tests" << std::endl;
     empty_file.close();
