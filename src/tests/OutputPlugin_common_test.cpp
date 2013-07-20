@@ -16,7 +16,7 @@ OutputPlugin_tests::setUp(void)
   CPPUNIT_ASSERT(output_plugin->exists(test_directory));
   output_plugin->createNewPath(false);
   // default settings:
-  CPPUNIT_ASSERT(!output_plugin->overwriteTarget());
+  CPPUNIT_ASSERT(!output_plugin->overrideTarget());
   CPPUNIT_ASSERT(!output_plugin->createNewPath());
 }
 

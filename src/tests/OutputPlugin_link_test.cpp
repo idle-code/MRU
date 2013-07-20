@@ -3,7 +3,7 @@
 void
 OutputPlugin_tests::link_target_exists(void)
 {
-  CPPUNIT_ASSERT(!output_plugin->overwriteTarget());
+  CPPUNIT_ASSERT(!output_plugin->overrideTarget());
 
   createFile(test_directory / "b");
   CPPUNIT_ASSERT(output_plugin->exists(test_directory / "b"));
@@ -14,8 +14,8 @@ OutputPlugin_tests::link_target_exists(void)
 void
 OutputPlugin_tests::link_target_exists_override(void)
 {
-  output_plugin->overwriteTarget(true);
-  CPPUNIT_ASSERT(output_plugin->overwriteTarget());
+  output_plugin->overrideTarget(true);
+  CPPUNIT_ASSERT(output_plugin->overrideTarget());
 
   createFile(test_directory / "a");
   CPPUNIT_ASSERT(output_plugin->exists(test_directory / "a"));

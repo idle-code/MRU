@@ -20,7 +20,7 @@ public:
   PLUGIN_INTERFACE("OutputPlugin")
   OutputPlugin(const name_type &a_name)
     : MruPlugin(static_interface_name(), a_name),
-      m_create_new_path(false), m_overwrite_target(false)
+      m_create_new_path(false), m_override_target(false)
   { }
 
   virtual void createDirectory(const FilePath &a_path) = 0;
@@ -42,18 +42,18 @@ public:
     return m_create_new_path;
   }
 
-  void overwriteTarget(bool overwrite)
+  void overrideTarget(bool override)
   {
-    m_overwrite_target = overwrite;
+    m_override_target = override;
   }
-  bool overwriteTarget(void) const
+  bool overrideTarget(void) const
   {
-    return m_overwrite_target;
+    return m_override_target;
   }
 
 private:
   bool m_create_new_path;
-  bool m_overwrite_target;
+  bool m_override_target;
 };
 
 typedef plugin_manager<OutputPlugin> OutputPluginManager;

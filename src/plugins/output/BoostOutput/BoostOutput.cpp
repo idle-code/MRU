@@ -55,7 +55,7 @@ BoostOutput::move(const FilePath &a_source_path, const FilePath &a_destination_p
       bfs::create_directories(parent_dir);
   }
   if(exists(a_destination_path)) {
-    if (overwriteTarget())
+    if (overrideTarget())
       bfs::remove_all(a_destination_path);
     else
       throw OutputPluginException("Cannot move because target path exists");
@@ -79,7 +79,7 @@ BoostOutput::copy(const FilePath &a_source_path, const FilePath &a_destination_p
   }
 
   if(exists(a_destination_path)) {
-    if (overwriteTarget())
+    if (overrideTarget())
       bfs::remove_all(a_destination_path);
     else
       throw OutputPluginException("Cannot move because target path exists");
@@ -102,7 +102,7 @@ BoostOutput::link(const FilePath &a_source_path, const FilePath &a_destination_p
       bfs::create_directories(parent_dir);
   }
   if(exists(a_destination_path)) {
-    if (overwriteTarget())
+    if (overrideTarget())
       bfs::remove_all(a_destination_path);
     else
       throw OutputPluginException("Cannot move because target path exists");
