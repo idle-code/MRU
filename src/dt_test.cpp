@@ -6,10 +6,10 @@ main(int argc, char const *argv[])
 {
   FO("main()");
 
-  data_tree::registry dtree;
+  dattree::registry dtree;
 
   int a = 3;
-  data_tree::registry::path_type path = "root";
+  dattree::registry::path_type path = "root";
   //VAL(std::string(path));
   dtree.set(path/"a", static_cast<void*>(&a));
   dtree.set(path/"a"/"b", static_cast<void*>(NULL));
@@ -26,7 +26,7 @@ main(int argc, char const *argv[])
   //VAL(dtree.get_or(path/"a", static_cast<void*>(NULL)).type());
 
   //VAL(dtree.get("test_sub.foo.bar").type());
-  data_tree::print_tree(dtree);
+  dattree::print_tree(dtree);
 
   return 0;
 }

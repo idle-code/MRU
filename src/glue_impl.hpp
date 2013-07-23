@@ -14,70 +14,70 @@ namespace mru
 
 template<> inline
 std::string
-glue_cast<std::string, std::wstring>(const std::wstring &a_value)
+glue_cast<std::string, std::wstring>(const std::wstring &value)
 {
-  return std::string(a_value.begin(), a_value.end());
+  return std::string(value.begin(), value.end());
 }
 
 template<> inline
 std::wstring
-glue_cast<std::wstring, std::string>(const std::string &a_value)
+glue_cast<std::wstring, std::string>(const std::string &value)
 {
-  return std::wstring(a_value.begin(), a_value.end());
+  return std::wstring(value.begin(), value.end());
 }
 
 /* ------------------------------------------------------------------------- */
 
 template<> inline
 FilePath
-glue_cast<FilePath, wxString>(const wxString &a_value)
+glue_cast<FilePath, wxString>(const wxString &value)
 {
-  return FilePath(a_value.mb_str());
+  return FilePath(value.mb_str());
 }
 
 template<> inline
 wxString
-glue_cast<wxString, FilePath>(const FilePath &a_value)
+glue_cast<wxString, FilePath>(const FilePath &value)
 {
-  return wxString(a_value.c_str(), wxConvUTF8);
+  return wxString(value.c_str(), wxConvUTF8);
 }
 
 /* ------------------------------------------------------------------------- */
 
 template<> inline
 UnicodeString
-glue_cast<UnicodeString, std::wstring>(const std::wstring &a_value)
+glue_cast<UnicodeString, std::wstring>(const std::wstring &value)
 {
   if(sizeof(UChar) == sizeof(std::wstring::value_type))
-    return UnicodeString(reinterpret_cast<const UChar*>(a_value.c_str()));
+    return UnicodeString(reinterpret_cast<const UChar*>(value.c_str()));
   else //if(sizeof(UChar) == 2 && sizeof(std::wstring::value_type) == 4)
-    return UnicodeString::fromUTF32(reinterpret_cast<const UChar32*>(a_value.c_str()), a_value.length());
+    return UnicodeString::fromUTF32(reinterpret_cast<const UChar32*>(value.c_str()), value.length());
 }
 
 template<> inline
 std::wstring
-glue_cast<std::wstring, UnicodeString>(const UnicodeString &a_value)
+glue_cast<std::wstring, UnicodeString>(const UnicodeString &value)
 {
-  const UChar *value_buffer = a_value.getBuffer();
-  return std::wstring(value_buffer, value_buffer + a_value.length());
+  const UChar *value_buffer = value.getBuffer();
+  return std::wstring(value_buffer, value_buffer + value.length());
 }
 
 /* ------------------------------------------------------------------------- */
 
 template<> inline
 UnicodeString
-glue_cast<UnicodeString, std::string>(const std::string &a_value)
+glue_cast<UnicodeString, std::string>(const std::string &value)
 {
-  return UnicodeString::fromUTF8(StringPiece(a_value.c_str()));
-  //return UnicodeString(a_value.c_str(), a_value.length());
+  return UnicodeString::fromUTF8(StringPiece(value.c_str()));
+  //return UnicodeString(value.c_str(), value.length());
 }
 
 template<> inline
 std::string
-glue_cast<std::string, UnicodeString>(const UnicodeString &a_value)
+glue_cast<std::string, UnicodeString>(const UnicodeString &value)
 {
   std::string result;
-  a_value.toUTF8String(result);
+  value.toUTF8String(result);
   return result;
 }
 
@@ -85,67 +85,67 @@ glue_cast<std::string, UnicodeString>(const UnicodeString &a_value)
 
 template<> inline
 wxString
-glue_cast<wxString, std::string>(const std::string &a_value)
+glue_cast<wxString, std::string>(const std::string &value)
 {
-  return wxString(a_value.c_str(), wxConvUTF8);
+  return wxString(value.c_str(), wxConvUTF8);
 }
 
 template<> inline
 std::string
-glue_cast<std::string, wxString>(const wxString &a_value)
+glue_cast<std::string, wxString>(const wxString &value)
 {
-  return std::string(a_value.mb_str());
+  return std::string(value.mb_str());
 }
 
 /* ------------------------------------------------------------------------- */
 
 template<> inline
 wxString
-glue_cast<wxString, std::wstring>(const std::wstring &a_value)
+glue_cast<wxString, std::wstring>(const std::wstring &value)
 {
-  return wxString(a_value.c_str(), wxConvUTF8);
+  return wxString(value.c_str(), wxConvUTF8);
 }
 
 template<> inline
 std::wstring
-glue_cast<std::wstring, wxString>(const wxString &a_value)
+glue_cast<std::wstring, wxString>(const wxString &value)
 {
-  return std::wstring(a_value.wc_str());
+  return std::wstring(value.wc_str());
 }
 
 /* ------------------------------------------------------------------------- */
 
 template<> inline
 UnicodeString
-glue_cast<UnicodeString, FilePath>(const FilePath &a_value)
+glue_cast<UnicodeString, FilePath>(const FilePath &value)
 {
-  return glue_cast<UnicodeString>(a_value.generic_wstring());
+  return glue_cast<UnicodeString>(value.generic_wstring());
 }
 
 template<> inline
 FilePath
-glue_cast<FilePath, UnicodeString>(const UnicodeString &a_value)
+glue_cast<FilePath, UnicodeString>(const UnicodeString &value)
 {
-  return FilePath(glue_cast<std::wstring>(a_value));
+  return FilePath(glue_cast<std::wstring>(value));
 }
 
 /* ------------------------------------------------------------------------- */
 
 template<> inline
 std::string
-glue_cast<std::string, FilePath>(const FilePath &a_value)
+glue_cast<std::string, FilePath>(const FilePath &value)
 {
-  return a_value.generic_string();
+  return value.generic_string();
 }
 
 /* ------------------------------------------------------------------------- */
 
 template<> inline
 UnicodeString
-glue_cast<UnicodeString, int>(const int &a_value)
+glue_cast<UnicodeString, int>(const int &value)
 {
   std::wstringstream ss;
-  ss << boost::locale::as::number << a_value;  
+  ss << boost::locale::as::number << value;  
   return glue_cast<UnicodeString>(ss.str());
 }
 
@@ -153,16 +153,16 @@ glue_cast<UnicodeString, int>(const int &a_value)
 
 template<> inline
 UnicodeString
-glue_cast<UnicodeString, wxString>(const wxString &a_value)
+glue_cast<UnicodeString, wxString>(const wxString &value)
 {
-  return glue_cast<UnicodeString>(glue_cast<std::wstring>(a_value));
+  return glue_cast<UnicodeString>(glue_cast<std::wstring>(value));
 }
 
 template<> inline
 wxString
-glue_cast<wxString, UnicodeString>(const UnicodeString &a_value)
+glue_cast<wxString, UnicodeString>(const UnicodeString &value)
 {
-  return glue_cast<wxString>(glue_cast<std::wstring>(a_value));
+  return glue_cast<wxString>(glue_cast<std::wstring>(value));
 }
 
 /* ------------------------------------------------------------------------- */

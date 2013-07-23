@@ -17,10 +17,10 @@ public:
   }
 
   void
-  createFile(const FilePath &a_path)
+  createFile(const FilePath &path)
   {
     assert(output_plugin != NULL);
-    ((MockOutput*)output_plugin)->createFile(a_path);
+    ((MockOutput*)output_plugin)->createFile(path);
   }
 
   CPPUNIT_TEST_SUB_SUITE(MockOutput_tests, OutputPlugin_tests);

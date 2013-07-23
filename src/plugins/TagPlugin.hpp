@@ -14,8 +14,8 @@ public:
   typedef TagPlugin self_type;
 public:
   PLUGIN_INTERFACE("TagPlugin")
-  TagPlugin(const name_type &a_name)
-    : MruPlugin(static_interface_name(), a_name), Metatag(glue_cast<UnicodeString>(a_name))
+  TagPlugin(const name_type &name)
+    : MruPlugin(static_interface_name(), name), Metatag(glue_cast<UnicodeString>(name))
   { }
   
   virtual ~TagPlugin(void)

@@ -4,23 +4,23 @@ namespace mru
 {
 
 FileIterator::Pointer
-FilteringFileIterator::wrap(FileIterator::Pointer a_iterator, boost::shared_ptr<FilterPredicate> a_predicate)
+FilteringFileIterator::wrap(FileIterator::Pointer iterator, boost::shared_ptr<FilterPredicate> predicate)
 {
-  return FileIterator::Pointer(new FilteringFileIterator(a_iterator, a_predicate));
+  return FileIterator::Pointer(new FilteringFileIterator(iterator, predicate));
 }
 
 FileIterator::Pointer
-FilteringFileIterator::wrap(FileIterator::Pointer a_iterator, FilterPredicate *a_predicate)
+FilteringFileIterator::wrap(FileIterator::Pointer iterator, FilterPredicate *predicate)
 {
-  return wrap(a_iterator, boost::shared_ptr<FilterPredicate>(a_predicate));
+  return wrap(iterator, boost::shared_ptr<FilterPredicate>(predicate));
 }
 
 /* ------------------------------------------------------------------------- */
 
-FilteringFileIterator::FilteringFileIterator(FileIterator::Pointer a_iterator, boost::shared_ptr<FilterPredicate> a_predicate)
-  : FileIteratorDecorator(a_iterator), m_predicate(a_predicate)
+FilteringFileIterator::FilteringFileIterator(FileIterator::Pointer iterator, boost::shared_ptr<FilterPredicate> predicate)
+  : FileIteratorDecorator(iterator), predicate(predicate)
 {
-  assert(m_predicate);
+  assert(predicate);
   first();
 }
 
@@ -42,9 +42,9 @@ FilteringFileIterator::next(void)
 void
 FilteringFileIterator::rewind(void)
 {
-  assert(m_predicate);
+  assert(predicate);
   while (!atEnd() &&
-         !(*m_predicate)(getFilePath()))
+         !(*predicate)(getFilePath()))
   {
     FileIteratorDecorator::next();
   }

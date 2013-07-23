@@ -12,35 +12,35 @@ FileIterator::~FileIterator(void)
 
 /* ------------------------------------------------------------------------- */
 
-FileIteratorDecorator::FileIteratorDecorator(FileIterator::Pointer a_instance)
-  : m_instance(a_instance)
+FileIteratorDecorator::FileIteratorDecorator(FileIterator::Pointer instance)
+  : instance(instance)
 { }
 
 FilePath FileIteratorDecorator::getFilePath(void) const
 {
-  assert(m_instance);
-  return m_instance->getFilePath();
+  assert(instance);
+  return instance->getFilePath();
 }
 
 void
 FileIteratorDecorator::first(void)
 {
-  assert(m_instance);
-  m_instance->first();
+  assert(instance);
+  instance->first();
 }
 
 bool
 FileIteratorDecorator::next(void)
 {
-  assert(m_instance);
-  return m_instance->next();
+  assert(instance);
+  return instance->next();
 }
 
 bool
 FileIteratorDecorator::atEnd(void) const
 {
-  assert(m_instance);
-  return m_instance->atEnd();
+  assert(instance);
+  return instance->atEnd();
 }
 
 } /* namespace mru */

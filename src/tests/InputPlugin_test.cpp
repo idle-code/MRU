@@ -8,10 +8,10 @@ InputPlugin_tests::InputPlugin_tests(void)
 }
 
 void
-InputPlugin_tests::createFile(const FilePath &a_path)
+InputPlugin_tests::createFile(const FilePath &path)
 {
-  createDirectory(a_path.parent_path());
-  std::ofstream empty_file(a_path.string().c_str());
+  createDirectory(path.parent_path());
+  std::ofstream empty_file(path.string().c_str());
   empty_file << "File generated for tests" << std::endl;
   empty_file.close();
 }
@@ -69,9 +69,9 @@ InputPlugin_tests::bad_config_exception(void)
 
 struct SimpleComparer : public SortingFileIterator::SortComparator
 {
-  int operator()(const FilePath &a_path_a, const FilePath &a_path_b)
+  int operator()(const FilePath &path_a, const FilePath &path_b)
   {
-    return a_path_a < a_path_b;
+    return path_a < path_b;
   }
 };
 
@@ -148,11 +148,11 @@ InputPlugin_tests::recursive_files(void)
   file_list.push_back(test_directory / "dirA" / "text_file1.txt");
   file_list.push_back(test_directory / "dirA" / "text_file2.txt");
   file_list.push_back(test_directory / "dirA" / "text_file3.txt");
-  file_list.push_back(test_directory / "dirB" / "aa_bb_cc");
+  file_list.push_back(test_directory / "dirB" / "abb_cc");
   file_list.push_back(test_directory / "dirB" / "mru.log");
   file_list.push_back(test_directory / "dirB" / "spam" / "bar.png");
   file_list.push_back(test_directory / "dirB" / "spam" / "foo.avi");
-  file_list.push_back(test_directory / "dirC" / "bb_aa_cc");
+  file_list.push_back(test_directory / "dirC" / "bb_acc");
   file_list.push_back(test_directory / "dirC" / "other_app.log");
   file_list.push_back(test_directory / "mru.log");
   file_list.push_back(test_directory / "other_app.log");

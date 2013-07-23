@@ -19,9 +19,9 @@ public:
   bool atEnd(void) const;
 
 private:
-  std::list<FilePath> m_file_list;
-  std::list<FilePath>::iterator m_iterator;
-  const std::list<FilePath>::const_iterator m_end_iterator;
+  std::list<FilePath> file_list;
+  std::list<FilePath>::iterator iterator;
+  const std::list<FilePath>::const_iterator end_iterator;
 };
 
 } /* namespace mru */

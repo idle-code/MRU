@@ -16,16 +16,16 @@ public:
   }
 
   void
-  createDirectory(const FilePath &a_path)
+  createDirectory(const FilePath &path)
   {
-    bfs::create_directories(a_path);
+    bfs::create_directories(path);
   }
 
   void
-  removeDirectory(const FilePath &a_path)
+  removeDirectory(const FilePath &path)
   {
-    if (bfs::exists(a_path))
-      bfs::remove_all(a_path);
+    if (bfs::exists(path))
+      bfs::remove_all(path);
   }
 
   CPPUNIT_TEST_SUB_SUITE(BoostInput_tests, InputPlugin_tests);

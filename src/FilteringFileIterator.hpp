@@ -13,19 +13,19 @@ public:
   class FilterPredicate {
   public:
     virtual ~FilterPredicate(void) { }
-    virtual bool operator()(const FilePath &a_path) = 0;
+    virtual bool operator()(const FilePath &path) = 0;
   };
 
-  static FileIterator::Pointer wrap(FileIterator::Pointer a_iterator, boost::shared_ptr<FilterPredicate> a_predicate);
-  static FileIterator::Pointer wrap(FileIterator::Pointer a_iterator, FilterPredicate *a_predicate);
+  static FileIterator::Pointer wrap(FileIterator::Pointer iterator, boost::shared_ptr<FilterPredicate> predicate);
+  static FileIterator::Pointer wrap(FileIterator::Pointer iterator, FilterPredicate *predicate);
 public:
-  FilteringFileIterator(FileIterator::Pointer a_iterator, boost::shared_ptr<FilterPredicate> a_predicate);
+  FilteringFileIterator(FileIterator::Pointer iterator, boost::shared_ptr<FilterPredicate> predicate);
   
   void first(void);
   bool next(void);
 
 private:
-  boost::shared_ptr<FilterPredicate> m_predicate;
+  boost::shared_ptr<FilterPredicate> predicate;
   void rewind(void);
 };
 
