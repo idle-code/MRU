@@ -3,8 +3,8 @@
 namespace mru
 {
 
-MockFileIterator::MockFileIterator(const std::list<FilePath> &a_list)
-  : m_file_list(a_list), m_iterator(m_file_list.begin()), m_end_iterator(m_file_list.end())
+MockFileIterator::MockFileIterator(const std::list<FilePath> &list)
+  : file_list(list), iterator(file_list.begin()), end_iterator(file_list.end())
 {
   first(); // not really needed
 }
@@ -13,26 +13,26 @@ FilePath
 MockFileIterator::getFilePath(void) const
 {
   assert(!atEnd());
-  return *m_iterator;
+  return *iterator;
 }
 
 void
 MockFileIterator::first(void)
 {
-  m_iterator = m_file_list.begin();
+  iterator = file_list.begin();
 }
 
 bool
 MockFileIterator::next(void)
 {
-  ++m_iterator;
+  ++iterator;
   return !atEnd();
 }
 
 bool
 MockFileIterator::atEnd(void) const
 {
-  return m_iterator == m_end_iterator;
+  return iterator == end_iterator;
 }
 
 } /* namespace mru */

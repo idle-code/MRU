@@ -14,7 +14,7 @@ class OutputPlugin_tests : public TestCase {
 public:
   OutputPlugin_tests(void);
   virtual OutputPlugin* getOutputPlugin(void) = 0;
-  virtual void createFile(const FilePath &a_path) = 0;
+  virtual void createFile(const FilePath &path) = 0;
   void setUp(void);
   void tearDown(void);
 protected:

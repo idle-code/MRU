@@ -9,10 +9,10 @@ namespace mru
 //FIXME: disable this generic implementation:
 template<typename DstType, typename SrcType> inline
 DstType
-glue_cast(const SrcType &a_value)
+glue_cast(const SrcType &value)
 {
   //FIXME: throw?
-  return DstType(a_value);
+  return DstType(value);
 }
 
 

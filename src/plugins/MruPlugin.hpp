@@ -8,14 +8,14 @@ namespace mru
 
 class MruPluginException : public std::exception {
 public:
-  MruPluginException(const std::string &a_module, const UnicodeString &a_message);
-  MruPluginException(const std::string &a_module, const std::string &a_message);
+  MruPluginException(const std::string &module, const UnicodeString &message);
+  MruPluginException(const std::string &module, const std::string &message);
   virtual ~MruPluginException(void) throw();
   const char* what(void) const throw();
-  const UnicodeString& message(void) const throw();
+  const UnicodeString& getMessage(void) const throw();
 private:
-  std::string m_module; 
-  UnicodeString m_message; 
+  std::string module; 
+  UnicodeString message; 
 };
 
 /* ------------------------------------------------------------------------- */
@@ -25,15 +25,15 @@ class MruCore;
 
 class MruPlugin : public plugin<MruPlugin> {
 public:
-  MruPlugin(const name_type &a_interface, const name_type &a_name);
+  MruPlugin(const name_type &interface, const name_type &name);
   virtual ~MruPlugin(void);
   
-  virtual bool Init(MruCore *a_mru_core);
+  virtual bool Init(MruCore *mru_core);
 
-  virtual MruCore* core(void);
+  virtual MruCore* getCore(void);
 
 private:
-  MruCore *m_core;
+  MruCore *core;
 };
 
 } /* namespace mru */

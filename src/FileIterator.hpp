@@ -25,14 +25,14 @@ class FileIteratorDecorator : public FileIterator {
 public:
   typedef FileIteratorDecorator self_type;
 public:
-  FileIteratorDecorator(FileIterator::Pointer a_instance);
+  FileIteratorDecorator(FileIterator::Pointer instance);
 
   FilePath getFilePath(void) const;
   void first(void);
   bool next(void);
   bool atEnd(void) const;
 private:
-  FileIterator::Pointer m_instance;
+  FileIterator::Pointer instance;
 };
 
 } /* namespace mru */

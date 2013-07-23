@@ -12,13 +12,13 @@ public:
   typedef UiPlugin self_type;
 public:
   PLUGIN_INTERFACE("UiPlugin")
-  UiPlugin(const name_type &a_name)
-    : MruPlugin(static_interface_name(), a_name)
+  UiPlugin(const name_type &name)
+    : MruPlugin(static_interface_name(), name)
   { }
   virtual ~UiPlugin(void)
   { }
   
-  virtual int start(int a_argc, char *a_argv[]) = 0;
+  virtual int start(int argc, char *argv[]) = 0;
 };
 
 typedef plugin_manager<UiPlugin> UiPluginManager;

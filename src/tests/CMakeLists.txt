@@ -40,6 +40,11 @@ target_link_libraries (BoostOutput_test BoostOutputShared)
 target_link_libraries (BoostOutput_test ${LIBS})
 add_test (BoostOutput_test BoostOutput_test)
 
+#MetatagExpression tests:
+add_executable (MetatagExpression_test "MetatagExpression_test.cpp")
+target_link_libraries (MetatagExpression_test ${LIBS})
+add_test (MetatagExpression_test MetatagExpression_test)
+
 # Metatags tests: TODO
 
 # Other:

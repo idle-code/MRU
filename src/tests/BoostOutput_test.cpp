@@ -15,9 +15,9 @@ public:
   }
 
   void
-  createFile(const FilePath &a_path)
+  createFile(const FilePath &path)
   {
-    std::ofstream empty_file(a_path.string().c_str());
+    std::ofstream empty_file(path.string().c_str());
     empty_file << "File generated for tests" << std::endl;
     empty_file.close();
   }

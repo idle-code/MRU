@@ -5,7 +5,7 @@
   namespace { \
   class Name : public FilteringFileIterator::FilterPredicate { \
   public: \
-    bool operator()(const FilePath &a_path) \
+    bool operator()(const FilePath &path) \
     { \
       BODY \
     } \
@@ -92,7 +92,7 @@ FilteringIterator_test::false_predicate(void)
 /* ------------------------------------------------------------------------- */
 
 FILTER_PREDICATE(FilenameStartPredicate,
-  return a_path.filename().string().find("a") == 0; //if filename starts with 'a'
+  return path.filename().string().find("a") == 0; //if filename starts with 'a'
 )
 
 void
@@ -100,37 +100,37 @@ FilteringIterator_test::filename_start_predicate(void)
 {
   FileIterator::Pointer iter = FilteringFileIterator::wrap(getIterator(), new FilenameStartPredicate());
 
-  std::list<FilePath> a_files;
-  a_files.push_back(prefix / "a");
-  a_files.push_back(prefix / "dir" / "application.log");
-  a_files.push_back(prefix / "GRAIL" / "abandon.log");
+  std::list<FilePath> files;
+  files.push_back(prefix / "a");
+  files.push_back(prefix / "dir" / "application.log");
+  files.push_back(prefix / "GRAIL" / "abandon.log");
 
   CPPUNIT_ASSERT(!iter->atEnd());
-  std::list<FilePath>::iterator i = a_files.begin();
-  for(; !iter->atEnd() && i != a_files.end(); iter->next(), ++i) {
+  std::list<FilePath>::iterator i = files.begin();
+  for(; !iter->atEnd() && i != files.end(); iter->next(), ++i) {
     CPPUNIT_ASSERT(i != files.end());
     CPPUNIT_ASSERT_EQUAL(*i, iter->getFilePath());
   }
-  CPPUNIT_ASSERT(i == a_files.end());
+  CPPUNIT_ASSERT(i == files.end());
   CPPUNIT_ASSERT(iter->atEnd());
 
   iter->first();
   CPPUNIT_ASSERT(!iter->atEnd());
 
-  i = a_files.begin();
+  i = files.begin();
   do {
-    CPPUNIT_ASSERT(i != a_files.end());
+    CPPUNIT_ASSERT(i != files.end());
     CPPUNIT_ASSERT_EQUAL(*i, iter->getFilePath());
     ++i;
-  } while(iter->next() && i != a_files.end());
-  CPPUNIT_ASSERT(i == a_files.end());
+  } while(iter->next() && i != files.end());
+  CPPUNIT_ASSERT(i == files.end());
   CPPUNIT_ASSERT(iter->atEnd());
 }
 
 /* ------------------------------------------------------------------------- */
 
 FILTER_PREDICATE(ExtensionPredicate,
-  return a_path.extension().string() == ".log";
+  return path.extension().string() == ".log";
 )
 
 void
@@ -138,31 +138,31 @@ FilteringIterator_test::extension_predicate(void)
 {
   FileIterator::Pointer iter = FilteringFileIterator::wrap(getIterator(), new ExtensionPredicate());
 
-  std::list<FilePath> a_files;
-  a_files.push_back(prefix / "dir" / "application.log");
-  a_files.push_back(prefix / "dir" / "system.log");
-  a_files.push_back(prefix / "dir" / "B.log");
-  a_files.push_back(prefix / "GRAIL" / "abandon.log");
+  std::list<FilePath> files;
+  files.push_back(prefix / "dir" / "application.log");
+  files.push_back(prefix / "dir" / "system.log");
+  files.push_back(prefix / "dir" / "B.log");
+  files.push_back(prefix / "GRAIL" / "abandon.log");
 
   CPPUNIT_ASSERT(!iter->atEnd());
-  std::list<FilePath>::iterator i = a_files.begin();
-  for(; !iter->atEnd() && i != a_files.end(); iter->next(), ++i) {
+  std::list<FilePath>::iterator i = files.begin();
+  for(; !iter->atEnd() && i != files.end(); iter->next(), ++i) {
     CPPUNIT_ASSERT(i != files.end());
     CPPUNIT_ASSERT_EQUAL(*i, iter->getFilePath());
   }
-  CPPUNIT_ASSERT(i == a_files.end());
+  CPPUNIT_ASSERT(i == files.end());
   CPPUNIT_ASSERT(iter->atEnd());
 
   iter->first();
   CPPUNIT_ASSERT(!iter->atEnd());
 
-  i = a_files.begin();
+  i = files.begin();
   do {
-    CPPUNIT_ASSERT(i != a_files.end());
+    CPPUNIT_ASSERT(i != files.end());
     CPPUNIT_ASSERT_EQUAL(*i, iter->getFilePath());
     ++i;
-  } while(iter->next() && i != a_files.end());
-  CPPUNIT_ASSERT(i == a_files.end());
+  } while(iter->next() && i != files.end());
+  CPPUNIT_ASSERT(i == files.end());
   CPPUNIT_ASSERT(iter->atEnd());
 
 }

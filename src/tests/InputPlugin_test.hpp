@@ -14,9 +14,9 @@ class InputPlugin_tests : public TestCase {
 public:
   InputPlugin_tests(void);
   virtual InputPlugin* getInputPlugin(void) = 0;
-  virtual void createFile(const FilePath &a_path);
-  virtual void createDirectory(const FilePath &a_path) = 0;
-  virtual void removeDirectory(const FilePath &a_path) = 0;
+  virtual void createFile(const FilePath &path);
+  virtual void createDirectory(const FilePath &path) = 0;
+  virtual void removeDirectory(const FilePath &path) = 0;
   void setUp(void);
   void tearDown(void);
 protected:

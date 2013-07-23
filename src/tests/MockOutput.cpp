@@ -5,15 +5,15 @@ namespace mru
 
 MockOutput::MockOutput(void)
   : OutputPlugin(static_implementation_name()),
-    m_file_list()
+    file_list()
 { }
 
 void
-MockOutput::createDirectory(const FilePath &a_path)
+MockOutput::createDirectory(const FilePath &path)
 {
-  if(exists(a_path))
+  if(exists(path))
     throw OutputPluginException("Cannot create directory because specified path already exists");
-  FilePath parent_dir = a_path.parent_path(); 
+  FilePath parent_dir = path.parent_path(); 
   if(!exists(parent_dir)) {
     if (!createNewPath())
       throw OutputPluginException("Cannot create directory because parent path of specified path doesn't exists");
@@ -21,41 +21,41 @@ MockOutput::createDirectory(const FilePath &a_path)
       createDirectory(parent_dir);
   }
 
-  m_file_list.push_back(std::make_pair(a_path, Directory));
+  file_list.push_back(std::make_pair(path, Directory));
 }
 
 void
-MockOutput::removeDirectory(const FilePath &a_path)
+MockOutput::removeDirectory(const FilePath &path)
 {
-  if (!exists(a_path))
+  if (!exists(path))
     throw OutputPluginException("Cannot remove nonexisting directory");
 
-  FileList::iterator file_iterator = getIterator(a_path);
-  assert(file_iterator != m_file_list.end());
-  m_file_list.erase(file_iterator);
+  FileList::iterator file_iterator = getIterator(path);
+  assert(file_iterator != file_list.end());
+  file_list.erase(file_iterator);
 }
 
 /* ------------------------------------------------------------------------- */
 
 bool
-MockOutput::exists(const FilePath &a_path) const
+MockOutput::exists(const FilePath &path) const
 {
-  if (a_path.empty())
+  if (path.empty())
     return false;
   
-  FileList::const_iterator file_iterator = getIterator(a_path);
-  return file_iterator != m_file_list.end();
+  FileList::const_iterator file_iterator = getIterator(path);
+  return file_iterator != file_list.end();
 }
 
 void
-MockOutput::move(const FilePath &a_source_path, const FilePath &a_destination_path)
+MockOutput::move(const FilePath &source_path, const FilePath &destination_path)
 {
-  if (!exists(a_source_path))
+  if (!exists(source_path))
     throw OutputPluginException("Cannot move because source path doesn't exists");
-  if (!overrideTarget() && exists(a_destination_path))
+  if (!overrideTarget() && exists(destination_path))
     throw OutputPluginException("Cannot move because target path exists");
 
-  FilePath parent_dir = a_destination_path.parent_path();
+  FilePath parent_dir = destination_path.parent_path();
   if (!exists(parent_dir)) {
     if (!createNewPath())
       throw OutputPluginException("Cannot move because parent path of specified path doesn't exists");
@@ -63,21 +63,21 @@ MockOutput::move(const FilePath &a_source_path, const FilePath &a_destination_pa
       createDirectory(parent_dir);
   }
 
-  FileList::iterator file_iterator = getIterator(a_source_path);
-  assert(file_iterator != m_file_list.end());
+  FileList::iterator file_iterator = getIterator(source_path);
+  assert(file_iterator != file_list.end());
 
-  file_iterator->first = a_destination_path;
+  file_iterator->first = destination_path;
 }
 
 void
-MockOutput::copy(const FilePath &a_source_path, const FilePath &a_destination_path)
+MockOutput::copy(const FilePath &source_path, const FilePath &destination_path)
 {
-  if (!exists(a_source_path))
+  if (!exists(source_path))
     throw OutputPluginException("Cannot copy because source path doesn't exists");
-  if (!overrideTarget() && exists(a_destination_path))
+  if (!overrideTarget() && exists(destination_path))
     throw OutputPluginException("Cannot copy because target path exists");
 
-  FilePath parent_dir = a_destination_path.parent_path();
+  FilePath parent_dir = destination_path.parent_path();
   if (!exists(parent_dir)) {
     if (!createNewPath())
       throw OutputPluginException("Cannot move because parent path of specified path doesn't exists");
@@ -85,21 +85,21 @@ MockOutput::copy(const FilePath &a_source_path, const FilePath &a_destination_pa
       createDirectory(parent_dir);
   }
 
-  FileList::iterator file_iterator = getIterator(a_source_path);
-  assert(file_iterator != m_file_list.end());
+  FileList::iterator file_iterator = getIterator(source_path);
+  assert(file_iterator != file_list.end());
 
-  m_file_list.push_back(std::make_pair(a_destination_path, file_iterator->second));
+  file_list.push_back(std::make_pair(destination_path, file_iterator->second));
 }
 
 void
-MockOutput::link(const FilePath &a_source_path, const FilePath &a_destination_path)
+MockOutput::link(const FilePath &source_path, const FilePath &destination_path)
 {
-  if (!exists(a_source_path))
+  if (!exists(source_path))
     throw OutputPluginException("Cannot copy because source path doesn't exists");
-  if (!overrideTarget() && exists(a_destination_path))
+  if (!overrideTarget() && exists(destination_path))
     throw OutputPluginException("Cannot copy because target path exists");
 
-  FilePath parent_dir = a_destination_path.parent_path();
+  FilePath parent_dir = destination_path.parent_path();
   if (!exists(parent_dir)) {
     if (!createNewPath())
       throw OutputPluginException("Cannot move because parent path of specified path doesn't exists");
@@ -107,21 +107,21 @@ MockOutput::link(const FilePath &a_source_path, const FilePath &a_destination_pa
       createDirectory(parent_dir);
   }
 
-  FileList::iterator file_iterator = getIterator(a_source_path);
-  assert(file_iterator != m_file_list.end());
+  FileList::iterator file_iterator = getIterator(source_path);
+  assert(file_iterator != file_list.end());
 
-  m_file_list.push_back(std::make_pair(a_destination_path, file_iterator->second));
-  m_link_list.push_back(std::make_pair(a_destination_path, file_iterator->first));
+  file_list.push_back(std::make_pair(destination_path, file_iterator->second));
+  link_list.push_back(std::make_pair(destination_path, file_iterator->first));
 }
 
 FilePath
-MockOutput::resolveLink(const FilePath &a_path) const
+MockOutput::resolveLink(const FilePath &path) const
 {
-  if (!exists(a_path))
+  if (!exists(path))
     throw OutputPluginException("Cannot resolve link because specified path doesn't exists");
 
-  LinkList::const_iterator link_iterator = getLinkIterator(a_path); 
-  if (link_iterator == m_link_list.end())
+  LinkList::const_iterator link_iterator = getLinkIterator(path); 
+  if (link_iterator == link_list.end())
     throw OutputPluginException("Specified file is not a link");
   return link_iterator->second;
 }
@@ -129,47 +129,47 @@ MockOutput::resolveLink(const FilePath &a_path) const
 /* ------------------------------------------------------------------------- */
 
 void
-MockOutput::createFile(const FilePath &a_path)
+MockOutput::createFile(const FilePath &path)
 {
-  assert(!exists(a_path));
-  m_file_list.push_back(std::make_pair(a_path, File));
+  assert(!exists(path));
+  file_list.push_back(std::make_pair(path, File));
 }
 
 MockOutput::FileList::iterator
-MockOutput::getIterator(const FilePath &a_path)
+MockOutput::getIterator(const FilePath &path)
 {
-  FileList::iterator file_iterator = std::find(m_file_list.begin(), m_file_list.end(), std::make_pair(a_path, File));
-  if (file_iterator == m_file_list.end())
-    file_iterator = std::find(m_file_list.begin(), m_file_list.end(), std::make_pair(a_path, Directory));
+  FileList::iterator file_iterator = std::find(file_list.begin(), file_list.end(), std::make_pair(path, File));
+  if (file_iterator == file_list.end())
+    file_iterator = std::find(file_list.begin(), file_list.end(), std::make_pair(path, Directory));
   return file_iterator;
 }
 
 MockOutput::FileList::const_iterator
-MockOutput::getIterator(const FilePath &a_path) const
+MockOutput::getIterator(const FilePath &path) const
 {
-  FileList::const_iterator file_iterator = std::find(m_file_list.begin(), m_file_list.end(), std::make_pair(a_path, File));
-  if (file_iterator == m_file_list.end())
-    file_iterator = std::find(m_file_list.begin(), m_file_list.end(), std::make_pair(a_path, Directory));
+  FileList::const_iterator file_iterator = std::find(file_list.begin(), file_list.end(), std::make_pair(path, File));
+  if (file_iterator == file_list.end())
+    file_iterator = std::find(file_list.begin(), file_list.end(), std::make_pair(path, Directory));
   return file_iterator;
 }
 
 MockOutput::LinkList::iterator
-MockOutput::getLinkIterator(const FilePath &a_path)
+MockOutput::getLinkIterator(const FilePath &path)
 {
-  LinkList::iterator link_iterator = m_link_list.begin();
-  for(; link_iterator != m_link_list.end(); ++link_iterator) {
-    if (link_iterator->first == a_path)
+  LinkList::iterator link_iterator = link_list.begin();
+  for(; link_iterator != link_list.end(); ++link_iterator) {
+    if (link_iterator->first == path)
       return link_iterator;
   }
   return link_iterator;
 }
 
 MockOutput::LinkList::const_iterator
-MockOutput::getLinkIterator(const FilePath &a_path) const
+MockOutput::getLinkIterator(const FilePath &path) const
 {
-  LinkList::const_iterator link_iterator = m_link_list.begin();
-  for(; link_iterator != m_link_list.end(); ++link_iterator) {
-    if (link_iterator->first == a_path)
+  LinkList::const_iterator link_iterator = link_list.begin();
+  for(; link_iterator != link_list.end(); ++link_iterator) {
+    if (link_iterator->first == path)
       return link_iterator;
   }
   return link_iterator;

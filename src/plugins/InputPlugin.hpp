@@ -10,11 +10,11 @@ namespace mru
 
 class InputPluginException : public MruPluginException {
 public:
-  InputPluginException(const UnicodeString &a_message)
-    : MruPluginException("InputPlugin", a_message)
+  InputPluginException(const UnicodeString &message)
+    : MruPluginException("InputPlugin", message)
   { }
-  InputPluginException(const std::string &a_message)
-    : MruPluginException("InputPlugin", a_message)
+  InputPluginException(const std::string &message)
+    : MruPluginException("InputPlugin", message)
   { }
 };
 
@@ -23,43 +23,43 @@ public:
 class InputPlugin : public MruPlugin {
 public:
   PLUGIN_INTERFACE("InputPlugin")
-  InputPlugin(const name_type &a_name)
-    : MruPlugin(static_interface_name(), a_name)
+  InputPlugin(const name_type &name)
+    : MruPlugin(static_interface_name(), name)
   { }
 
-  virtual FileIterator::Pointer getFileIterator(const FilePath &a_path) = 0;
+  virtual FileIterator::Pointer getFileIterator(const FilePath &path) = 0;
 
   void includeFiles(bool include)
   {
-    m_include_files = include;
+    include_files = include;
   }
   bool includeFiles(void)
   {
-    return m_include_files;
+    return include_files;
   }
 
   void includeDirectories(bool include)
   {
-    m_include_directories = include;
+    include_directories = include;
   }
   bool includeDirectories(void)
   {
-    return m_include_directories;
+    return include_directories;
   }
   
   void searchRecursively(bool search)
   {
-    m_search_recursively = search;
+    search_recursively = search;
   }
   bool searchRecursively(void)
   {
-    return m_search_recursively;
+    return search_recursively;
   }
 
 private:
-  bool m_include_files;
-  bool m_include_directories;
-  bool m_search_recursively;
+  bool include_files;
+  bool include_directories;
+  bool search_recursively;
 };
 
 typedef plugin_manager<InputPlugin> InputPluginManager;
