@@ -1,16 +1,16 @@
 #ifndef TEXT_CASE_TAG_HPP
 #define TEXT_CASE_TAG_HPP
 
-#include <plugins/TagPlugin.hpp>
+#include <plugins/MetatagPlugin.hpp>
 
 namespace mru
 {
 
-class TextCaseTag : public TagPlugin {
+class TextCaseMetatag : public MetatagPlugin {
 public:
   PLUGIN_NAME("TextCase")
-  TextCaseTag(void);
-  ~TextCaseTag(void);
+  TextCaseMetatag(void);
+  ~TextCaseMetatag(void);
 
   void initialize(const UnicodeString &a_arguments);
   UnicodeString execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect);

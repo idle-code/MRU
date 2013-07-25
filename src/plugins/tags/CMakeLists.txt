@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8)
 
-add_subdirectory ("StandardTags")
-add_subdirectory ("AudioTag")
+add_subdirectory ("StandardMetatags")
+add_subdirectory ("AudioMetatag")
 

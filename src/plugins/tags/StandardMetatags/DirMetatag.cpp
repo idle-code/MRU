@@ -1,23 +1,23 @@
-#include "DirTag.hpp"
+#include "DirMetatag.hpp"
 
 namespace mru
 {
 
-DirTag::DirTag(void)
-  : TagPlugin(static_implementation_name())
+DirMetatag::DirMetatag(void)
+  : MetatagPlugin(static_implementation_name())
 { }
 
-DirTag::~DirTag(void)
+DirMetatag::~DirMetatag(void)
 { }
 
 void
-DirTag::initialize(const UnicodeString &a_arguments)
+DirMetatag::initialize(const UnicodeString &a_arguments)
 {
 
 }
 
 UnicodeString
-DirTag::execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect)
+DirMetatag::execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect)
 {
   if(bfs::is_empty(a_file_path.getFilePath().parent_path()) == 0)
     return UnicodeString();

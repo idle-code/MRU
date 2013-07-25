@@ -41,16 +41,15 @@ target_link_libraries (BoostOutput_test ${LIBS})
 add_test (BoostOutput_test BoostOutput_test)
 
 #MetatagExpression tests:
+#add_executable (MetatagExpressionParser_test "MetatagExpressionParser_test.cpp")
+#target_link_libraries (MetatagExpressionParser_test ${LIBS})
+#add_test (MetatagExpressionParser_test MetatagExpressionParser_test)
+
 add_executable (MetatagExpression_test "MetatagExpression_test.cpp")
 target_link_libraries (MetatagExpression_test ${LIBS})
 add_test (MetatagExpression_test MetatagExpression_test)
 
-# Metatags tests: TODO
-
 # Other:
-add_executable (metatag_test "metatag_test.cpp")
-target_link_libraries (metatag_test metatag ${LIBS})
-add_test (metatag_test metatag_test)
 
 add_executable (glue_test "glue_test.cpp")
 target_link_libraries (glue_test ${LIBS})

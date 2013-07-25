@@ -1,4 +1,4 @@
-#include "AudioTag.hpp"
+#include "AudioMetatag.hpp"
 #include <taglib/taglib.h>
 #include <taglib/tstring.h>
 #include <taglib/fileref.h>
@@ -13,17 +13,17 @@ glue_cast<UnicodeString, TagLib::String>(const TagLib::String &a_value)
   return glue_cast<UnicodeString>(a_value.toWString());
 }
 
-AudioTag::AudioTag(void)
-  : TagPlugin(static_implementation_name())
+AudioMetatag::AudioMetatag(void)
+  : MetatagPlugin(static_implementation_name())
 { }
 
-AudioTag::~AudioTag(void)
+AudioMetatag::~AudioMetatag(void)
 { }
 
 void
-AudioTag::initialize(const UnicodeString &a_arguments)
+AudioMetatag::initialize(const UnicodeString &a_arguments)
 {
-  //FO("AudioTag::initialize(const UnicodeString &a_arguments)");
+  //FO("AudioMetatag::initialize(const UnicodeString &a_arguments)");
 
   if(a_arguments == glue_cast<UnicodeString>("artist"))
     m_action = artist;
@@ -40,9 +40,9 @@ AudioTag::initialize(const UnicodeString &a_arguments)
 }
 
 UnicodeString
-AudioTag::execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect)
+AudioMetatag::execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect)
 {
-  //FO("AudioTag::execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect)");
+  //FO("AudioMetatag::execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect)");
   TagLib::FileRef file(a_file_path.getFilePath().string().c_str());
   if(file.isNull())
     throw MetatagException(name(), glue_cast<UnicodeString>("Metadata not found - bad file type?"));
@@ -77,6 +77,6 @@ AudioTag::execute(const FileIterator &a_file_path, const UnicodeString &a_area_o
 } /* namespace mru */
 
 EXPORT_START
-  EXPORT_PLUGIN(mru::AudioTag)
+  EXPORT_PLUGIN(mru::AudioMetatag)
 EXPORT_END
 

@@ -4,14 +4,14 @@
 #include "plugins/UiPlugin.hpp"
 #include "plugins/InputPlugin.hpp"
 #include "plugins/OutputPlugin.hpp"
-#include "plugins/TagPlugin.hpp"
+#include "plugins/MetatagPlugin.hpp"
 
 #include "types.hpp"
 #include "patterns.hpp"
 #include "FileIterator.hpp"
 #include <sigc++/sigc++.h>
 #include <boost/filesystem.hpp>
-#include "metatag/expression.hpp"
+#include "MetatagExpression.hpp"
 #include <pthread.h>
 
 namespace mru

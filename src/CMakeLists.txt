@@ -52,9 +52,9 @@ set (LIBS ${LIBS} plugin_manager)
 add_subdirectory ("plugins")
 include_directories ("plugins")
 
-add_subdirectory ("metatag")
-include_directories ("metatag")
-set (LIBS ${LIBS} metatag)
+#add_subdirectory ("metatag")
+#include_directories ("metatag")
+#set (LIBS ${LIBS} metatag)
 
 add_library (FileIterator "FileIterator.cpp")
 set (LIBS ${LIBS} FileIterator)
@@ -64,6 +64,15 @@ set (LIBS ${LIBS} SortingFileIterator)
 
 add_library (FilteringFileIterator "FilteringFileIterator.cpp")
 set (LIBS ${LIBS} FilteringFileIterator)
+
+add_library (MetatagExpressionParser "MetatagExpressionParser.cpp")
+set (LIBS ${LIBS} MetatagExpressionParser)
+
+add_library (Metatag "Metatag.cpp")
+set (LIBS ${LIBS} Metatag)
+
+add_library (MetatagExpression "MetatagExpression.cpp")
+set (LIBS ${LIBS} MetatagExpression)
 
 add_executable (mru "main.cpp" "MruCore.cpp")
 target_link_libraries (mru ${LIBS} ${CMAKE_DL_LIBS})
