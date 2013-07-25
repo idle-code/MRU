@@ -1,16 +1,16 @@
 #ifndef NAME_TAG_HPP
 #define NAME_TAG_HPP
 
-#include <plugins/TagPlugin.hpp>
+#include <plugins/MetatagPlugin.hpp>
 
 namespace mru
 {
 
-class NameTag : public TagPlugin {
+class NameMetatag : public MetatagPlugin {
 public:
   PLUGIN_NAME("Name")
-  NameTag(void);
-  ~NameTag(void);
+  NameMetatag(void);
+  ~NameMetatag(void);
 
   void initialize(const UnicodeString &a_arguments);
   UnicodeString execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect);

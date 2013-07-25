@@ -1,17 +1,17 @@
-#include "TextCaseTag.hpp"
+#include "TextCaseMetatag.hpp"
 
 namespace mru
 {
 
-TextCaseTag::TextCaseTag(void)
-  : TagPlugin(static_implementation_name())
+TextCaseMetatag::TextCaseMetatag(void)
+  : MetatagPlugin(static_implementation_name())
 { }
 
-TextCaseTag::~TextCaseTag(void)
+TextCaseMetatag::~TextCaseMetatag(void)
 { }
 
 void
-TextCaseTag::initialize(const UnicodeString &a_arguments)
+TextCaseMetatag::initialize(const UnicodeString &a_arguments)
 {
   if(a_arguments == glue_cast<UnicodeString>("upper"))
     m_action = to_upper;
@@ -24,7 +24,7 @@ TextCaseTag::initialize(const UnicodeString &a_arguments)
 }
 
 UnicodeString
-TextCaseTag::execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect)
+TextCaseMetatag::execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect)
 {
   UnicodeString area_of_effect = a_area_of_effect;
   switch(m_action) {

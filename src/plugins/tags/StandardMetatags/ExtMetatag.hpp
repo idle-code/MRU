@@ -1,16 +1,16 @@
 #ifndef EXT_TAG_HPP
 #define EXT_TAG_HPP
 
-#include <plugins/TagPlugin.hpp>
+#include <plugins/MetatagPlugin.hpp>
 
 namespace mru
 {
 
-class ExtTag : public TagPlugin {
+class ExtMetatag : public MetatagPlugin {
 public:
   PLUGIN_NAME("Ext")
-  ExtTag(void);
-  ~ExtTag(void);
+  ExtMetatag(void);
+  ~ExtMetatag(void);
 
   void initialize(const UnicodeString &a_arguments);
   UnicodeString execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect);

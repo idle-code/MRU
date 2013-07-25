@@ -1,20 +1,20 @@
-#include "CountTag.hpp"
+#include "CountMetatag.hpp"
 #include <unicode/regex.h>
 
 namespace mru
 {
 
-CountTag::CountTag(void)
-  : TagPlugin(static_implementation_name()), m_counter(0), m_start(0), m_step(1)
+CountMetatag::CountMetatag(void)
+  : MetatagPlugin(static_implementation_name()), m_counter(0), m_start(0), m_step(1)
 { }
 
-CountTag::~CountTag(void)
+CountMetatag::~CountMetatag(void)
 { }
 
 void
-CountTag::reset(void)
+CountMetatag::reset(void)
 {
-  FO("CountTag::reset(void)");
+  FO("CountMetatag::reset(void)");
   m_counter = m_start;
 }
 
@@ -22,7 +22,7 @@ static const UnicodeString start_param_prefix = glue_cast<UnicodeString>("start=
 static const UnicodeString step_param_prefix = glue_cast<UnicodeString>("step=");
 
 int
-CountTag::UnicodeStringToInt(const UnicodeString &a_value)
+CountMetatag::UnicodeStringToInt(const UnicodeString &a_value)
 {
   Formattable parse_result;
   UErrorCode status = U_ZERO_ERROR;
@@ -39,9 +39,9 @@ CountTag::UnicodeStringToInt(const UnicodeString &a_value)
 }
 
 void
-CountTag::initialize(const UnicodeString &a_arguments)
+CountMetatag::initialize(const UnicodeString &a_arguments)
 {
-  FO("CountTag::initialize(const UnicodeString &a_arguments)");
+  FO("CountMetatag::initialize(const UnicodeString &a_arguments)");
 
   UErrorCode status = U_ZERO_ERROR;
   icu::RegexMatcher regex("\\ *,\\ *", 0, status);
@@ -69,7 +69,7 @@ CountTag::initialize(const UnicodeString &a_arguments)
 }
 
 UnicodeString
-CountTag::execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect)
+CountMetatag::execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect)
 {
   int value = m_counter; 
   m_counter += m_step; 

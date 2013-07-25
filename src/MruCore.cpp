@@ -4,7 +4,7 @@
 #include "plugins/UiPlugin.hpp"
 #include "plugins/InputPlugin.hpp"
 #include "plugins/OutputPlugin.hpp"
-#include "plugins/TagPlugin.hpp"
+#include "plugins/MetatagPlugin.hpp"
 #undef NDEBUG_L
 #include <debug_l.h>
 #include <unistd.h>
@@ -50,7 +50,7 @@ MruCore::MruCore(void)
   UiPluginManager::set_instance(new UiPluginManager("UiPlugin"));
   InputPluginManager::set_instance(new InputPluginManager("InputPlugin"));
   OutputPluginManager::set_instance(new OutputPluginManager("OutputPlugin"));
-  TagPluginManager::set_instance(new TagPluginManager("TagPlugin"));
+  MetatagPluginManager::set_instance(new MetatagPluginManager("MetatagPlugin"));
 }
 
 MruCore::~MruCore(void)
@@ -58,7 +58,7 @@ MruCore::~MruCore(void)
   FO("MruCore::~MruCore(void)");
 
   // destroy all managers (it's not mandatory (imo) becouse we are exiting anyway...): 
-  TagPluginManager::destroy_instance();
+  MetatagPluginManager::destroy_instance();
   OutputPluginManager::destroy_instance();
   InputPluginManager::destroy_instance();
   UiPluginManager::destroy_instance();
@@ -127,21 +127,21 @@ namespace
 
 class metatag_factory_wrapper : public abstract_factory<Metatag> {
 public:
-  metatag_factory_wrapper(plugin_factory<TagPlugin> *a_plugin_factory)
+  metatag_factory_wrapper(plugin_factory<MetatagPlugin> *a_plugin_factory)
     : m_plugin_factory(a_plugin_factory)
   { }
 
   Metatag* create(void)
   {
-    return reinterpret_cast<TagPlugin*>(m_plugin_factory->create());
+    return reinterpret_cast<MetatagPlugin*>(m_plugin_factory->create());
   } 
 
   void destroy(Metatag *a_instance)
   {
-    m_plugin_factory->destroy(static_cast<TagPlugin*>(a_instance));
+    m_plugin_factory->destroy(static_cast<MetatagPlugin*>(a_instance));
   }
 private:
-  plugin_factory<TagPlugin> *m_plugin_factory;
+  plugin_factory<MetatagPlugin> *m_plugin_factory;
 };
 
 } /* anonymous namespace */
@@ -150,10 +150,10 @@ int
 MruCore::loadMetatags(void)
 {
   registry reg = getRegistry();
-  TagPluginManager *tag_manager = TagPluginManager::get_instance();
+  MetatagPluginManager *tag_manager = MetatagPluginManager::get_instance();
   int tags_loaded = 0;
-  tags_loaded += tag_manager->load_module(reg.get<std::string>("module.path") + "/tags/StandardTags/StandardTags");
-  tags_loaded += tag_manager->load_module(reg.get<std::string>("module.path") + "/tags/AudioTag/AudioTag");
+  tags_loaded += tag_manager->load_module(reg.get<std::string>("module.path") + "/tags/StandardMetatags/StandardMetatags");
+  tags_loaded += tag_manager->load_module(reg.get<std::string>("module.path") + "/tags/AudioMetatag/AudioMetatag");
 
   return tags_loaded;
 }
@@ -164,39 +164,21 @@ void
 MruCore::setMetatagExpression(const UnicodeString &a_expression)
 {
   FO("MruCore::set_metatag_expression(const UnicodeString &a_expression)");
-  m_metatag_expression = MetatagExpression::parse(a_expression);
-  m_bindings_outdated = true;
-  bindMetatags();
 }
 
 void
 MruCore::bindMetatags(void)
 {
-  if(!m_bindings_outdated)
-    return;
-  FO("MruCore::bind_metatags(void)");
-  TagPluginManager *tag_manager = TagPluginManager::get_instance();
-  MetatagExpression::bindings_map metatags_bindings;
-  std::list<name_type> tag_name_list = tag_manager->available_plugins();
-  for(std::list<name_type>::iterator tag_name = tag_name_list.begin(); tag_name != tag_name_list.end(); ++tag_name) {
-    //VAL(glue_cast<std::string>(glue_cast<UnicodeString>(*tag_name)));
-    metatags_bindings.insert(std::make_pair(glue_cast<UnicodeString>(*tag_name), new metatag_factory_wrapper(tag_manager->get_factory(*tag_name))));
-  }
-  //VAL(metatags_bindings.size());
-  m_metatag_expression.bindings(metatags_bindings);
-  m_bindings_outdated = false;
 }
 
 UnicodeString
 MruCore::getMetatagExpression(void)
 {
-  return m_metatag_expression.str();
 }
 
 void
 MruCore::resetState(void)
 {
-  m_metatag_expression.reset();
 }
 
 /* ------------------------------------------------------------------------- */
@@ -278,7 +260,7 @@ MruCore::getOutputPlugin(void)
 std::list<std::string>
 MruCore::getAvailableMetatags(void)
 {
-  return TagPluginManager::get_instance()->available_plugins();
+  return MetatagPluginManager::get_instance()->available_plugins();
 }
 
 void

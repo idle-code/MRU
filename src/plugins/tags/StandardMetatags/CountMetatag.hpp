@@ -1,16 +1,16 @@
 #ifndef COUNT_TAG_HPP
 #define COUNT_TAG_HPP
 
-#include <plugins/TagPlugin.hpp>
+#include <plugins/MetatagPlugin.hpp>
 
 namespace mru
 {
 
-class CountTag : public TagPlugin {
+class CountMetatag : public MetatagPlugin {
 public:
   PLUGIN_NAME("Count")
-  CountTag(void);
-  ~CountTag(void);
+  CountMetatag(void);
+  ~CountMetatag(void);
 
   void reset(void);
   void initialize(const UnicodeString &a_arguments);
