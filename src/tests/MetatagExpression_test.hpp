@@ -17,11 +17,16 @@ public:
   void initial_state(void);
   void empty_expr(void);
   void static_expr(void);
+  void static_expr_evaluation(void);
+
+  void flat_expr(void);
 
   CPPUNIT_TEST_SUITE(MetatagExpression_tests);
     CPPUNIT_TEST(initial_state);
     CPPUNIT_TEST(empty_expr);
     CPPUNIT_TEST(static_expr);
+    //CPPUNIT_TEST(static_expr_evaluation);
+    CPPUNIT_TEST(flat_expr);
   CPPUNIT_TEST_SUITE_END();
 };
 

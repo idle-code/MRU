@@ -65,8 +65,8 @@ set (LIBS ${LIBS} SortingFileIterator)
 add_library (FilteringFileIterator "FilteringFileIterator.cpp")
 set (LIBS ${LIBS} FilteringFileIterator)
 
-add_library (MetatagExpressionParser "MetatagExpressionParser.cpp")
-set (LIBS ${LIBS} MetatagExpressionParser)
+#add_library (MetatagExpressionParser "MetatagExpressionParser.cpp")
+#set (LIBS ${LIBS} MetatagExpressionParser)
 
 add_library (Metatag "Metatag.cpp")
 set (LIBS ${LIBS} Metatag)

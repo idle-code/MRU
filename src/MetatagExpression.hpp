@@ -17,13 +17,13 @@ public:
 
 /* ------------------------------------------------------------------------- */
 
-struct MetatagEntry {
-  UnicodeString name;
-  UnicodeString arguments;
-  //Pointer to Metatag object
-};
-
 class MetatagExpression {
+public:
+  friend class Iterator;
+  class Iterator;
+  friend class DeclarationIterator;
+  class DeclarationIterator;
+
 public:
   MetatagExpression(void);
   MetatagExpression(const UnicodeString &expression_text);
@@ -31,8 +31,43 @@ public:
 
   void parse(const UnicodeString &expression_text);
   UnicodeString text(void) const;
+  bool isValid(void) const;
+
 private:
-  std::list<MetatagEntry> tokenize(const UnicodeString &expression_text) const;
+  struct Token {
+    typedef enum {
+      Text,
+      MetatagStart,
+      ArgumentListStart,
+      ArgumentListEnd,
+      AreaOfEffectStart,
+      AreaOfEffectEnd
+    } TokenKind;
+
+    int position;
+    UnicodeString value;
+    TokenKind type;
+
+    Token(void);
+    Token(const UnicodeString &value, TokenKind type);
+  };
+
+  struct Entry {
+    typedef boost::shared_ptr<Entry> Pointer;
+
+    UnicodeString name;
+    UnicodeString arguments;
+    Metatag::Pointer metatag;
+    int position;
+    std::list<Pointer> childrens;
+  };
+
+private:
+  std::list<Token> tokenize(const UnicodeString &expression_text) const;
+
+private:
+  std::list<Token> tokens;
+  Entry::Pointer root_entry;
 };
 
 } /* namespace mru */
