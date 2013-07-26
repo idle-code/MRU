@@ -19,9 +19,27 @@ void
 MetatagExpression_tests::static_expr(void)
 {
   expr_str = glue_cast<UnicodeString>("Text");
-  
+
   MetatagExpression expr(expr_str);
 
+  CPPUNIT_ASSERT(expr.isValid());
+  CPPUNIT_ASSERT(expr_str == expr.text());
+}
+
+void
+MetatagExpression_tests::static_expr_evaluation(void)
+{
+
+}
+
+void
+MetatagExpression_tests::flat_expr(void)
+{
+  expr_str = glue_cast<UnicodeString>("%Text()");
+
+  MetatagExpression expr(expr_str);
+
+  CPPUNIT_ASSERT(expr.isValid());
   CPPUNIT_ASSERT(expr_str == expr.text());
 }
 

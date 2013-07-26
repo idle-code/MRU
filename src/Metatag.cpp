@@ -8,9 +8,6 @@ Metatag::Metatag(const UnicodeString &a_name)
   : m_name(a_name)
 { }
 
-Metatag::Metatag(const self_type &a_other)
-{ }
-
 Metatag::~Metatag(void)
 { }
 
@@ -27,7 +24,6 @@ Metatag::reset(void)
 }
 
 /* ------------------------------------------------------------------------- */
-
 
 MetatagException::MetatagException(const UnicodeString &a_tag_name, const UnicodeString &a_message)
   : std::runtime_error(glue_cast<std::string>(a_message).c_str()),
