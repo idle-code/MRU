@@ -5,6 +5,8 @@
 #include "Metatag.hpp"
 #include <stdexcept>
 
+class MetatagExpression_tests; //forward declaration for tests
+
 namespace mru
 {
 
@@ -24,6 +26,7 @@ public:
   friend class DeclarationIterator;
   class DeclarationIterator;
 
+  friend class MetatagExpression_tests;
 public:
   MetatagExpression(void);
   MetatagExpression(const UnicodeString &expression_text);
@@ -41,7 +44,8 @@ private:
       ArgumentListStart,
       ArgumentListEnd,
       AreaOfEffectStart,
-      AreaOfEffectEnd
+      AreaOfEffectEnd,
+      EscapeSequence
     } TokenKind;
 
     int position;
@@ -49,7 +53,7 @@ private:
     TokenKind type;
 
     Token(void);
-    Token(const UnicodeString &value, TokenKind type);
+    Token(int position, const UnicodeString &value, TokenKind type);
   };
 
   struct Entry {
@@ -63,6 +67,7 @@ private:
   };
 
 private:
+  void pushTextTokenIfNotEmpty(std::list<MetatagExpression::Token> &token_list, int position, UnicodeString &text_value) const;
   std::list<Token> tokenize(const UnicodeString &expression_text) const;
 
 private:
