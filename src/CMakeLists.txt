@@ -71,6 +71,9 @@ set (LIBS ${LIBS} FilteringFileIterator)
 add_library (Metatag "Metatag.cpp")
 set (LIBS ${LIBS} Metatag)
 
+add_library (Tokenizer "Tokenizer.cpp")
+set (LIBS ${LIBS} Tokenizer)
+
 add_library (MetatagExpression "MetatagExpressionTokenizer.cpp" "MetatagExpression.cpp")
 set (LIBS ${LIBS} MetatagExpression)
 
