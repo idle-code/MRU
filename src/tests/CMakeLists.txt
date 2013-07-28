@@ -45,6 +45,10 @@ add_test (BoostOutput_test BoostOutput_test)
 #target_link_libraries (MetatagExpressionParser_test ${LIBS})
 #add_test (MetatagExpressionParser_test MetatagExpressionParser_test)
 
+add_executable (Tokenizer_test "Tokenizer_tests.cpp")
+target_link_libraries (Tokenizer_test ${LIBS})
+add_test (Tokenizer_test Tokenizer_test)
+
 add_executable (MetatagExpressionTokenizer_test "MetatagExpressionTokenizer_test.cpp")
 target_link_libraries (MetatagExpressionTokenizer_test ${LIBS})
 add_test (MetatagExpressionTokenizer_test MetatagExpressionTokenizer_test)
