@@ -71,7 +71,7 @@ set (LIBS ${LIBS} FilteringFileIterator)
 add_library (Metatag "Metatag.cpp")
 set (LIBS ${LIBS} Metatag)
 
-add_library (MetatagExpression "MetatagExpression.cpp")
+add_library (MetatagExpression "MetatagExpressionTokenizer.cpp" "MetatagExpression.cpp")
 set (LIBS ${LIBS} MetatagExpression)
 
 add_executable (mru "main.cpp" "MruCore.cpp")

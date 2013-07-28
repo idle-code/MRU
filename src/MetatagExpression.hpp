@@ -6,6 +6,7 @@
 #include <stdexcept>
 
 class MetatagExpression_tests; //forward declaration for tests
+class MetatagExpressionTokenizer_tests; //forward declaration for tests
 
 namespace mru
 {
@@ -26,7 +27,8 @@ public:
   friend class DeclarationIterator;
   class DeclarationIterator;
 
-  friend class MetatagExpression_tests;
+  friend class ::MetatagExpression_tests;
+  friend class ::MetatagExpressionTokenizer_tests;
 public:
   MetatagExpression(void);
   MetatagExpression(const UnicodeString &expression_text);
@@ -37,23 +39,43 @@ public:
   bool isValid(void) const;
 
 private:
-  struct Token {
-    typedef enum {
-      Text,
-      MetatagStart,
-      ArgumentListStart,
-      ArgumentListEnd,
-      AreaOfEffectStart,
-      AreaOfEffectEnd,
-      EscapeSequence
-    } TokenKind;
+  class Tokenizer {
+  public:
+    class Token {
+    public:
+      typedef UChar TokenKind;
+      static const TokenKind Text = UChar('\0');
+      static const TokenKind MetatagStart = UChar('%');
+      static const TokenKind ArgumentListStart = UChar('(');
+      static const TokenKind ArgumentListEnd = UChar(')');
+      static const TokenKind AreaOfEffectStart = UChar('{');
+      static const TokenKind AreaOfEffectEnd = UChar('}');
+      static const TokenKind EscapeSequence = UChar('\\'); 
 
-    int position;
-    UnicodeString value;
-    TokenKind type;
+    public:
+      static TokenKind specifyCharacterType(UChar character);
+      Token(int position, const UnicodeString &value, TokenKind type);
 
-    Token(void);
-    Token(int position, const UnicodeString &value, TokenKind type);
+    public:
+      int position;
+      UnicodeString value;
+      TokenKind type;
+    };
+
+    friend class ::MetatagExpressionTokenizer_tests;
+
+  public:
+    Tokenizer(void);
+    Tokenizer(const UnicodeString &expression_text);
+    const std::list<Token>& tokenize(const UnicodeString &expression_text);
+    const std::list<Token>& getTokens(void) const;
+
+  private:
+    void pushToken(UnicodeString &text_value, int offset = 0);
+    void pushToken(Token::TokenKind type, int offset = 0);
+
+    std::list<Token> token_list;
+    int position_in_expression;
   };
 
   struct Entry {
@@ -67,13 +89,11 @@ private:
   };
 
 private:
-  void pushTextTokenIfNotEmpty(std::list<MetatagExpression::Token> &token_list, int position, UnicodeString &text_value) const;
-  std::list<Token> tokenize(const UnicodeString &expression_text) const;
-
-private:
-  std::list<Token> tokens;
+  Tokenizer tokenizer;
   Entry::Pointer root_entry;
 };
+
+/* ------------------------------------------------------------------------- */
 
 } /* namespace mru */
 
