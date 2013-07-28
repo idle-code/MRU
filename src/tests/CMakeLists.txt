@@ -41,9 +41,6 @@ target_link_libraries (BoostOutput_test ${LIBS})
 add_test (BoostOutput_test BoostOutput_test)
 
 #MetatagExpression tests:
-#add_executable (MetatagExpressionParser_test "MetatagExpressionParser_test.cpp")
-#target_link_libraries (MetatagExpressionParser_test ${LIBS})
-#add_test (MetatagExpressionParser_test MetatagExpressionParser_test)
 
 add_executable (Tokenizer_test "Tokenizer_tests.cpp")
 target_link_libraries (Tokenizer_test ${LIBS})
@@ -53,9 +50,13 @@ add_executable (MetatagExpressionTokenizer_test "MetatagExpressionTokenizer_test
 target_link_libraries (MetatagExpressionTokenizer_test ${LIBS})
 add_test (MetatagExpressionTokenizer_test MetatagExpressionTokenizer_test)
 
-add_executable (MetatagExpression_test "MetatagExpression_test.cpp")
-target_link_libraries (MetatagExpression_test ${LIBS})
-add_test (MetatagExpression_test MetatagExpression_test)
+add_executable (MetatagExpressionLexer_test "MetatagExpressionLexer_test.cpp")
+target_link_libraries (MetatagExpressionLexer_test ${LIBS} MetatagExpressionTokenizer)
+add_test (MetatagExpressionLexer_test MetatagExpressionLexer_test)
+
+#add_executable (MetatagExpression_test "MetatagExpression_test.cpp")
+#target_link_libraries (MetatagExpression_test ${LIBS})
+#add_test (MetatagExpression_test MetatagExpression_test)
 
 # Other:
 
