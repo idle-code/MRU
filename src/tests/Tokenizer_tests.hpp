@@ -26,6 +26,10 @@ public:
   void escape_sequence(void);
   void constant_size(void);
 
+  void static_join(void);
+  void join(void);
+  void get_words(void);
+
   CPPUNIT_TEST_SUITE(Tokenizer_tests);
     CPPUNIT_TEST(no_split);
     CPPUNIT_TEST(split_left);
@@ -38,17 +42,20 @@ public:
 
     CPPUNIT_TEST(escape_sequence);
     CPPUNIT_TEST(constant_size);
+
+    CPPUNIT_TEST(static_join);
+    CPPUNIT_TEST(join);
+    CPPUNIT_TEST(get_words);
   CPPUNIT_TEST_SUITE_END();
 
 private:
   UnicodeString expr_str;
-  typedef std::list<UnicodeString> TokenList;
-  Tokenizer::TokenList expected_tokens;
-  void compare_token_lists(const Tokenizer::TokenList &provided_tokens);
+  Tokenizer::WordList expected_words;
+  void compare_word_lists(const Tokenizer::WordList &provided_words);
 };
 
-#define TOKEN(VAL) \
-  expected_tokens.push_back(glue_cast<UnicodeString>(VAL));
+#define WORD(VAL) \
+  expected_words.push_back(glue_cast<UnicodeString>(VAL));
 
 #endif /* TOKENIZER_TESTS_HPP */
 

@@ -65,21 +65,24 @@ set (LIBS ${LIBS} SortingFileIterator)
 add_library (FilteringFileIterator "FilteringFileIterator.cpp")
 set (LIBS ${LIBS} FilteringFileIterator)
 
-#add_library (MetatagExpressionParser "MetatagExpressionParser.cpp")
-#set (LIBS ${LIBS} MetatagExpressionParser)
-
 add_library (Metatag "Metatag.cpp")
 set (LIBS ${LIBS} Metatag)
 
 add_library (Tokenizer "Tokenizer.cpp")
-set (LIBS ${LIBS} Tokenizer)
+set (LIBS Tokenizer ${LIBS} )
 
-add_library (MetatagExpression "MetatagExpressionTokenizer.cpp" "MetatagExpression.cpp")
-set (LIBS ${LIBS} MetatagExpression)
+add_library (MetatagExpressionTokenizer "MetatagExpressionTokenizer.cpp")
+set (LIBS MetatagExpressionTokenizer ${LIBS})
 
-add_executable (mru "main.cpp" "MruCore.cpp")
-target_link_libraries (mru ${LIBS} ${CMAKE_DL_LIBS})
-set_target_properties (mru PROPERTIES ENABLE_EXPORTS TRUE)
+add_library (MetatagExpressionLexer "MetatagExpressionLexer.cpp")
+set (LIBS MetatagExpressionLexer ${LIBS})
+
+add_library (MetatagExpression "MetatagExpression.cpp")
+set (LIBS MetatagExpression ${LIBS})
+
+#add_executable (mru "main.cpp" "MruCore.cpp")
+#target_link_libraries (mru ${LIBS} ${CMAKE_DL_LIBS})
+#set_target_properties (mru PROPERTIES ENABLE_EXPORTS TRUE)
 
 add_subdirectory ("tests")
 

@@ -8,22 +8,22 @@ void
 Tokenizer_tests::setUp(void)
 {
   expr_str = UnicodeString();
-  expected_tokens.clear();
+  expected_words.clear();
 }
 
 void
-Tokenizer_tests::compare_token_lists(const TokenList &provided_tokens)
+Tokenizer_tests::compare_word_lists(const Tokenizer::WordList &provided_words)
 {
-  TokenList::const_iterator eti = expected_tokens.begin();
-  TokenList::const_iterator ti = provided_tokens.begin();
+  Tokenizer::WordList::const_iterator eti = expected_words.begin();
+  Tokenizer::WordList::const_iterator ti = provided_words.begin();
 
-  for(; eti != expected_tokens.end() && ti != provided_tokens.end(); ++eti, ++ti) {
+  for(; eti != expected_words.end() && ti != provided_words.end(); ++eti, ++ti) {
     //std::cout << "'" << *eti << "' == '" << *ti << "'" << std::endl;
     CPPUNIT_ASSERT_EQUAL(*eti, *ti);
   }
 
-  CPPUNIT_ASSERT(eti == expected_tokens.end());
-  CPPUNIT_ASSERT(ti == provided_tokens.end());
+  CPPUNIT_ASSERT(eti == expected_words.end());
+  CPPUNIT_ASSERT(ti == provided_words.end());
 }
 
 /* ------------------------------------------------------------------------- */
@@ -42,12 +42,12 @@ Tokenizer_tests::no_split(void)
 {
   expr_str = glue_cast<UnicodeString>("ab|cd");
 
-  TOKEN("ab|cd");
+  WORD("ab|cd");
 
   NotSplitingTokenizer tokenizer;
-  const Tokenizer::TokenList &tokens = tokenizer.tokenize(expr_str);
+  const Tokenizer::WordList &words = tokenizer.tokenize(expr_str);
 
-  compare_token_lists(tokens);
+  compare_word_lists(words);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -68,13 +68,13 @@ Tokenizer_tests::split_left(void)
 {
   expr_str = glue_cast<UnicodeString>("ab|cd");
 
-  TOKEN("ab");
-  TOKEN("|cd");
+  WORD("ab");
+  WORD("|cd");
 
   LeftSplitingTokenizer tokenizer;
-  const Tokenizer::TokenList &tokens = tokenizer.tokenize(expr_str);
+  const Tokenizer::WordList &words = tokenizer.tokenize(expr_str);
 
-  compare_token_lists(tokens);
+  compare_word_lists(words);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -95,13 +95,13 @@ Tokenizer_tests::split_right(void)
 {
   expr_str = glue_cast<UnicodeString>("ab|cd");
 
-  TOKEN("ab|");
-  TOKEN("cd");
+  WORD("ab|");
+  WORD("cd");
 
   RightSplitingTokenizer tokenizer;
-  const Tokenizer::TokenList &tokens = tokenizer.tokenize(expr_str);
+  const Tokenizer::WordList &words = tokenizer.tokenize(expr_str);
 
-  compare_token_lists(tokens);
+  compare_word_lists(words);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -122,14 +122,14 @@ Tokenizer_tests::split_both(void)
 {
   expr_str = glue_cast<UnicodeString>("ab|cd");
 
-  TOKEN("ab");
-  TOKEN("|");
-  TOKEN("cd");
+  WORD("ab");
+  WORD("|");
+  WORD("cd");
 
   BothSplitingTokenizer tokenizer;
-  const Tokenizer::TokenList &tokens = tokenizer.tokenize(expr_str);
+  const Tokenizer::WordList &words = tokenizer.tokenize(expr_str);
 
-  compare_token_lists(tokens);
+  compare_word_lists(words);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -146,11 +146,11 @@ public:
   }
 
   void
-  addToken(const UnicodeString &token_text)
+  addWord(const UnicodeString &word_text)
   {
-    UnicodeString new_token_text = token_text;
-    new_token_text.trim();
-    mru::Tokenizer::addToken(new_token_text);
+    UnicodeString new_word_text = word_text;
+    new_word_text.trim();
+    mru::Tokenizer::addWord(new_word_text);
   }
 };
 
@@ -159,15 +159,15 @@ Tokenizer_tests::space_strip(void)
 {
   expr_str = glue_cast<UnicodeString>("aa b  cc  dd");
 
-  TOKEN("aa");
-  TOKEN("b");
-  TOKEN("cc");
-  TOKEN("dd");
+  WORD("aa");
+  WORD("b");
+  WORD("cc");
+  WORD("dd");
 
   SpaceStripingTokenizer tokenizer;
-  const Tokenizer::TokenList &tokens = tokenizer.tokenize(expr_str);
+  const Tokenizer::WordList &words = tokenizer.tokenize(expr_str);
 
-  compare_token_lists(tokens);
+  compare_word_lists(words);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -203,18 +203,18 @@ Tokenizer_tests::space_merge(void)
 {
   expr_str = glue_cast<UnicodeString>("aa b  cc  dd");
 
-  TOKEN("aa");
-  TOKEN(" ");
-  TOKEN("b");
-  TOKEN("  ");
-  TOKEN("cc");
-  TOKEN("  ");
-  TOKEN("dd");
+  WORD("aa");
+  WORD(" ");
+  WORD("b");
+  WORD("  ");
+  WORD("cc");
+  WORD("  ");
+  WORD("dd");
 
   SpaceMergingTokenizer tokenizer;
-  const Tokenizer::TokenList &tokens = tokenizer.tokenize(expr_str);
+  const Tokenizer::WordList &words = tokenizer.tokenize(expr_str);
 
-  compare_token_lists(tokens);
+  compare_word_lists(words);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -222,12 +222,12 @@ Tokenizer_tests::space_merge(void)
 class SpaceTrimingTokenizer : public SpaceMergingTokenizer {
 public:
   void
-  addToken(const UnicodeString &token_text)
+  addWord(const UnicodeString &word_text)
   {
-    if (isWhitespace(token_text))
-      mru::Tokenizer::addToken(UChar(' '));
+    if (isWhitespace(word_text))
+      mru::Tokenizer::addWord(UChar(' '));
     else
-      mru::Tokenizer::addToken(token_text);
+      mru::Tokenizer::addWord(word_text);
   }
 
 private:
@@ -248,18 +248,18 @@ Tokenizer_tests::space_trimming(void)
 {
   expr_str = glue_cast<UnicodeString>("aa b  cc  dd");
 
-  TOKEN("aa");
-  TOKEN(" ");
-  TOKEN("b");
-  TOKEN(" ");
-  TOKEN("cc");
-  TOKEN(" ");
-  TOKEN("dd");
+  WORD("aa");
+  WORD(" ");
+  WORD("b");
+  WORD(" ");
+  WORD("cc");
+  WORD(" ");
+  WORD("dd");
 
   SpaceTrimingTokenizer tokenizer;
-  const Tokenizer::TokenList &tokens = tokenizer.tokenize(expr_str);
+  const Tokenizer::WordList &words = tokenizer.tokenize(expr_str);
 
-  compare_token_lists(tokens);
+  compare_word_lists(words);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -293,14 +293,14 @@ Tokenizer_tests::escape_sequence(void)
 {
   expr_str = glue_cast<UnicodeString>("ab|cd\\|ef");
 
-  TOKEN("ab");
-  TOKEN("|");
-  TOKEN("cd|ef");
+  WORD("ab");
+  WORD("|");
+  WORD("cd|ef");
 
   EscapeSequenceTokenizer tokenizer;
-  const Tokenizer::TokenList &tokens = tokenizer.tokenize(expr_str);
+  const Tokenizer::WordList &words = tokenizer.tokenize(expr_str);
 
-  compare_token_lists(tokens);
+  compare_word_lists(words);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -330,15 +330,49 @@ Tokenizer_tests::constant_size(void)
 {
   expr_str = glue_cast<UnicodeString>("abc123def456");
 
-  TOKEN("abc");
-  TOKEN("123");
-  TOKEN("def");
-  TOKEN("456");
+  WORD("abc");
+  WORD("123");
+  WORD("def");
+  WORD("456");
 
   ConstantSizeTokenizer tokenizer(3);
-  const Tokenizer::TokenList &tokens = tokenizer.tokenize(expr_str);
+  const Tokenizer::WordList &words = tokenizer.tokenize(expr_str);
 
-  compare_token_lists(tokens);
+  compare_word_lists(words);
+}
+
+/* ------------------------------------------------------------------------- */
+
+void
+Tokenizer_tests::static_join(void)
+{
+  expr_str = glue_cast<UnicodeString>("ab|cd");
+  BothSplitingTokenizer tokenizer;
+  const Tokenizer::WordList &words = tokenizer.tokenize(expr_str);
+
+  CPPUNIT_ASSERT_EQUAL(expr_str, Tokenizer::joinWords(words));
+}
+
+void
+Tokenizer_tests::join(void)
+{
+  expr_str = glue_cast<UnicodeString>("ab|cd");
+  BothSplitingTokenizer tokenizer;
+  const Tokenizer::WordList &words = tokenizer.tokenize(expr_str);
+
+  CPPUNIT_ASSERT_EQUAL(expr_str, tokenizer.joinWords(words));
+}
+
+void
+Tokenizer_tests::get_words(void)
+{
+  expr_str = glue_cast<UnicodeString>("ab|cd");
+  BothSplitingTokenizer tokenizer;
+  const Tokenizer::WordList &words = tokenizer.tokenize(expr_str);
+
+  expected_words = words;
+
+  compare_word_lists(words);
 }
 
 /* ------------------------------------------------------------------------- */
