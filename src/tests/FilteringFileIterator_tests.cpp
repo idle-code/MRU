@@ -1,4 +1,4 @@
-#include "FilteringFileIterator_test.hpp"
+#include "FilteringFileIterator_tests.hpp"
 #include <cppunit/ui/text/TestRunner.h>
 
 #define FILTER_PREDICATE(Name, BODY) \

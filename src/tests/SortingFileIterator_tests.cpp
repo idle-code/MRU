@@ -1,4 +1,4 @@
-#include "SortingFileIterator_test.hpp"
+#include "SortingFileIterator_tests.hpp"
 #include <cppunit/ui/text/TestRunner.h>
 
 #define SORT_COMPARATOR(Name, BODY) \

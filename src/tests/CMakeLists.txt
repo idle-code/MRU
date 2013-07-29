@@ -14,53 +14,57 @@ add_definitions (-DSINGLE_TEST_MODE)
 add_library (MockFileIterator "MockFileIterator.cpp")
 target_link_libraries (MockFileIterator FileIterator)
 
-add_executable (FilteringFileIterator_test "FilteringFileIterator_test.cpp")
-target_link_libraries (FilteringFileIterator_test FilteringFileIterator MockFileIterator ${LIBS})
-add_test (FilteringFileIterator_test FilteringFileIterator_test)
+add_executable (FilteringFileIterator_tests "FilteringFileIterator_tests.cpp")
+target_link_libraries (FilteringFileIterator_tests FilteringFileIterator MockFileIterator ${LIBS})
+add_test (FilteringFileIterator_tests FilteringFileIterator_tests)
 
-add_executable (SortingFileIterator_test "SortingFileIterator_test.cpp")
-target_link_libraries (SortingFileIterator_test SortingFileIterator MockFileIterator ${LIBS})
-add_test (SortingFileIterator_test SortingFileIterator_test)
+add_executable (SortingFileIterator_tests "SortingFileIterator_tests.cpp")
+target_link_libraries (SortingFileIterator_tests SortingFileIterator MockFileIterator ${LIBS})
+add_test (SortingFileIterator_tests SortingFileIterator_tests)
 
 # InputPlugin tests:
-add_executable (BoostInput_test "BoostInput_test.cpp" "InputPlugin_test.cpp")
-target_link_libraries (BoostInput_test BoostInputShared)
-target_link_libraries (BoostInput_test ${LIBS})
-add_test (BoostInput_test BoostInput_test)
+add_executable (BoostInput_tests "BoostInput_tests.cpp" "InputPlugin_tests.cpp")
+target_link_libraries (BoostInput_tests BoostInputShared)
+target_link_libraries (BoostInput_tests ${LIBS})
+add_test (BoostInput_tests BoostInput_tests)
 
 # OutputPlugin tests:
 add_library (MockOutput "MockOutput.cpp")
-add_executable (MockOutput_test "MockOutput_test.cpp" "OutputPlugin_common_test.cpp" "OutputPlugin_move_test.cpp" "OutputPlugin_copy_test.cpp" "OutputPlugin_link_test.cpp")
-target_link_libraries (MockOutput_test MockOutput)
-target_link_libraries (MockOutput_test ${LIBS})
-add_test (MockOutput_test MockOutput_test)
+add_executable (MockOutput_tests "MockOutput_tests.cpp" "OutputPlugin_common_tests.cpp" "OutputPlugin_move_tests.cpp" "OutputPlugin_copy_tests.cpp" "OutputPlugin_link_tests.cpp")
+target_link_libraries (MockOutput_tests MockOutput)
+target_link_libraries (MockOutput_tests ${LIBS})
+add_test (MockOutput_tests MockOutput_tests)
 
-add_executable (BoostOutput_test "BoostOutput_test.cpp" "OutputPlugin_common_test.cpp" "OutputPlugin_move_test.cpp" "OutputPlugin_copy_test.cpp" "OutputPlugin_link_test.cpp")
-target_link_libraries (BoostOutput_test BoostOutputShared)
-target_link_libraries (BoostOutput_test ${LIBS})
-add_test (BoostOutput_test BoostOutput_test)
+add_executable (BoostOutput_tests "BoostOutput_tests.cpp" "OutputPlugin_common_tests.cpp" "OutputPlugin_move_tests.cpp" "OutputPlugin_copy_tests.cpp" "OutputPlugin_link_tests.cpp")
+target_link_libraries (BoostOutput_tests BoostOutputShared)
+target_link_libraries (BoostOutput_tests ${LIBS})
+add_test (BoostOutput_tests BoostOutput_tests)
 
 #MetatagExpression tests:
 
-add_executable (Tokenizer_test "Tokenizer_tests.cpp")
-target_link_libraries (Tokenizer_test ${LIBS})
-add_test (Tokenizer_test Tokenizer_test)
+add_executable (Tokenizer_tests "Tokenizer_tests.cpp")
+target_link_libraries (Tokenizer_tests ${LIBS})
+add_test (Tokenizer_tests Tokenizer_tests)
 
-add_executable (MetatagExpressionTokenizer_test "MetatagExpressionTokenizer_test.cpp")
-target_link_libraries (MetatagExpressionTokenizer_test ${LIBS})
-add_test (MetatagExpressionTokenizer_test MetatagExpressionTokenizer_test)
+add_executable (MetatagExpressionTokenizer_tests "MetatagExpressionTokenizer_tests.cpp")
+target_link_libraries (MetatagExpressionTokenizer_tests ${LIBS})
+add_test (MetatagExpressionTokenizer_tests MetatagExpressionTokenizer_tests)
 
-add_executable (MetatagExpressionLexer_test "MetatagExpressionLexer_test.cpp")
-target_link_libraries (MetatagExpressionLexer_test ${LIBS} MetatagExpressionTokenizer)
-add_test (MetatagExpressionLexer_test MetatagExpressionLexer_test)
+add_executable (MetatagExpressionLexer_tests "MetatagExpressionLexer_tests.cpp")
+target_link_libraries (MetatagExpressionLexer_tests ${LIBS} MetatagExpressionTokenizer)
+add_test (MetatagExpressionLexer_tests MetatagExpressionLexer_tests)
 
-#add_executable (MetatagExpression_test "MetatagExpression_test.cpp")
-#target_link_libraries (MetatagExpression_test ${LIBS})
-#add_test (MetatagExpression_test MetatagExpression_test)
+add_executable (MetatagExpressionParser_tests "MetatagExpressionParser_tests.cpp")
+target_link_libraries (MetatagExpressionParser_tests ${LIBS} MetatagExpressionTokenizer)
+add_test (MetatagExpressionParser_tests MetatagExpressionParser_tests)
+
+#add_executable (MetatagExpression_tests "MetatagExpression_tests.cpp")
+#target_link_libraries (MetatagExpression_tests ${LIBS})
+#add_test (MetatagExpression_tests MetatagExpression_tests)
 
 # Other:
 
-add_executable (glue_test "glue_test.cpp")
-target_link_libraries (glue_test ${LIBS})
-add_test (gluw_test glue_test)
+add_executable (glue_tests "glue_tests.cpp")
+target_link_libraries (glue_tests ${LIBS})
+add_test (glue_tests glue_tests)
 

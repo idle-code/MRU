@@ -1,5 +1,4 @@
-
-#include "OutputPlugin_test.hpp"
+#include "OutputPlugin_tests.hpp"
 #include "MockOutput.hpp"
 #include <cppunit/ui/text/TestRunner.h>
 

@@ -1,5 +1,5 @@
 #include "UnicodeStringStreamOperator.hpp"
-#include "MetatagExpressionLexer_test.hpp"
+#include "MetatagExpressionLexer_tests.hpp"
 #include "glue.hpp"
 
 void

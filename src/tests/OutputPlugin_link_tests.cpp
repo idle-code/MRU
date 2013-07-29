@@ -1,4 +1,4 @@
-#include "OutputPlugin_test.hpp"
+#include "OutputPlugin_tests.hpp"
 
 void
 OutputPlugin_tests::link_target_exists(void)
