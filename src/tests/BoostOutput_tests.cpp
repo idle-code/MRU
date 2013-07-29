@@ -1,4 +1,4 @@
-#include "OutputPlugin_test.hpp"
+#include "OutputPlugin_tests.hpp"
 #include "plugins/output/BoostOutput/BoostOutput.hpp"
 #include <cppunit/ui/text/TestRunner.h>
 

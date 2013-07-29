@@ -1,4 +1,4 @@
-#include "glue_test.hpp"
+#include "glue_tests.hpp"
 #include <debug_l.h>
 
 #define TEST_TEXT "C:/foo/bar//some_other_directory/Spam.txt.xml"

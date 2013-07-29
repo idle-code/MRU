@@ -1,4 +1,4 @@
-#include "InputPlugin_test.hpp"
+#include "InputPlugin_tests.hpp"
 #include "SortingFileIterator.hpp"
 
 InputPlugin_tests::InputPlugin_tests(void)

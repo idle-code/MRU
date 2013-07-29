@@ -1,4 +1,4 @@
-#include "InputPlugin_test.hpp"
+#include "InputPlugin_tests.hpp"
 #include "plugins/input/BoostInput/BoostInput.hpp"
 #include <cppunit/ui/text/TestRunner.h>
 

@@ -1,4 +1,4 @@
-#include "OutputPlugin_test.hpp"
+#include "OutputPlugin_tests.hpp"
 
 OutputPlugin_tests::OutputPlugin_tests(void)
   : output_plugin(NULL)
