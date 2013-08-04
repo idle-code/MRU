@@ -13,7 +13,7 @@ public:
 public:
   MockFileIterator(const std::list<FilePath> &a_list);
 
-  FilePath getFilePath(void) const;
+  FilePath getCurrent(void) const;
   void first(void);
   bool next(void);
   bool atEnd(void) const;

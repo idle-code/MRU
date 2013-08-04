@@ -10,7 +10,7 @@ MockFileIterator::MockFileIterator(const std::list<FilePath> &list)
 }
 
 FilePath
-MockFileIterator::getFilePath(void) const
+MockFileIterator::getCurrent(void) const
 {
   assert(!atEnd());
   return *iterator;

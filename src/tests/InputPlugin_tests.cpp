@@ -95,12 +95,12 @@ InputPlugin_tests::flat_files(void)
   CPPUNIT_ASSERT(file_iterator != NULL);
   file_iterator = SortingFileIterator::wrap(file_iterator, new SimpleComparer());
   CPPUNIT_ASSERT(file_iterator != NULL);
-  
+ 
   CPPUNIT_ASSERT(!file_iterator->atEnd());
   i = file_list.begin();
   for(; !file_iterator->atEnd() && i != file_list.end(); file_iterator->next(), ++i) {
     CPPUNIT_ASSERT(i != file_list.end());
-    CPPUNIT_ASSERT_EQUAL(*i, file_iterator->getFilePath());
+    CPPUNIT_ASSERT_EQUAL(*i, file_iterator->getCurrent());
   }
   CPPUNIT_ASSERT(i == file_list.end());
   CPPUNIT_ASSERT(file_iterator->atEnd());
@@ -131,7 +131,7 @@ InputPlugin_tests::flat_directories(void)
   i = dir_list.begin();
   for(; !file_iterator->atEnd() && i != dir_list.end(); file_iterator->next(), ++i) {
     CPPUNIT_ASSERT(i != dir_list.end());
-    CPPUNIT_ASSERT_EQUAL(*i, file_iterator->getFilePath());
+    CPPUNIT_ASSERT_EQUAL(*i, file_iterator->getCurrent());
   }
   CPPUNIT_ASSERT(i == dir_list.end());
   CPPUNIT_ASSERT(file_iterator->atEnd());
@@ -173,7 +173,7 @@ InputPlugin_tests::recursive_files(void)
   i = file_list.begin();
   for(; !file_iterator->atEnd() && i != file_list.end(); file_iterator->next(), ++i) {
     CPPUNIT_ASSERT(i != file_list.end());
-    CPPUNIT_ASSERT_EQUAL(*i, file_iterator->getFilePath());
+    CPPUNIT_ASSERT_EQUAL(*i, file_iterator->getCurrent());
   }
   CPPUNIT_ASSERT(i == file_list.end());
   CPPUNIT_ASSERT(file_iterator->atEnd());
@@ -207,7 +207,7 @@ InputPlugin_tests::recursive_directories(void)
   i = dir_list.begin();
   for(; !file_iterator->atEnd() && i != dir_list.end(); file_iterator->next(), ++i) {
     CPPUNIT_ASSERT(i != dir_list.end());
-    CPPUNIT_ASSERT_EQUAL(*i, file_iterator->getFilePath());
+    CPPUNIT_ASSERT_EQUAL(*i, file_iterator->getCurrent());
   }
   CPPUNIT_ASSERT(i == dir_list.end());
   CPPUNIT_ASSERT(file_iterator->atEnd());

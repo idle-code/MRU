@@ -13,7 +13,7 @@ public:
     first();
   }
 
-  FilePath getFilePath(void) const
+  FilePath getCurrent(void) const
   {
     assert(!atEnd());
     return bfs::canonical(m_iterator->path());

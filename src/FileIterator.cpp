@@ -7,19 +7,15 @@
 namespace mru
 {
 
-FileIterator::~FileIterator(void)
-{ } 
-
-/* ------------------------------------------------------------------------- */
-
 FileIteratorDecorator::FileIteratorDecorator(FileIterator::Pointer instance)
   : instance(instance)
 { }
 
-FilePath FileIteratorDecorator::getFilePath(void) const
+FilePath
+FileIteratorDecorator::getCurrent(void) const
 {
   assert(instance);
-  return instance->getFilePath();
+  return instance->getCurrent();
 }
 
 void
