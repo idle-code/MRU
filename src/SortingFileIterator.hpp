@@ -21,7 +21,7 @@ public:
 public:
   SortingFileIterator(FileIterator::Pointer a_iterator, boost::shared_ptr<SortComparator> &a_comparator);
 
-  FilePath getFilePath(void) const;
+  FilePath getCurrent(void) const;
   void first(void);
   bool next(void);
   bool atEnd(void) const;

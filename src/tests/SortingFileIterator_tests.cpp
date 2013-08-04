@@ -56,7 +56,7 @@ SortingIterator_test::no_sort(void)
   std::list<FilePath>::iterator i = files.begin();
   for(; !iter->atEnd() && i != files.end(); iter->next(), ++i) {
     CPPUNIT_ASSERT(i != files.end());
-    CPPUNIT_ASSERT_EQUAL(*i, iter->getFilePath());
+    CPPUNIT_ASSERT_EQUAL(*i, iter->getCurrent());
   }
   CPPUNIT_ASSERT(i == files.end());
   CPPUNIT_ASSERT(iter->atEnd());
@@ -67,7 +67,7 @@ SortingIterator_test::no_sort(void)
   i = files.begin();
   do {
     CPPUNIT_ASSERT(i != files.end());
-    CPPUNIT_ASSERT_EQUAL(*i, iter->getFilePath());
+    CPPUNIT_ASSERT_EQUAL(*i, iter->getCurrent());
     ++i;
   } while(iter->next() && i != files.end());
   CPPUNIT_ASSERT(i == files.end());
@@ -105,7 +105,7 @@ SortingIterator_test::descending_sort(void)
   std::list<FilePath>::iterator i = sorted_files.begin();
   for(; !iter->atEnd() && i != sorted_files.end(); iter->next(), ++i) {
     CPPUNIT_ASSERT(i != sorted_files.end());
-    CPPUNIT_ASSERT_EQUAL(*i, iter->getFilePath());
+    CPPUNIT_ASSERT_EQUAL(*i, iter->getCurrent());
   }
   CPPUNIT_ASSERT(i == sorted_files.end());
   CPPUNIT_ASSERT(iter->atEnd());
@@ -116,7 +116,7 @@ SortingIterator_test::descending_sort(void)
   i = sorted_files.begin();
   do {
     CPPUNIT_ASSERT(i != sorted_files.end());
-    CPPUNIT_ASSERT_EQUAL(*i, iter->getFilePath());
+    CPPUNIT_ASSERT_EQUAL(*i, iter->getCurrent());
     ++i;
   } while(iter->next() && i != sorted_files.end());
   CPPUNIT_ASSERT(i == sorted_files.end());
@@ -154,7 +154,7 @@ SortingIterator_test::ascending_sort(void)
   std::list<FilePath>::iterator i = sorted_files.begin();
   for(; !iter->atEnd() && i != sorted_files.end(); iter->next(), ++i) {
     CPPUNIT_ASSERT(i != sorted_files.end());
-    CPPUNIT_ASSERT_EQUAL(*i, iter->getFilePath());
+    CPPUNIT_ASSERT_EQUAL(*i, iter->getCurrent());
   }
   CPPUNIT_ASSERT(i == sorted_files.end());
   CPPUNIT_ASSERT(iter->atEnd());
@@ -165,7 +165,7 @@ SortingIterator_test::ascending_sort(void)
   i = sorted_files.begin();
   do {
     CPPUNIT_ASSERT(i != sorted_files.end());
-    CPPUNIT_ASSERT_EQUAL(*i, iter->getFilePath());
+    CPPUNIT_ASSERT_EQUAL(*i, iter->getCurrent());
     ++i;
   } while(iter->next() && i != sorted_files.end());
   CPPUNIT_ASSERT(i == sorted_files.end());
@@ -210,7 +210,7 @@ SortingIterator_test::length_sort(void)
   std::list<FilePath>::iterator i = sorted_files.begin();
   for(; !iter->atEnd() && i != sorted_files.end(); iter->next(), ++i) {
     CPPUNIT_ASSERT(i != sorted_files.end());
-    CPPUNIT_ASSERT_EQUAL(*i, iter->getFilePath());
+    CPPUNIT_ASSERT_EQUAL(*i, iter->getCurrent());
   }
   CPPUNIT_ASSERT(i == sorted_files.end());
   CPPUNIT_ASSERT(iter->atEnd());
@@ -221,7 +221,7 @@ SortingIterator_test::length_sort(void)
   i = sorted_files.begin();
   do {
     CPPUNIT_ASSERT(i != sorted_files.end());
-    CPPUNIT_ASSERT_EQUAL(*i, iter->getFilePath());
+    CPPUNIT_ASSERT_EQUAL(*i, iter->getCurrent());
     ++i;
   } while(iter->next() && i != sorted_files.end());
   CPPUNIT_ASSERT(i == sorted_files.end());

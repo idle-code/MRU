@@ -56,7 +56,7 @@ FilteringIterator_test::true_predicate(void)
   std::list<FilePath>::iterator i = files.begin();
   for(; !iter->atEnd() && i != files.end(); iter->next(), ++i) {
     CPPUNIT_ASSERT(i != files.end());
-    CPPUNIT_ASSERT_EQUAL(*i, iter->getFilePath());
+    CPPUNIT_ASSERT_EQUAL(*i, iter->getCurrent());
   }
   CPPUNIT_ASSERT(i == files.end());
   CPPUNIT_ASSERT(iter->atEnd());
@@ -67,7 +67,7 @@ FilteringIterator_test::true_predicate(void)
   i = files.begin();
   do {
     CPPUNIT_ASSERT(i != files.end());
-    CPPUNIT_ASSERT_EQUAL(*i, iter->getFilePath());
+    CPPUNIT_ASSERT_EQUAL(*i, iter->getCurrent());
     ++i;
   } while(iter->next() && i != files.end());
   CPPUNIT_ASSERT(i == files.end());
@@ -109,7 +109,7 @@ FilteringIterator_test::filename_start_predicate(void)
   std::list<FilePath>::iterator i = files.begin();
   for(; !iter->atEnd() && i != files.end(); iter->next(), ++i) {
     CPPUNIT_ASSERT(i != files.end());
-    CPPUNIT_ASSERT_EQUAL(*i, iter->getFilePath());
+    CPPUNIT_ASSERT_EQUAL(*i, iter->getCurrent());
   }
   CPPUNIT_ASSERT(i == files.end());
   CPPUNIT_ASSERT(iter->atEnd());
@@ -120,7 +120,7 @@ FilteringIterator_test::filename_start_predicate(void)
   i = files.begin();
   do {
     CPPUNIT_ASSERT(i != files.end());
-    CPPUNIT_ASSERT_EQUAL(*i, iter->getFilePath());
+    CPPUNIT_ASSERT_EQUAL(*i, iter->getCurrent());
     ++i;
   } while(iter->next() && i != files.end());
   CPPUNIT_ASSERT(i == files.end());
@@ -148,7 +148,7 @@ FilteringIterator_test::extension_predicate(void)
   std::list<FilePath>::iterator i = files.begin();
   for(; !iter->atEnd() && i != files.end(); iter->next(), ++i) {
     CPPUNIT_ASSERT(i != files.end());
-    CPPUNIT_ASSERT_EQUAL(*i, iter->getFilePath());
+    CPPUNIT_ASSERT_EQUAL(*i, iter->getCurrent());
   }
   CPPUNIT_ASSERT(i == files.end());
   CPPUNIT_ASSERT(iter->atEnd());
@@ -159,7 +159,7 @@ FilteringIterator_test::extension_predicate(void)
   i = files.begin();
   do {
     CPPUNIT_ASSERT(i != files.end());
-    CPPUNIT_ASSERT_EQUAL(*i, iter->getFilePath());
+    CPPUNIT_ASSERT_EQUAL(*i, iter->getCurrent());
     ++i;
   } while(iter->next() && i != files.end());
   CPPUNIT_ASSERT(i == files.end());

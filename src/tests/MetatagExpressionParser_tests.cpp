@@ -6,8 +6,9 @@ void
 MetatagExpressionParser_tests::setUp(void)
 {
   expr_str = UnicodeString();
-  parser = MetatagExpressionParser();
+  //parser = MetatagExpressionParser();
   expected_expression_root.reset();
+  expected_expression_root = Parser::Entry::Pointer(new Parser::Entry(-1, "", ""));
   expression_root.reset();
 }
 
@@ -20,8 +21,25 @@ MetatagExpressionParser_tests::compare_entry_trees(const Parser::Entry::Pointer 
 void
 MetatagExpressionParser_tests::compare_entries(const Parser::Entry::Pointer expected_entry, const Parser::Entry::Pointer provided_entry) const
 {
-  CPPUNIT_ASSERT_EQUAL(bool(expected_entry), bool(provided_entry));
-  
+  CPPUNIT_ASSERT(bool(expected_entry));
+  CPPUNIT_ASSERT(bool(provided_entry));
+
+  CPPUNIT_ASSERT_EQUAL(expected_entry->position, provided_entry->position);
+  CPPUNIT_ASSERT_EQUAL(expected_entry->name, provided_entry->name);
+  CPPUNIT_ASSERT_EQUAL(expected_entry->arguments, provided_entry->arguments);
+  CPPUNIT_ASSERT_EQUAL(expected_entry->isAreaOfEffectMembersPresent(), provided_entry->isAreaOfEffectMembersPresent());
+
+  CPPUNIT_ASSERT_EQUAL(expected_entry->areaOfEffectMembers.size(), provided_entry->areaOfEffectMembers.size());
+
+  Parser::Entry::MemberList::const_iterator ei = expected_entry->areaOfEffectMembers.begin(); 
+  Parser::Entry::MemberList::const_iterator ei_end = expected_entry->areaOfEffectMembers.end(); 
+  Parser::Entry::MemberList::const_iterator pi = provided_entry->areaOfEffectMembers.begin(); 
+  Parser::Entry::MemberList::const_iterator pi_end = provided_entry->areaOfEffectMembers.end(); 
+  for(; ei != ei_end && pi != pi_end; ++ei, ++pi) {
+    compare_entries(*ei, *pi);
+  }
+  CPPUNIT_ASSERT(ei == ei_end);
+  CPPUNIT_ASSERT(pi == pi_end);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -41,6 +59,7 @@ MetatagExpressionParser_tests::static_expr(void)
 {
   expr_str = glue_cast<UnicodeString>("Text");
   
+  expected_expression_root->ADD_ENTRY(0, "", "Text");
 
   expression_root = parser.parse(expr_str);
 
@@ -50,8 +69,9 @@ MetatagExpressionParser_tests::static_expr(void)
 void
 MetatagExpressionParser_tests::flat_expr(void)
 {
-  expr_str = glue_cast<UnicodeString>("%Text(){}");
+  expr_str = glue_cast<UnicodeString>("%Text(");
 
+  expected_expression_root->ADD_ENTRY(0, "Text", "");
 
   expression_root = parser.parse(expr_str);
 

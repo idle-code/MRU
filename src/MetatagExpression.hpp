@@ -6,7 +6,6 @@
 #include <stdexcept>
 
 class MetatagExpression_tests; //forward declaration for tests
-class MetatagExpressionTokenizer_tests; //forward declaration for tests
 
 namespace mru
 {

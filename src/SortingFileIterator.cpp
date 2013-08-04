@@ -23,7 +23,7 @@ SortingFileIterator::SortingFileIterator(FileIterator::Pointer a_iterator, boost
 }
 
 FilePath
-SortingFileIterator::getFilePath(void) const
+SortingFileIterator::getCurrent(void) const
 {
   assert(!atEnd());
   return *m_iterator;
@@ -54,7 +54,7 @@ SortingFileIterator::first(void)
 
   FileIteratorDecorator::first(); 
   for(; !FileIteratorDecorator::atEnd(); FileIteratorDecorator::next()) {
-    m_sorted_list.push_back(FileIteratorDecorator::getFilePath());
+    m_sorted_list.push_back(FileIteratorDecorator::getCurrent());
   }
 
   m_sorted_list.sort(SortingFunctor(m_comparator));

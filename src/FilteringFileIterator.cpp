@@ -44,7 +44,7 @@ FilteringFileIterator::rewind(void)
 {
   assert(predicate);
   while (!atEnd() &&
-         !(*predicate)(getFilePath()))
+         !(*predicate)(getCurrent()))
   {
     FileIteratorDecorator::next();
   }

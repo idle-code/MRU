@@ -10,6 +10,10 @@ set (LIBS ${LIBS} MruPlugin)
 
 add_definitions (-DSINGLE_TEST_MODE)
 
+add_executable (StdIteratorAdapter_tests "StdIteratorAdapter_tests.cpp")
+target_link_libraries (StdIteratorAdapter_tests ${LIBS})
+add_test (StdIteratorAdapter_tests StdIteratorAdapter_tests)
+
 # File Iterators tests:
 add_library (MockFileIterator "MockFileIterator.cpp")
 target_link_libraries (MockFileIterator FileIterator)

@@ -20,10 +20,10 @@ public:
   void nested_expr(void);
 
   CPPUNIT_TEST_SUITE(MetatagExpressionParser_tests);
-    CPPUNIT_TEST(empty_expr);
-    CPPUNIT_TEST(static_expr);
+    //CPPUNIT_TEST(empty_expr);
+    //CPPUNIT_TEST(static_expr);
     CPPUNIT_TEST(flat_expr);
-    CPPUNIT_TEST(nested_expr);
+    //CPPUNIT_TEST(nested_expr);
   CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -36,6 +36,9 @@ private:
   void compare_entry_trees(const Parser::Entry::Pointer provided_expression_root) const;
   void compare_entries(const Parser::Entry::Pointer expected_entry, const Parser::Entry::Pointer provided_entry) const;
 };
+
+#define ADD_ENTRY(POS,NAME,ARGS) \
+  areaOfEffectMembers.push_back(Parser::Entry::Pointer(new Parser::Entry(POS,NAME,ARGS)))
 
 
 #endif /* METATAG_EXPRESSION_PARSER_TESTS_HPP */

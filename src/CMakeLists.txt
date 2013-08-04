@@ -57,13 +57,13 @@ include_directories ("plugins")
 #set (LIBS ${LIBS} metatag)
 
 add_library (FileIterator "FileIterator.cpp")
-set (LIBS ${LIBS} FileIterator)
+set (LIBS FileIterator ${LIBS})
 
 add_library (SortingFileIterator "SortingFileIterator.cpp")
-set (LIBS ${LIBS} SortingFileIterator)
+set (LIBS SortingFileIterator ${LIBS})
 
 add_library (FilteringFileIterator "FilteringFileIterator.cpp")
-set (LIBS ${LIBS} FilteringFileIterator)
+set (LIBS FilteringFileIterator ${LIBS})
 
 add_library (Metatag "Metatag.cpp")
 set (LIBS ${LIBS} Metatag)
