@@ -2,15 +2,15 @@
 #include <unicode/schriter.h>
 #include <unicode/uchar.h>
 
-namespace mru
-{
+namespace mru {
+namespace MetatagExpression {
 
-MetatagExpressionTokenizer::MetatagExpressionTokenizer(void)
-  : escape_next(false)
-{ }
+Tokenizer::Tokenizer(const ConstUnicodeStringIterator &text_iterator)
+  : TokenizerBase(text_iterator), escape_next(false)
+{ first(); }
 
-MetatagExpressionTokenizer::ActionKind
-MetatagExpressionTokenizer::actionOn(UChar current_character)
+Tokenizer::ActionKind
+Tokenizer::actionOn(UChar current_character)
 {
   if (escape_next) {
     escape_next = false;
@@ -26,7 +26,7 @@ MetatagExpressionTokenizer::actionOn(UChar current_character)
 }
 
 bool
-MetatagExpressionTokenizer::isControlCharacter(UChar character) const
+Tokenizer::isControlCharacter(UChar character) const
 {
   switch(character) {
     case UChar('%'):
@@ -41,5 +41,6 @@ MetatagExpressionTokenizer::isControlCharacter(UChar character) const
   }
 }
 
+} /* namespace MetatagExpression */
 } /* namespace mru */
 

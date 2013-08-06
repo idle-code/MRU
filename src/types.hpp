@@ -7,6 +7,7 @@
 #include <unicode/unistr.h> //for ICU UnicodeString
 #include <wx/string.h>
 #include <boost/filesystem.hpp>
+#include <debug_l.h>
 
 namespace mru
 {

@@ -11,26 +11,26 @@ class Metatag {
 public:
   typedef boost::shared_ptr<Metatag> Pointer;
 public:
-  Metatag(const UnicodeString &a_name);
-  const UnicodeString& name(void) const;
+  Metatag(const UnicodeString &name);
+  const UnicodeString& getName(void) const;
   virtual ~Metatag(void);
 
   virtual void reset(void);
-  virtual void initialize(const UnicodeString &a_arguments) = 0;
-  virtual UnicodeString execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect) = 0;
+  virtual void initialize(const UnicodeString &arguments) = 0;
+  virtual UnicodeString execute(const FileIterator &file_path, const UnicodeString &areof_effect) = 0;
 protected:
-  UnicodeString m_name;
+  UnicodeString name;
 };
 
 class MetatagException : public std::runtime_error {
 public:
-  MetatagException(const UnicodeString &a_tag_name, const UnicodeString &a_message);
+  MetatagException(const UnicodeString &tag_name, const UnicodeString &message);
   ~MetatagException(void) throw();
   const char* what(void) const throw();
-  const UnicodeString& message(void) const throw();
+  const UnicodeString& getMessage(void) const throw();
 private:
-  UnicodeString m_tag_name;
-  UnicodeString m_message;
+  UnicodeString tag_name;
+  UnicodeString message;
 };
 
 } /* namespace mru */

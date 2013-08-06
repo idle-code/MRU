@@ -5,24 +5,22 @@
 void
 MetatagExpressionTokenizer_tests::setUp(void)
 {
-  expected_words.clear();
   expr_str = UnicodeString();
-  tokenizer = MetatagExpressionTokenizer();
+  expected_words.clear();
 }
 
 void
-MetatagExpressionTokenizer_tests::compare_word_lists(const MetatagExpressionTokenizer::WordList &provided_words)
+MetatagExpressionTokenizer_tests::compare_to_expected(MetatagExpression::Tokenizer &tokenizer)
 {
-  MetatagExpressionTokenizer::WordList::const_iterator eti = expected_words.begin();
-  MetatagExpressionTokenizer::WordList::const_iterator ti = provided_words.begin();
-
-  for(; eti != expected_words.end() && ti != provided_words.end(); ++eti, ++ti) {
-    //std::cout << "'" << *eti << "' == '" << *ti << "'" << std::endl;
-    CPPUNIT_ASSERT_EQUAL(*eti, *ti);
+  std::list<UnicodeString>::const_iterator eti = expected_words.begin();
+  for(; eti != expected_words.end() && !tokenizer.atEnd(); ++eti) {
+    UnicodeString word = tokenizer.getCurrent();
+    //std::cout << "'" << *eti << "' == '" << word << "'" << std::endl;
+    CPPUNIT_ASSERT_EQUAL(*eti, word);
+    tokenizer.next();
   }
-
   CPPUNIT_ASSERT(eti == expected_words.end());
-  CPPUNIT_ASSERT(ti == provided_words.end());
+  CPPUNIT_ASSERT(tokenizer.atEnd());
 }
 
 /* ------------------------------------------------------------------------- */
@@ -30,10 +28,9 @@ MetatagExpressionTokenizer_tests::compare_word_lists(const MetatagExpressionToke
 void
 MetatagExpressionTokenizer_tests::empty_expr(void)
 {
-  const MetatagExpressionTokenizer::WordList &words = tokenizer.tokenize(UnicodeString());
+  MetatagExpression::Tokenizer tokenizer((UnicodeString()));
 
-  CPPUNIT_ASSERT(0 == words.size()); 
-  compare_word_lists(words);
+  compare_to_expected(tokenizer);
 }
 
 void
@@ -43,9 +40,9 @@ MetatagExpressionTokenizer_tests::static_expr(void)
   
   WORD("Text");
 
-  const MetatagExpressionTokenizer::WordList &words = tokenizer.tokenize(expr_str);
+  MetatagExpression::Tokenizer tokenizer(expr_str);
 
-  compare_word_lists(words);
+  compare_to_expected(tokenizer);
 }
 
 void
@@ -60,9 +57,9 @@ MetatagExpressionTokenizer_tests::flat_expr(void)
   WORD("{");
   WORD("}");
 
-  const MetatagExpressionTokenizer::WordList &words = tokenizer.tokenize(expr_str);
+  MetatagExpression::Tokenizer tokenizer(expr_str);
 
-  compare_word_lists(words);
+  compare_to_expected(tokenizer);
 }
 
 void
@@ -88,9 +85,9 @@ MetatagExpressionTokenizer_tests::nested_expr(void)
   WORD("}");
   WORD(".ext");
 
-  const MetatagExpressionTokenizer::WordList &words = tokenizer.tokenize(expr_str);
+  MetatagExpression::Tokenizer tokenizer(expr_str);
 
-  compare_word_lists(words);
+  compare_to_expected(tokenizer);
 }
 
 void
@@ -107,9 +104,9 @@ MetatagExpressionTokenizer_tests::invalid_expr(void)
   WORD(")");
   WORD("{");
 
-  const MetatagExpressionTokenizer::WordList &words = tokenizer.tokenize(expr_str);
+  MetatagExpression::Tokenizer tokenizer(expr_str);
 
-  compare_word_lists(words);
+  compare_to_expected(tokenizer);
 }
 
 void
@@ -125,9 +122,9 @@ MetatagExpressionTokenizer_tests::escaped_expr(void)
   WORD("%");
   WORD("there");
 
-  const MetatagExpressionTokenizer::WordList &words = tokenizer.tokenize(expr_str);
+  MetatagExpression::Tokenizer tokenizer(expr_str);
 
-  compare_word_lists(words);
+  compare_to_expected(tokenizer);
 }
 
 void
@@ -139,9 +136,9 @@ MetatagExpressionTokenizer_tests::double_escaped_expr(void)
   WORD("\\");
   WORD("\\b");
 
-  const MetatagExpressionTokenizer::WordList &words = tokenizer.tokenize(expr_str);
+  MetatagExpression::Tokenizer tokenizer(expr_str);
 
-  compare_word_lists(words);
+  compare_to_expected(tokenizer);
 }
 
 void
@@ -151,9 +148,9 @@ MetatagExpressionTokenizer_tests::escaped_normal_expr(void)
 
   WORD("foo\\bar");
 
-  const MetatagExpressionTokenizer::WordList &words = tokenizer.tokenize(expr_str);
+  MetatagExpression::Tokenizer tokenizer(expr_str);
 
-  compare_word_lists(words);
+  compare_to_expected(tokenizer);
 }
 
 #ifdef SINGLE_TEST_MODE

@@ -1,14 +1,14 @@
 #ifndef METATAG_EXPRESSION_TOKENIZER_HPP
 #define METATAG_EXPRESSION_TOKENIZER_HPP
 
-#include "Tokenizer.hpp"
+#include "TokenizerBase.hpp"
 
-namespace mru
-{
+namespace mru {
+namespace MetatagExpression {
 
-class MetatagExpressionTokenizer : public Tokenizer {
+class Tokenizer : public TokenizerBase {
 public:
-  MetatagExpressionTokenizer(void);
+  Tokenizer(const ConstUnicodeStringIterator &text_iterator);
 
 protected:
   ActionKind actionOn(UChar current_character);
@@ -17,6 +17,7 @@ protected:
   bool escape_next;
 };
 
+} /* namespace MetatagExpression */
 } /* namespace mru */
 
 #endif /* METATAG_EXPRESSION_TOKENIZER_HPP */

@@ -10,20 +10,6 @@ namespace mru
 
 typedef ConstIterator<FilePath> FileIterator;
 
-//class FileIterator : public Iterator<FilePath> {
-//public:
-//  typedef boost::shared_ptr<FileIterator> Pointer;
-//public:
-//  virtual ~FileIterator(void);
-//
-//  virtual FilePath getFilePath(void) const = 0;
-//  virtual void first(void) = 0;
-//  virtual bool next(void) = 0;
-//  virtual bool atEnd(void) const = 0;
-//};
-
-/* ------------------------------------------------------------------------- */
-
 class FileIteratorDecorator : public FileIterator {
 public:
   typedef FileIteratorDecorator self_type;

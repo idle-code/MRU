@@ -44,44 +44,42 @@ endif()
 
 add_subdirectory ("plugin_manager")
 include_directories ("plugin_manager")
-set (LIBS ${LIBS} plugin_manager)
 
 #add_executable (dt_test "dt_test.cpp")
 #target_link_libraries (dt_test ${LIBS}) 
 
 add_subdirectory ("plugins")
 include_directories ("plugins")
+set (LIBS ${LIBS} plugin_manager)
 
 #add_subdirectory ("metatag")
 #include_directories ("metatag")
 #set (LIBS ${LIBS} metatag)
 
 add_library (FileIterator "FileIterator.cpp")
-set (LIBS FileIterator ${LIBS})
 
 add_library (SortingFileIterator "SortingFileIterator.cpp")
-set (LIBS SortingFileIterator ${LIBS})
 
 add_library (FilteringFileIterator "FilteringFileIterator.cpp")
-set (LIBS FilteringFileIterator ${LIBS})
 
 add_library (Metatag "Metatag.cpp")
-set (LIBS ${LIBS} Metatag)
 
-add_library (Tokenizer "Tokenizer.cpp")
-set (LIBS Tokenizer ${LIBS} )
+add_library (UnicodeStringIterator "UnicodeStringIterator.cpp")
+
+add_library (TokenizerBase "TokenizerBase.cpp")
+target_link_libraries (TokenizerBase UnicodeStringIterator ${LIBS})
 
 add_library (MetatagExpressionTokenizer "MetatagExpressionTokenizer.cpp")
-set (LIBS MetatagExpressionTokenizer ${LIBS})
+target_link_libraries (MetatagExpressionTokenizer TokenizerBase ${LIBS})
 
 add_library (MetatagExpressionLexer "MetatagExpressionLexer.cpp")
-set (LIBS MetatagExpressionLexer ${LIBS})
+target_link_libraries (MetatagExpressionLexer MetatagExpressionTokenizer ${LIBS})
 
-add_library (MetatagExpressionParser "MetatagExpressionParser.cpp")
-set (LIBS MetatagExpressionParser ${LIBS})
+#add_library (MetatagExpressionParser "MetatagExpressionParser.cpp")
+#set (LIBS MetatagExpressionParser ${LIBS})
 
-add_library (MetatagExpression "MetatagExpression.cpp")
-set (LIBS MetatagExpression ${LIBS})
+#add_library (MetatagExpression "MetatagExpression.cpp")
+#set (LIBS MetatagExpression ${LIBS})
 
 #add_executable (mru "main.cpp" "MruCore.cpp")
 #target_link_libraries (mru ${LIBS} ${CMAKE_DL_LIBS})
