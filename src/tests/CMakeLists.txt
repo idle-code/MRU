@@ -10,6 +10,10 @@ set (LIBS ${LIBS} MruPlugin)
 
 add_definitions (-DSINGLE_TEST_MODE)
 
+add_executable (UnicodeStringIterator_tests "UnicodeStringIterator_tests.cpp")
+target_link_libraries (UnicodeStringIterator_tests UnicodeStringIterator ${LIBS})
+add_test (UnicodeStringIterator_tests UnicodeStringIterator_tests)
+
 add_executable (StdIteratorAdapter_tests "StdIteratorAdapter_tests.cpp")
 target_link_libraries (StdIteratorAdapter_tests ${LIBS})
 add_test (StdIteratorAdapter_tests StdIteratorAdapter_tests)
@@ -28,7 +32,7 @@ add_test (SortingFileIterator_tests SortingFileIterator_tests)
 
 # InputPlugin tests:
 add_executable (BoostInput_tests "BoostInput_tests.cpp" "InputPlugin_tests.cpp")
-target_link_libraries (BoostInput_tests BoostInputShared)
+target_link_libraries (BoostInput_tests BoostInputShared FilteringFileIterator SortingFileIterator FileIterator)
 target_link_libraries (BoostInput_tests ${LIBS})
 add_test (BoostInput_tests BoostInput_tests)
 
@@ -46,21 +50,21 @@ add_test (BoostOutput_tests BoostOutput_tests)
 
 #MetatagExpression tests:
 
-add_executable (Tokenizer_tests "Tokenizer_tests.cpp")
-target_link_libraries (Tokenizer_tests ${LIBS})
-add_test (Tokenizer_tests Tokenizer_tests)
+add_executable (TokenizerBase_tests "TokenizerBase_tests.cpp")
+target_link_libraries (TokenizerBase_tests TokenizerBase ${LIBS})
+add_test (TokenizerBase_tests TokenizerBase_tests)
 
 add_executable (MetatagExpressionTokenizer_tests "MetatagExpressionTokenizer_tests.cpp")
-target_link_libraries (MetatagExpressionTokenizer_tests ${LIBS})
+target_link_libraries (MetatagExpressionTokenizer_tests MetatagExpressionTokenizer ${LIBS})
 add_test (MetatagExpressionTokenizer_tests MetatagExpressionTokenizer_tests)
 
 add_executable (MetatagExpressionLexer_tests "MetatagExpressionLexer_tests.cpp")
-target_link_libraries (MetatagExpressionLexer_tests ${LIBS} MetatagExpressionTokenizer)
+target_link_libraries (MetatagExpressionLexer_tests MetatagExpressionLexer MetatagExpressionTokenizer ${LIBS})
 add_test (MetatagExpressionLexer_tests MetatagExpressionLexer_tests)
 
-add_executable (MetatagExpressionParser_tests "MetatagExpressionParser_tests.cpp")
-target_link_libraries (MetatagExpressionParser_tests ${LIBS} MetatagExpressionTokenizer)
-add_test (MetatagExpressionParser_tests MetatagExpressionParser_tests)
+#add_executable (MetatagExpressionParser_tests "MetatagExpressionParser_tests.cpp")
+#target_link_libraries (MetatagExpressionParser_tests ${LIBS} MetatagExpressionTokenizer)
+#add_test (MetatagExpressionParser_tests MetatagExpressionParser_tests)
 
 #add_executable (MetatagExpression_tests "MetatagExpression_tests.cpp")
 #target_link_libraries (MetatagExpression_tests ${LIBS})

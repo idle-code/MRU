@@ -1,53 +1,49 @@
 #ifndef METATAG_EXPRESSION_LEXER_HPP
 #define METATAG_EXPRESSION_LEXER_HPP
 
+#include "Iterator.hpp"
 #include "MetatagExpressionTokenizer.hpp"
 #include <list>
 
 class MetatagExpressionLexer_tests;
 
-namespace mru
-{
+namespace mru {
+namespace MetatagExpression {
 
-class MetatagExpressionLexer {
+struct Token {
+  int position;
+  UnicodeString value;
+  enum TokenKind {
+    Text,
+    MetatagStart,
+    ArgumentListStart,
+    ArgumentListEnd,
+    AreaOfEffectStart,
+    AreaOfEffectEnd,
+    EscapeSequence
+  } type;
+};
+
+class Lexer : public ConstIterator<Token> {
 public:
-  struct Token {
-    int position;
-    UnicodeString value;
-    enum TokenKind {
-      Text,
-      MetatagStart,
-      ArgumentListStart,
-      ArgumentListEnd,
-      AreaOfEffectStart,
-      AreaOfEffectEnd,
-      EscapeSequence
-    } type;
-  };
-
-  typedef std::list<Token> TokenList;
-
   friend class ::MetatagExpressionLexer_tests;
 
-  static UnicodeString joinTokens(const TokenList &token_list);
 public:
-  MetatagExpressionLexer(void);
-  ~MetatagExpressionLexer(void);
+  Lexer(Tokenizer::Pointer tokenizer);
 
-  const TokenList& analyze(const UnicodeString &text);
-  UnicodeString joinTokens(void) const;
+  void first(void);
+  bool next(void);
+  bool atEnd(void) const;
+  Token getCurrent(void) const;
 
 private:
-  typedef MetatagExpressionTokenizer::WordList WordList;
-
-  void addToken(const UnicodeString &value);
   Token::TokenKind determineTokenType(const UnicodeString &word) const;
-private:
-  TokenList tokens;
-  MetatagExpressionTokenizer tokenizer;
+
+  Tokenizer::Pointer tokenizer;
   int in_text_position;
 };
 
+} /* namespace MetatagExpression */
 } /* namespace mru */
 
 #endif /* METATAG_EXPRESSION_LEXER_HPP */

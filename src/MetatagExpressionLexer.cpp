@@ -1,62 +1,45 @@
 #include "MetatagExpressionLexer.hpp"
 
-namespace mru
-{
+namespace mru {
+namespace MetatagExpression {
 
-UnicodeString
-MetatagExpressionLexer::joinTokens(const TokenList &token_list)
-{
-  UnicodeString joined_string;
-  TokenList::const_iterator ti_end = token_list.end();
-  for(TokenList::const_iterator ti = token_list.begin(); ti != ti_end; ++ti)
-    joined_string += (*ti).value;
-  return joined_string;
-}
-
-UnicodeString
-MetatagExpressionLexer::joinTokens(void) const
-{
-  return joinTokens(tokens);
-}
-
-MetatagExpressionLexer::MetatagExpressionLexer(void)
-  : in_text_position(0)
+Lexer::Lexer(Tokenizer::Pointer tokenizer)
+  : tokenizer(tokenizer), in_text_position(0)
 { }
-
-MetatagExpressionLexer::~MetatagExpressionLexer(void)
-{ }
-
-const MetatagExpressionLexer::TokenList &
-MetatagExpressionLexer::analyze(const UnicodeString &text)
-{
-  tokens.clear();
-  in_text_position = 0;
-
-  const WordList &words = tokenizer.tokenize(text);
-
-  WordList::const_iterator wi_end = words.end();
-  for(WordList::const_iterator wi = words.begin(); wi != wi_end; ++wi) {
-    addToken(*wi);
-  }
-
-  return tokens;
-}
 
 void
-MetatagExpressionLexer::addToken(const UnicodeString &value)
+Lexer::first(void)
+{
+  tokenizer->first();
+  in_text_position = 0;
+}
+
+bool
+Lexer::next(void)
+{
+  return tokenizer->next();
+}
+
+bool
+Lexer::atEnd(void) const
+{
+  return tokenizer->atEnd();
+}
+
+Token
+Lexer::getCurrent(void) const
 {
   Token token;
   token.position = in_text_position;
-  token.value = value;
-  token.type = determineTokenType(value);
+  token.value = tokenizer->getCurrent();
+  token.type = determineTokenType(token.value);
 
-  tokens.push_back(token);
-
-  in_text_position += value.length(); 
+  //in_text_position += token.value.length(); 
+  return token;
 }
 
-MetatagExpressionLexer::Token::TokenKind
-MetatagExpressionLexer::determineTokenType(const UnicodeString &word) const
+Token::TokenKind
+Lexer::determineTokenType(const UnicodeString &word) const
 {
   if (word.length() > 1)
     return Token::Text;
@@ -79,5 +62,6 @@ MetatagExpressionLexer::determineTokenType(const UnicodeString &word) const
   }
 }
 
+} /* namespace MetatagExpression  */
 } /* namespace mru */
 

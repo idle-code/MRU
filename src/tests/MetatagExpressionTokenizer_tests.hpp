@@ -1,11 +1,10 @@
 #ifndef METATAG_EXPRESSION_TOKENIZER_TEST_HPP
 #define METATAG_EXPRESSION_TOKENIZER_TEST_HPP
 
+#include "MetatagExpressionTokenizer.hpp"
+
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
-
-#include "MetatagExpressionTokenizer.hpp"
-#include "types.hpp"
 
 using namespace CppUnit;
 using namespace mru;
@@ -35,10 +34,9 @@ public:
   CPPUNIT_TEST_SUITE_END();
 
 private:
-  MetatagExpressionTokenizer tokenizer;
   UnicodeString expr_str;
-  Tokenizer::WordList expected_words;
-  void compare_word_lists(const Tokenizer::WordList &provided_words);
+  std::list<UnicodeString> expected_words;
+  void compare_to_expected(MetatagExpression::Tokenizer &tokenizer);
 };
 
 #define WORD(VAL) \

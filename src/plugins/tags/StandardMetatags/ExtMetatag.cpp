@@ -20,7 +20,7 @@ UnicodeString
 ExtMetatag::execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect)
 {
   return glue_cast<UnicodeString>(
-      glue_cast<FilePath>(a_file_path.getFilePath()).extension()
+      glue_cast<FilePath>(a_file_path.getCurrent()).extension()
       );
 }
 

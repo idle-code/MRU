@@ -1,30 +1,29 @@
 #include "UnicodeStringStreamOperator.hpp"
 #include "MetatagExpressionLexer_tests.hpp"
 #include "glue.hpp"
+#include <boost/make_shared.hpp>
 
 void
 MetatagExpressionLexer_tests::setUp(void)
 {
   expected_tokens.clear();
   expr_str = UnicodeString();
-  lexer = MetatagExpressionLexer();
 }
 
 void
-MetatagExpressionLexer_tests::compare_token_lists(const MetatagExpressionLexer::TokenList &provided_tokens)
+MetatagExpressionLexer_tests::compare_to_expected(MetatagExpression::Lexer &lexer)
 {
-  MetatagExpressionLexer::TokenList::const_iterator eti = expected_tokens.begin();
-  MetatagExpressionLexer::TokenList::const_iterator ti = provided_tokens.begin();
-
-  for(; eti != expected_tokens.end() && ti != provided_tokens.end(); ++eti, ++ti) {
+  std::list<MetatagExpression::Token>::const_iterator eti = expected_tokens.begin();
+  for(; eti != expected_tokens.end() && !lexer.atEnd(); ++eti) {
     //std::cout << eti->value << " == " << ti->value << std::endl;
-    CPPUNIT_ASSERT_EQUAL(eti->value, ti->value);
-    CPPUNIT_ASSERT_EQUAL(eti->position, ti->position);
-    CPPUNIT_ASSERT(eti->type == ti->type);
+    
+    CPPUNIT_ASSERT_EQUAL(eti->value, lexer.getCurrent().value);
+    CPPUNIT_ASSERT_EQUAL(eti->position, lexer.getCurrent().position);
+    CPPUNIT_ASSERT(eti->type == lexer.getCurrent().type);
   }
 
   CPPUNIT_ASSERT(eti == expected_tokens.end());
-  CPPUNIT_ASSERT(ti == provided_tokens.end());
+  CPPUNIT_ASSERT(lexer.atEnd());
 }
 
 /* ------------------------------------------------------------------------- */
@@ -32,12 +31,12 @@ MetatagExpressionLexer_tests::compare_token_lists(const MetatagExpressionLexer::
 void
 MetatagExpressionLexer_tests::empty_expr(void)
 {
-  const MetatagExpressionLexer::TokenList &tokens = lexer.analyze(UnicodeString());
+  expr_str = UnicodeString();
+  Lexer lexer(boost::make_shared<Tokenizer>(expr_str));
 
-  CPPUNIT_ASSERT(0 == tokens.size()); 
-  compare_token_lists(tokens);
+  compare_to_expected(lexer);
 }
-
+#if 0
 void
 MetatagExpressionLexer_tests::static_expr(void)
 {
@@ -210,6 +209,7 @@ MetatagExpressionLexer_tests::get_tokens(void)
 
   compare_token_lists(tokens);
 }
+#endif
 
 #ifdef SINGLE_TEST_MODE
 
