@@ -24,6 +24,15 @@ struct Token {
   } type;
 };
 
+inline bool
+operator==(const MetatagExpression::Token &a, const MetatagExpression::Token &b)
+{
+  return 
+    (a.position == b.position) &&
+    (a.value == b.value) &&
+    (a.type == b.type);
+}
+
 class Lexer : public ConstIterator<Token> {
 public:
   friend class ::MetatagExpressionLexer_tests;
@@ -39,7 +48,7 @@ public:
 private:
   Token::TokenKind determineTokenType(const UnicodeString &word) const;
 
-  Tokenizer::Pointer tokenizer;
+  const Tokenizer::Pointer tokenizer;
   int in_text_position;
 };
 

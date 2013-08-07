@@ -9,17 +9,25 @@ MetatagExpressionLexer_tests::setUp(void)
   expected_tokens.clear();
   expr_str = UnicodeString();
 }
+void
+MetatagExpressionLexer_tests::tearDown(void)
+{
+  Lexer lexer(boost::make_shared<Tokenizer>(expr_str));
+
+  compare_to_expected(lexer);
+}
 
 void
 MetatagExpressionLexer_tests::compare_to_expected(MetatagExpression::Lexer &lexer)
 {
   std::list<MetatagExpression::Token>::const_iterator eti = expected_tokens.begin();
   for(; eti != expected_tokens.end() && !lexer.atEnd(); ++eti) {
-    //std::cout << eti->value << " == " << ti->value << std::endl;
-    
+    //std::cout << eti->value << " == " << lexer.getCurrent().value << std::endl;
     CPPUNIT_ASSERT_EQUAL(eti->value, lexer.getCurrent().value);
+    //std::cout << eti->position << " == " << lexer.getCurrent().position << std::endl;
     CPPUNIT_ASSERT_EQUAL(eti->position, lexer.getCurrent().position);
     CPPUNIT_ASSERT(eti->type == lexer.getCurrent().type);
+    lexer.next();
   }
 
   CPPUNIT_ASSERT(eti == expected_tokens.end());
@@ -32,21 +40,14 @@ void
 MetatagExpressionLexer_tests::empty_expr(void)
 {
   expr_str = UnicodeString();
-  Lexer lexer(boost::make_shared<Tokenizer>(expr_str));
-
-  compare_to_expected(lexer);
 }
-#if 0
+
 void
 MetatagExpressionLexer_tests::static_expr(void)
 {
   expr_str = glue_cast<UnicodeString>("Text");
   
   TOKEN("Text", Text);
-
-  const MetatagExpressionLexer::TokenList &tokens = lexer.analyze(expr_str);
-
-  compare_token_lists(tokens);
 }
 
 void
@@ -60,10 +61,6 @@ MetatagExpressionLexer_tests::flat_expr(void)
   TOKEN(")", ArgumentListEnd);
   TOKEN("{", AreaOfEffectStart);
   TOKEN("}", AreaOfEffectEnd);
-
-  const MetatagExpressionLexer::TokenList &tokens = lexer.analyze(expr_str);
-
-  compare_token_lists(tokens);
 }
 
 void
@@ -88,10 +85,6 @@ MetatagExpressionLexer_tests::nested_expr(void)
   TOKEN(" token ", Text);
   TOKEN("}", AreaOfEffectEnd);
   TOKEN(".ext", Text);
-
-  const MetatagExpressionLexer::TokenList &tokens = lexer.analyze(expr_str);
-
-  compare_token_lists(tokens);
 }
 
 void
@@ -107,10 +100,6 @@ MetatagExpressionLexer_tests::invalid_expr(void)
   TOKENat(6, "}", AreaOfEffectEnd);
   TOKEN(")", ArgumentListEnd);
   TOKEN("{", AreaOfEffectStart);
-
-  const MetatagExpressionLexer::TokenList &tokens = lexer.analyze(expr_str);
-
-  compare_token_lists(tokens);
 }
 
 void
@@ -125,10 +114,6 @@ MetatagExpressionLexer_tests::escaped_expr(void)
   TOKEN(") here, but not ", Text);
   TOKEN("%", MetatagStart);
   TOKEN("there", Text);
-
-  const MetatagExpressionLexer::TokenList &tokens = lexer.analyze(expr_str);
-
-  compare_token_lists(tokens);
 }
 
 void
@@ -139,10 +124,6 @@ MetatagExpressionLexer_tests::double_escaped_expr(void)
   TOKEN("a", Text);
   TOKEN("\\", EscapeSequence);
   TOKEN("\\b", Text);
-
-  const MetatagExpressionLexer::TokenList &tokens = lexer.analyze(expr_str);
-
-  compare_token_lists(tokens);
 }
 
 void
@@ -151,65 +132,37 @@ MetatagExpressionLexer_tests::escaped_normal_expr(void)
   expr_str = glue_cast<UnicodeString>("foo\\bar");
 
   TOKEN("foo\\bar", Text);
-
-  const MetatagExpressionLexer::TokenList &tokens = lexer.analyze(expr_str);
-
-  compare_token_lists(tokens);
 }
 
-void
-MetatagExpressionLexer_tests::static_join(void)
+/* ------------------------------------------------------------------------- */
+
+MetatagExpressionLexer_tests::ValueList
+MetatagExpressionLexer_tests::getSampleValues(void)
 {
+  expr_str.remove();
   expr_str = glue_cast<UnicodeString>("%Text(){}");
 
+  expected_tokens.clear();
   TOKEN("%", MetatagStart);
   TOKEN("Text", Text);
   TOKEN("(", ArgumentListStart);
   TOKEN(")", ArgumentListEnd);
   TOKEN("{", AreaOfEffectStart);
   TOKEN("}", AreaOfEffectEnd);
-
-  const MetatagExpressionLexer::TokenList &tokens = lexer.analyze(expr_str);
-
-  CPPUNIT_ASSERT_EQUAL(expr_str, MetatagExpressionLexer::joinTokens(tokens));
+  
+  return expected_tokens;
 }
 
-void
-MetatagExpressionLexer_tests::join(void)
+mru::ConstIterator<MetatagExpression::Token>::Pointer
+MetatagExpressionLexer_tests::getConstIterator(const ValueList &values_in_container)
 {
-  expr_str = glue_cast<UnicodeString>("%Text(){}");
+  expr_str.remove();
+  for(ValueList::const_iterator i = values_in_container.begin(); i != values_in_container.end(); ++i) {
+    expr_str += i->value;
+  }
 
-  TOKEN("%", MetatagStart);
-  TOKEN("Text", Text);
-  TOKEN("(", ArgumentListStart);
-  TOKEN(")", ArgumentListEnd);
-  TOKEN("{", AreaOfEffectStart);
-  TOKEN("}", AreaOfEffectEnd);
-
-  lexer.analyze(expr_str);
-
-  CPPUNIT_ASSERT_EQUAL(expr_str, lexer.joinTokens());
+  return boost::make_shared<Lexer>(boost::make_shared<Tokenizer>(expr_str));
 }
-
-void
-MetatagExpressionLexer_tests::get_tokens(void)
-{
-  expr_str = glue_cast<UnicodeString>("%Text(){}");
-
-  TOKEN("%", MetatagStart);
-  TOKEN("Text", Text);
-  TOKEN("(", ArgumentListStart);
-  TOKEN(")", ArgumentListEnd);
-  TOKEN("{", AreaOfEffectStart);
-  TOKEN("}", AreaOfEffectEnd);
-
-  const MetatagExpressionLexer::TokenList &tokens = lexer.analyze(expr_str);
-
-  expected_tokens = tokens;
-
-  compare_token_lists(tokens);
-}
-#endif
 
 #ifdef SINGLE_TEST_MODE
 
