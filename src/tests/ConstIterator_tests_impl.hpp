@@ -25,8 +25,7 @@ ConstIterator_tests<ValueType>::progress(void)
   typename ValueList::iterator i = sample_values.begin();
   for(; i != sample_values.end(); ++i) {
     CPPUNIT_ASSERT(!iterator_ptr->atEnd());
-    //VAL(*i);
-    CPPUNIT_ASSERT_EQUAL(*i, iterator_ptr->getCurrent());
+    CPPUNIT_ASSERT(*i == iterator_ptr->getCurrent());
     if(!iterator_ptr->next())
       break;
   }
@@ -48,7 +47,7 @@ ConstIterator_tests<ValueType>::reset(void)
   typename ValueList::iterator i = sample_values.begin();
   do {
     CPPUNIT_ASSERT(!iterator_ptr->atEnd());
-    CPPUNIT_ASSERT_EQUAL(*i, iterator_ptr->getCurrent());
+    CPPUNIT_ASSERT(*i == iterator_ptr->getCurrent());
     ++i;
   } while(iterator_ptr->next());
 

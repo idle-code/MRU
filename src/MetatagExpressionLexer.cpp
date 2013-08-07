@@ -5,7 +5,9 @@ namespace MetatagExpression {
 
 Lexer::Lexer(Tokenizer::Pointer tokenizer)
   : tokenizer(tokenizer), in_text_position(0)
-{ }
+{
+  assert(tokenizer);
+}
 
 void
 Lexer::first(void)
@@ -17,6 +19,8 @@ Lexer::first(void)
 bool
 Lexer::next(void)
 {
+  assert(!atEnd());
+  in_text_position += tokenizer->getCurrent().length();
   return tokenizer->next();
 }
 
@@ -29,12 +33,12 @@ Lexer::atEnd(void) const
 Token
 Lexer::getCurrent(void) const
 {
+  assert(!atEnd());
   Token token;
   token.position = in_text_position;
   token.value = tokenizer->getCurrent();
   token.type = determineTokenType(token.value);
 
-  //in_text_position += token.value.length(); 
   return token;
 }
 
