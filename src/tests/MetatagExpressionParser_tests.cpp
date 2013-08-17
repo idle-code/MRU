@@ -8,18 +8,18 @@ MetatagExpressionParser_tests::setUp(void)
   expr_str = UnicodeString();
   //parser = MetatagExpressionParser();
   expected_expression_root.reset();
-  expected_expression_root = Parser::Entry::Pointer(new Parser::Entry(-1, "", ""));
+  expected_expression_root = Parser::TagEntry::Pointer(new Parser::TagEntry(-1, "", ""));
   expression_root.reset();
 }
 
 void
-MetatagExpressionParser_tests::compare_entry_trees(const Parser::Entry::Pointer provided_expression_root) const
+MetatagExpressionParser_tests::compare_entry_trees(const Parser::TagEntry::Pointer provided_expression_root) const
 {
   compare_entries(expected_expression_root, provided_expression_root); 
 }
 
 void
-MetatagExpressionParser_tests::compare_entries(const Parser::Entry::Pointer expected_entry, const Parser::Entry::Pointer provided_entry) const
+MetatagExpressionParser_tests::compare_entries(const Parser::TagEntry::Pointer expected_entry, const Parser::TagEntry::Pointer provided_entry) const
 {
   CPPUNIT_ASSERT(bool(expected_entry));
   CPPUNIT_ASSERT(bool(provided_entry));
@@ -27,14 +27,14 @@ MetatagExpressionParser_tests::compare_entries(const Parser::Entry::Pointer expe
   CPPUNIT_ASSERT_EQUAL(expected_entry->position, provided_entry->position);
   CPPUNIT_ASSERT_EQUAL(expected_entry->name, provided_entry->name);
   CPPUNIT_ASSERT_EQUAL(expected_entry->arguments, provided_entry->arguments);
-  CPPUNIT_ASSERT_EQUAL(expected_entry->isAreaOfEffectMembersPresent(), provided_entry->isAreaOfEffectMembersPresent());
+  CPPUNIT_ASSERT_EQUAL(expected_entry->haveAreaOfEffectMembers(), provided_entry->haveAreaOfEffectMembers());
 
   CPPUNIT_ASSERT_EQUAL(expected_entry->areaOfEffectMembers.size(), provided_entry->areaOfEffectMembers.size());
 
-  Parser::Entry::MemberList::const_iterator ei = expected_entry->areaOfEffectMembers.begin(); 
-  Parser::Entry::MemberList::const_iterator ei_end = expected_entry->areaOfEffectMembers.end(); 
-  Parser::Entry::MemberList::const_iterator pi = provided_entry->areaOfEffectMembers.begin(); 
-  Parser::Entry::MemberList::const_iterator pi_end = provided_entry->areaOfEffectMembers.end(); 
+  Parser::TagEntry::MemberList::const_iterator ei = expected_entry->areaOfEffectMembers.begin(); 
+  Parser::TagEntry::MemberList::const_iterator ei_end = expected_entry->areaOfEffectMembers.end(); 
+  Parser::TagEntry::MemberList::const_iterator pi = provided_entry->areaOfEffectMembers.begin(); 
+  Parser::TagEntry::MemberList::const_iterator pi_end = provided_entry->areaOfEffectMembers.end(); 
   for(; ei != ei_end && pi != pi_end; ++ei, ++pi) {
     compare_entries(*ei, *pi);
   }
@@ -69,7 +69,7 @@ MetatagExpressionParser_tests::static_expr(void)
 void
 MetatagExpressionParser_tests::flat_expr(void)
 {
-  expr_str = glue_cast<UnicodeString>("%Text(");
+  expr_str = glue_cast<UnicodeString>("%MetatagName()");
 
   expected_expression_root->ADD_ENTRY(0, "Text", "");
 

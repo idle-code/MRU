@@ -1,26 +1,23 @@
 #include "tests/UnicodeStringStreamOperator.hpp" //temporary
 #include "MetatagExpressionParser.hpp"
-#define MSG(M) std::cout << M << std::endl;
+#include "MetatagExpressionLexer.hpp"
+#include <boost/make_shared.hpp>
 
-namespace mru
-{
+namespace mru {
+namespace MetatagExpression {
 
-MetatagExpressionParser::Entry::Entry(int position)
-  : position(position)
-{ }
-
-MetatagExpressionParser::Entry::Entry(int position, const UnicodeString &name, const UnicodeString &arguments)
+Parser::TagEntry::TagEntry(int position, const UnicodeString &name, const UnicodeString &arguments)
   : position(position), name(name), arguments(arguments)
 { }
 
 void
-MetatagExpressionParser::Entry::addAreaOfEffectMember(int position, const UnicodeString &name, const UnicodeString &arguments)
+Parser::TagEntry::addAreaOfEffectMember(int position, const UnicodeString &name, const UnicodeString &arguments)
 {
-  areaOfEffectMembers.push_back(Pointer(new Entry(position, name, arguments)));
+  areaOfEffectMembers.push_back(Pointer(new TagEntry(position, name, arguments)));
 }
 
 bool
-MetatagExpressionParser::Entry::isAreaOfEffectMembersPresent(void) const
+Parser::TagEntry::haveAreaOfEffectMembers(void) const
 {
   return areaOfEffectMembers.size() != 0;
 }
@@ -28,197 +25,155 @@ MetatagExpressionParser::Entry::isAreaOfEffectMembersPresent(void) const
 /* ------------------------------------------------------------------------- */
 
 
-MetatagExpressionParser::MetatagExpressionParser(void)
+Parser::Parser(void)
 {
-  // expression start
-  ParsePoint::Pointer point = ParsePoint::Pointer(new ParsePoint());
-  point->type = Token::Text;
-  parser_states.insert(std::make_pair("start", point));
-  // text
-  point = ParsePoint::Pointer(new ParsePoint());
-  point->type = Token::Text;
-  parser_states.insert(std::make_pair("text", point));
-  // metatag start
-  point = ParsePoint::Pointer(new ParsePoint());
-  point->type = Token::MetatagStart;
-  point->onEntry = &MetatagExpressionParser::OnMetatagStartEntry;
-  point->onExit = &MetatagExpressionParser::OnMetatagStartExit;
-  parser_states.insert(std::make_pair("%", point));
-  // metatag name
-  point = ParsePoint::Pointer(new ParsePoint());
-  point->type = Token::Text;
-  parser_states.insert(std::make_pair("metatag name", point));
-  // metatg arg start
-  point = ParsePoint::Pointer(new ParsePoint());
-  point->type = Token::ArgumentListStart;
-  parser_states.insert(std::make_pair("(", point));
-  // metatag args
-  point = ParsePoint::Pointer(new ParsePoint());
-  point->type = Token::Text;
-  parser_states.insert(std::make_pair("metatag arguments", point));
-  // metatag arg end
-  point = ParsePoint::Pointer(new ParsePoint());
-  point->type = Token::ArgumentListEnd;
-  parser_states.insert(std::make_pair(")", point));
+  start_point = boost::make_shared<ParsePoint>();
+  ParsePoint::Pointer metatag_start = boost::make_shared<ParsePoint>();
+  ParsePoint::Pointer text = boost::make_shared<ParsePoint>();
+  ParsePoint::Pointer name = boost::make_shared<ParsePoint>();
+  ParsePoint::Pointer args_start = boost::make_shared<ParsePoint>();
+  ParsePoint::Pointer args = boost::make_shared<ParsePoint>();
+  ParsePoint::Pointer args_end = boost::make_shared<ParsePoint>();
+  ParsePoint::Pointer aoe_start = boost::make_shared<ParsePoint>();
+  ParsePoint::Pointer aoe_end = boost::make_shared<ParsePoint>();
   
-  // expression end
-  point = ParsePoint::Pointer(new ParsePoint());
-  point->type = Token::Text;
-  parser_states.insert(std::make_pair("end", point));
-
   /* ------------------------------------------------------------------------- */
   
-  parser_states["start"]->exitPoints.push_back(parser_states["text"]);
-  parser_states["start"]->exitPoints.push_back(parser_states["%"]);
-  parser_states["start"]->exitPoints.push_back(parser_states["end"]);
+  start_point->exitPoints[Token::Text] = text.get();
+  start_point->exitPoints[Token::MetatagStart] = metatag_start.get();
 
-  parser_states["text"]->exitPoints.push_back(parser_states["text"]);
-  parser_states["text"]->exitPoints.push_back(parser_states["%"]);
-  parser_states["text"]->exitPoints.push_back(parser_states["end"]);
+  metatag_start->exitPoints[Token::Text] = name.get();
 
-  parser_states["%"]->exitPoints.push_back(parser_states["metatag name"]);
+  //name->exitPoints[Token::Text] = name.get();
+  name->exitPoints[Token::ArgumentListStart] = args_start.get();
+  args_start->exitPoints[Token::ArgumentListEnd] = args_end.get();
+  
+  /* ------------------------------------------------------------------------- */
 
-  parser_states["metatag name"]->exitPoints.push_back(parser_states["("]);
-
-  parser_states["("]->exitPoints.push_back(parser_states["metatag arguments"]);
-  parser_states["("]->exitPoints.push_back(parser_states[")"]);
-
-  parser_states["metatag arguments"]->exitPoints.push_back(parser_states["metatag arguments"]);
-  parser_states["metatag arguments"]->exitPoints.push_back(parser_states[")"]);
-
-  parser_states[")"]->exitPoints.push_back(parser_states["text"]);
-  parser_states[")"]->exitPoints.push_back(parser_states["end"]);
-  //parser_states[")"]->exitPoints.push_back(parser_states["{"]);
+  start_point->onEntry = &Parser::OnMetatagStartEntry;
+  start_point->onExit = &Parser::OnMetatagStartExit;
+  
+  name->onExit = &Parser::OnNameEnd;
+  args_end->onExit = &Parser::OnArgumentListEnd;
+  /* ------------------------------------------------------------------------- */
+  
+  //possible_parse_points.push_back(start_point);
+  possible_parse_points.push_back(metatag_start);
+  possible_parse_points.push_back(name);
+  possible_parse_points.push_back(args_start);
+  possible_parse_points.push_back(args);
+  possible_parse_points.push_back(args_end);
+  possible_parse_points.push_back(aoe_start);
+  possible_parse_points.push_back(aoe_end);
 }
 
-MetatagExpressionParser::~MetatagExpressionParser(void)
+Parser::~Parser(void)
 {
-  clearParserStatesMap();
+
 }
 
-void
-MetatagExpressionParser::clearParserStatesMap(void)
+Parser::TagEntry::Pointer
+Parser::parse(const UnicodeString &expression_text)
 {
-  for(std::map<std::string, ParsePoint::Pointer>::iterator state_iter = parser_states.begin();
-      state_iter != parser_states.end();
-      ++state_iter)
-  {
-    (*state_iter).second->exitPoints.clear();
-  }
-
-  parser_states.clear();
-}
-
-MetatagExpressionParser::Entry::Pointer
-MetatagExpressionParser::parse(const UnicodeString &expression_text)
-{
-  root.reset();
-  root = Entry::Pointer(new Entry(-1, "", ""));
-
-  if (expression_text.isEmpty())
-    return root;
-  VAL(expression_text);
-
-  const TokenList &tokens = lexer.analyze(expression_text);
-  tok_iter = tokens.begin();
-  tok_iter_end = tokens.end();
+  FO("Parser::parse(const UnicodeString &expression_text)");
+  Tokenizer::Pointer tokenizer = boost::make_shared<Tokenizer>(expression_text);
+  lexer = boost::make_shared<Lexer>(tokenizer);
+  TagEntry::Pointer root = boost::make_shared<TagEntry>(-1, "", "");
+  current_state = start_point.get();
 
   parse(root);
 
   return root;
 }
 
-MetatagExpressionParser::ParsePoint::Pointer
-MetatagExpressionParser::ParsePoint::getNextExitPoint(Token::TokenKind type)
+Parser::ParsePoint *
+Parser::ParsePoint::getNextExitPoint(Token::TokenKind type)
 {
-  VAL(exitPoints.size()); 
-  for(std::list<Pointer>::iterator iter = exitPoints.begin(); iter != exitPoints.end(); ++iter) {
-    VAL((*iter)->type);
-    if ((*iter)->type == type)
-      return *iter;
-  }
-  return Pointer();
+  if (exitPoints.count(type) > 0)
+    return exitPoints[type];
+  return NULL;
 }
 
 void
-MetatagExpressionParser::parse(Entry::Pointer parent)
+Parser::parse(TagEntry::Pointer parent)
 {
-  MSG("MetatagExpressionParser::parse(Entry::Pointer parent)");
-  VAL(this);
+  FO("Parser::parse(TagEntry::Pointer parent, Lexer::Pointer lexer)");
   assert(parent);
-
-  VAL(parent->position);
-  VAL(parent->name);
-  VAL(parent->arguments);
-
-  Entry::Pointer new_entry;
-  ParsePoint::Pointer current_point = parser_states["start"];
-  ParsePoint::Pointer new_point;
-
-  for(; tok_iter != tok_iter_end; ++tok_iter) {
-    std::cout << "----------------------" << std::endl;
-    const Token &token = *tok_iter;
-
-    VAL(token.position);
-    VAL(token.value);
-    VAL(token.type);
-
-    VAL(current_point);
-    VAL(current_point->type);  
-    new_point = current_point->getNextExitPoint(token.type);
-    if (new_point) {
-      if (current_point->onExit)
-        (this->*(current_point->onExit))(new_point);
-      if (new_point->onEntry)
-        (this->*(new_point->onEntry))(current_point);
-      VAL(new_point->type);
-      current_point = new_point;
-    } else {
-      std::cout << "Error cannot move to next parse point" << std::endl;
-    }
+  ParsePoint *next_state = NULL;
+  while (!lexer->atEnd()) {
+    VAL(lexer->getCurrent().value);
+    next_state = current_state->getNextExitPoint(lexer->getCurrent().type);
+    if (next_state == NULL)
+      break; //error?
+    if (current_state->onExit)
+      (this->*current_state->onExit)();
+    if (next_state->onEntry)
+      (this->*next_state->onEntry)();
+    current_state = next_state;
+    lexer->next();
   }
+
+  if (!lexer->atEnd()) {
+    ERR("Unexpected end of expression");
+    return;
+  }
+
+  if (current_state->onExit)
+    (this->*current_state->onExit)();
+
 }
 
 void
-MetatagExpressionParser::OnMetatagStartEntry(const ParsePoint::Pointer)
+Parser::OnMetatagStartEntry(void)
 {
-  MSG("MetatagExpressionParser::OnMetatagStartEntry(const ParsePoint::Pointer)");
+  MSG("Parser::OnMetatagStartEntry(const ParsePoint::Pointer)");
 }
 
 void
-MetatagExpressionParser::OnMetatagStartExit(const ParsePoint::Pointer)
+Parser::OnMetatagStartExit(void)
 {
-  MSG("MetatagExpressionParser::OnMetatagStartExit(const ParsePoint::Pointer)");
+  MSG("Parser::OnMetatagStartExit(const ParsePoint::Pointer)");
+}
+
+void
+Parser::OnNameEnd(void)
+{
+  FO("Parser::OnNameEnd(const ParsePoint *)");
+}
+
+void
+Parser::OnArgumentListEnd(void)
+{
+  FO("Parser::OnArgumentListEnd(const ParsePoint *)");
 }
 
 /* ------------------------------------------------------------------------- */
 
-MetatagExpressionParserException::MetatagExpressionParserException(const Entry::Pointer entry, const UnicodeString &message) throw()
+ParserException::ParserException(const TagEntry::Pointer entry, const UnicodeString &message) throw()
   : std::runtime_error(glue_cast<std::string>(message).c_str()),
     entry(entry), message(message)
-{
+{ }
 
-}
-
-MetatagExpressionParserException::MetatagExpressionParserException(const UnicodeString &message) throw()
+ParserException::ParserException(const UnicodeString &message) throw()
   : std::runtime_error(glue_cast<std::string>(message).c_str()),
     message(message)
 { }
 
-MetatagExpressionParserException::~MetatagExpressionParserException(void) throw()
+ParserException::~ParserException(void) throw()
 { }
 
-const MetatagExpressionParserException::Entry::Pointer
-MetatagExpressionParserException::getEntry(void) const throw()
+const ParserException::TagEntry::Pointer
+ParserException::getEntry(void) const throw()
 {
   return entry;
 }
 
 const UnicodeString &
-MetatagExpressionParserException::getMessage(void) const throw()
+ParserException::getMessage(void) const throw()
 {
   return message;
 }
 
+} /* namespace MetatagExpression */
 } /* namespace mru */
 

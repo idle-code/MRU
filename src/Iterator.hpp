@@ -30,7 +30,7 @@ template<typename ValueT>
 class Iterator : public ConstIterator<ValueT> {
 public:
   typedef ValueT ValueType;
-  typedef boost::shared_ptr<Iterator<ValueType> > Pointer;
+  typedef boost::shared_ptr<ConstIterator<ValueType> > Pointer;
 public:
   virtual ~Iterator(void) { }
 

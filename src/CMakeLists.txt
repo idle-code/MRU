@@ -75,7 +75,7 @@ target_link_libraries (MetatagExpressionTokenizer TokenizerBase ${LIBS})
 add_library (MetatagExpressionLexer "MetatagExpressionLexer.cpp")
 target_link_libraries (MetatagExpressionLexer MetatagExpressionTokenizer ${LIBS})
 
-#add_library (MetatagExpressionParser "MetatagExpressionParser.cpp")
+add_library (MetatagExpressionParser "MetatagExpressionParser.cpp")
 #set (LIBS MetatagExpressionParser ${LIBS})
 
 #add_library (MetatagExpression "MetatagExpression.cpp")

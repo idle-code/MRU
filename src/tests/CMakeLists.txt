@@ -18,6 +18,10 @@ add_executable (StdIteratorAdapter_tests "StdIteratorAdapter_tests.cpp")
 target_link_libraries (StdIteratorAdapter_tests ${LIBS})
 add_test (StdIteratorAdapter_tests StdIteratorAdapter_tests)
 
+add_executable (StateMachine_tests "StateMachine_tests.cpp")
+target_link_libraries (StateMachine_tests ${LIBS})
+add_test (StateMachine_tests StateMachine_tests)
+
 # File Iterators tests:
 add_library (MockFileIterator "MockFileIterator.cpp")
 target_link_libraries (MockFileIterator FileIterator)
@@ -62,9 +66,9 @@ add_executable (MetatagExpressionLexer_tests "MetatagExpressionLexer_tests.cpp")
 target_link_libraries (MetatagExpressionLexer_tests MetatagExpressionLexer MetatagExpressionTokenizer ${LIBS})
 add_test (MetatagExpressionLexer_tests MetatagExpressionLexer_tests)
 
-#add_executable (MetatagExpressionParser_tests "MetatagExpressionParser_tests.cpp")
-#target_link_libraries (MetatagExpressionParser_tests ${LIBS} MetatagExpressionTokenizer)
-#add_test (MetatagExpressionParser_tests MetatagExpressionParser_tests)
+add_executable (MetatagExpressionParser_tests "MetatagExpressionParser_tests.cpp")
+target_link_libraries (MetatagExpressionParser_tests ${LIBS} MetatagExpressionLexer)
+add_test (MetatagExpressionParser_tests MetatagExpressionParser_tests)
 
 #add_executable (MetatagExpression_tests "MetatagExpression_tests.cpp")
 #target_link_libraries (MetatagExpression_tests ${LIBS})

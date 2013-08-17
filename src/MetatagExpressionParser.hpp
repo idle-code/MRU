@@ -2,21 +2,20 @@
 #define METATAG_EXPRESSION_PARSER_HPP
 
 #include "MetatagExpressionLexer.hpp"
-#include "MetatagExpression.hpp"
 #include <stdexcept>
 #include <map>
 
 class MetatagExpressionParser_tests; //forward declaration for tests
 
-namespace mru
-{
+namespace mru {
+namespace MetatagExpression {
 
-class MetatagExpressionParserException;
+class ParserException;
 
-class MetatagExpressionParser {
+class Parser {
 public:
-  struct Entry {
-    typedef boost::shared_ptr<Entry> Pointer;
+  struct TagEntry {
+    typedef boost::shared_ptr<TagEntry> Pointer;
     typedef std::list<Pointer> MemberList;
 
     int position;
@@ -24,67 +23,52 @@ public:
     UnicodeString arguments;
     MemberList areaOfEffectMembers;
 
-    Entry(int position);
-    Entry(int position, const UnicodeString &name, const UnicodeString &arguments);
+    TagEntry(int position, const UnicodeString &name, const UnicodeString &arguments);
     void addAreaOfEffectMember(int position, const UnicodeString &name, const UnicodeString &arguments);
-    bool isAreaOfEffectMembersPresent(void) const;
+    bool haveAreaOfEffectMembers(void) const;
   };
 
-  friend class MetatagExpressionParserException;
+  friend class ParserException;
   friend class ::MetatagExpressionParser_tests;
 public:
-  MetatagExpressionParser(void);
-  ~MetatagExpressionParser(void);
+  Parser(void);
+  ~Parser(void);
 
-  Entry::Pointer parse(const UnicodeString &expression_text);
+  TagEntry::Pointer parse(const UnicodeString &expression_text);
 
 private: 
-  MetatagExpressionParser(const MetatagExpressionParser &other); //disabled
-  typedef MetatagExpressionLexer::TokenList TokenList;
-  typedef MetatagExpressionLexer::Token Token;
+  Parser(const Parser &other); //disabled
 
-  struct ParsePoint {
-    typedef boost::shared_ptr<ParsePoint> Pointer;
+  TagEntry::Pointer last_tag_entry;
+  Lexer::Pointer lexer;
 
-    typedef void (MetatagExpressionParser::* ActionCallback)(const Pointer);
-    ActionCallback onEntry;
-    ActionCallback onExit;
+  void parse(TagEntry::Pointer parent);
 
-    Token::TokenKind type;
-    std::list<ParsePoint::Pointer> exitPoints;
-    ParsePoint::Pointer getNextExitPoint(Token::TokenKind type);
-  };
-  friend struct ParsePoint;
-
-
-  TokenList::const_iterator tok_iter;
-  TokenList::const_iterator tok_iter_end;
-  void parse(Entry::Pointer parent);
-  std::map<std::string, ParsePoint::Pointer> parser_states;
-  void clearParserStatesMap(void);
-
-  void OnMetatagStartEntry(const ParsePoint::Pointer);
-  void OnMetatagStartExit(const ParsePoint::Pointer);
-
-  MetatagExpressionLexer lexer;
-  Entry::Pointer root;
+  void onMetatagStartEntry(void);
+  void onMetatagStartExit(void);
+  
+  void onNameEnd(void);
+  void onArgumentListEnd(void);
 };
 
-class MetatagExpressionParserException : public std::runtime_error {
-public: 
-  typedef MetatagExpressionParser::Entry Entry;
-public:
-  MetatagExpressionParserException(const Entry::Pointer entry, const UnicodeString &message) throw();
-  MetatagExpressionParserException(const UnicodeString &message) throw();
-  virtual ~MetatagExpressionParserException(void) throw();
 
-  const Entry::Pointer getEntry(void) const throw();
+
+class ParserException : public std::runtime_error {
+public: 
+  typedef Parser::TagEntry TagEntry;
+public:
+  ParserException(const TagEntry::Pointer entry, const UnicodeString &message) throw();
+  ParserException(const UnicodeString &message) throw();
+  virtual ~ParserException(void) throw();
+
+  const TagEntry::Pointer getEntry(void) const throw();
   const UnicodeString& getMessage(void) const throw();
 private:
-  Entry::Pointer entry;
+  TagEntry::Pointer entry;
   UnicodeString message;
 };
 
+} /* namespace MetatagExpression */
 } /* namespace mru */
 
 #endif /* METATAG_EXPRESSION_PARSER_HPP */
