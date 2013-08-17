@@ -27,18 +27,18 @@ public:
   CPPUNIT_TEST_SUITE_END();
 
 private:
-  typedef MetatagExpressionParser Parser;
+  typedef MetatagExpression::Parser Parser;
   Parser parser;
-  Parser::Entry::Pointer expected_expression_root;
-  Parser::Entry::Pointer expression_root;
+  Parser::TagEntry::Pointer expected_expression_root;
+  Parser::TagEntry::Pointer expression_root;
   UnicodeString expr_str;
 
-  void compare_entry_trees(const Parser::Entry::Pointer provided_expression_root) const;
-  void compare_entries(const Parser::Entry::Pointer expected_entry, const Parser::Entry::Pointer provided_entry) const;
+  void compare_entry_trees(const Parser::TagEntry::Pointer provided_expression_root) const;
+  void compare_entries(const Parser::TagEntry::Pointer expected_entry, const Parser::TagEntry::Pointer provided_entry) const;
 };
 
 #define ADD_ENTRY(POS,NAME,ARGS) \
-  areaOfEffectMembers.push_back(Parser::Entry::Pointer(new Parser::Entry(POS,NAME,ARGS)))
+  areaOfEffectMembers.push_back(Parser::TagEntry::Pointer(new Parser::TagEntry(POS,NAME,ARGS)))
 
 
 #endif /* METATAG_EXPRESSION_PARSER_TESTS_HPP */
