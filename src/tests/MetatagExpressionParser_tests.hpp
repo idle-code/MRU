@@ -16,14 +16,38 @@ public:
 
   void empty_expr(void);
   void static_expr(void);
-  void flat_expr(void);
-  void nested_expr(void);
+  void single_expr(void);
+  void single_with_args_expr(void);
+  void compound_flat_expr(void);
+  void simple_aoe(void);
+  void nested_aoe(void);
+
+  void no_name(void);
+  void invalid_name(void);
+  void missing_arg_start(void);
+  void missing_arg_end(void); 
+  void missing_aoe_end(void); 
+  void aoe_in_text(void);
+  void arg_start_in_text(void);
+
 
   CPPUNIT_TEST_SUITE(MetatagExpressionParser_tests);
-    //CPPUNIT_TEST(empty_expr);
-    //CPPUNIT_TEST(static_expr);
-    CPPUNIT_TEST(flat_expr);
-    //CPPUNIT_TEST(nested_expr);
+    CPPUNIT_TEST(empty_expr);
+    CPPUNIT_TEST(static_expr);
+    CPPUNIT_TEST(single_expr);
+    CPPUNIT_TEST(single_with_args_expr);
+    CPPUNIT_TEST(compound_flat_expr);
+    CPPUNIT_TEST(simple_aoe);
+    CPPUNIT_TEST(nested_aoe);
+
+    CPPUNIT_TEST_EXCEPTION(no_name, MetatagExpression::ParserException);
+    CPPUNIT_TEST_EXCEPTION(invalid_name, MetatagExpression::ParserException);
+    CPPUNIT_TEST_EXCEPTION(missing_arg_start, MetatagExpression::ParserException);
+    CPPUNIT_TEST_EXCEPTION(missing_arg_end, MetatagExpression::ParserException);
+    CPPUNIT_TEST_EXCEPTION(missing_aoe_end, MetatagExpression::ParserException);
+    CPPUNIT_TEST_EXCEPTION(aoe_in_text, MetatagExpression::ParserException);
+    CPPUNIT_TEST_EXCEPTION(arg_start_in_text, MetatagExpression::ParserException);
+    //CPPUNIT_TEST_EXCEPTION(, MetatagExpression::ParserException);
   CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -40,6 +64,8 @@ private:
 #define ADD_ENTRY(POS,NAME,ARGS) \
   areaOfEffectMembers.push_back(Parser::TagEntry::Pointer(new Parser::TagEntry(POS,NAME,ARGS)))
 
+#define LAST_ENTRY \
+  areaOfEffectMembers.back()
 
 #endif /* METATAG_EXPRESSION_PARSER_TESTS_HPP */
 

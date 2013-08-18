@@ -6,14 +6,18 @@
 namespace mru {
 namespace MetatagExpression {
 
+Parser::TagEntry::TagEntry(void)
+  : position(-1), name(""), arguments("")
+{ }
+
 Parser::TagEntry::TagEntry(int position, const UnicodeString &name, const UnicodeString &arguments)
   : position(position), name(name), arguments(arguments)
 { }
 
 void
-Parser::TagEntry::addAreaOfEffectMember(int position, const UnicodeString &name, const UnicodeString &arguments)
+Parser::TagEntry::addAreaOfEffectMember(Pointer sub_tag)
 {
-  areaOfEffectMembers.push_back(Pointer(new TagEntry(position, name, arguments)));
+  areaOfEffectMembers.push_back(sub_tag);
 }
 
 bool
@@ -24,47 +28,78 @@ Parser::TagEntry::haveAreaOfEffectMembers(void) const
 
 /* ------------------------------------------------------------------------- */
 
-
 Parser::Parser(void)
 {
-  start_point = boost::make_shared<ParsePoint>();
-  ParsePoint::Pointer metatag_start = boost::make_shared<ParsePoint>();
-  ParsePoint::Pointer text = boost::make_shared<ParsePoint>();
-  ParsePoint::Pointer name = boost::make_shared<ParsePoint>();
-  ParsePoint::Pointer args_start = boost::make_shared<ParsePoint>();
-  ParsePoint::Pointer args = boost::make_shared<ParsePoint>();
-  ParsePoint::Pointer args_end = boost::make_shared<ParsePoint>();
-  ParsePoint::Pointer aoe_start = boost::make_shared<ParsePoint>();
-  ParsePoint::Pointer aoe_end = boost::make_shared<ParsePoint>();
-  
-  /* ------------------------------------------------------------------------- */
-  
-  start_point->exitPoints[Token::Text] = text.get();
-  start_point->exitPoints[Token::MetatagStart] = metatag_start.get();
+  setUpStateMachine();
+}
 
-  metatag_start->exitPoints[Token::Text] = name.get();
+void
+Parser::setUpStateMachine(void)
+{
+  StateMachineType::State *start = state_machine.createState();
+  StateMachineType::State *constant_text = state_machine.createState();
+  StateMachineType::State *tag_start = state_machine.createState();
+  StateMachineType::State *name = state_machine.createState();
+  StateMachineType::State *arguments_start = state_machine.createState();
+  StateMachineType::State *arguments_end = state_machine.createState();
+  StateMachineType::State *arguments_text = state_machine.createState();
+  StateMachineType::State *aoe_start = state_machine.createState();
+  StateMachineType::State *aoe_end = state_machine.createState();
 
-  //name->exitPoints[Token::Text] = name.get();
-  name->exitPoints[Token::ArgumentListStart] = args_start.get();
-  args_start->exitPoints[Token::ArgumentListEnd] = args_end.get();
-  
-  /* ------------------------------------------------------------------------- */
+  state_machine.setStartState(start);
+  state_machine.addEndState(start); //empty expression is still good
+  state_machine.addEndState(constant_text);
+  state_machine.addEndState(arguments_end);
+  state_machine.addEndState(aoe_end);
 
-  start_point->onEntry = &Parser::OnMetatagStartEntry;
-  start_point->onExit = &Parser::OnMetatagStartExit;
-  
-  name->onExit = &Parser::OnNameEnd;
-  args_end->onExit = &Parser::OnArgumentListEnd;
-  /* ------------------------------------------------------------------------- */
-  
-  //possible_parse_points.push_back(start_point);
-  possible_parse_points.push_back(metatag_start);
-  possible_parse_points.push_back(name);
-  possible_parse_points.push_back(args_start);
-  possible_parse_points.push_back(args);
-  possible_parse_points.push_back(args_end);
-  possible_parse_points.push_back(aoe_start);
-  possible_parse_points.push_back(aoe_end);
+  // connect methods
+  constant_text->onEntry.connect(sigc::mem_fun(this, &Parser::createNewEntry));
+  constant_text->onEntry.connect(sigc::mem_fun(this, &Parser::addToEntryArguments));
+  constant_text->onRepeat.connect(sigc::mem_fun(this, &Parser::addToEntryArguments));
+  constant_text->onLeave.connect(sigc::mem_fun(this, &Parser::addEntryToParent));
+
+  name->onEntry.connect(sigc::mem_fun(this, &Parser::createNewEntry));
+  name->onEntry.connect(sigc::mem_fun(this, &Parser::addToEntryName));
+  name->onRepeat.connect(sigc::mem_fun(this, &Parser::addToEntryName));
+  //name->onLeave.connect(sigc::mem_fun(this, &Parser::onNameLeave));
+  arguments_text->onEntry.connect(sigc::mem_fun(this, &Parser::addToEntryArguments));
+  arguments_text->onRepeat.connect(sigc::mem_fun(this, &Parser::addToEntryArguments));
+
+  arguments_end->onEntry.connect(sigc::mem_fun(this, &Parser::addEntryToParent));
+
+  aoe_start->onEntry.connect(sigc::mem_fun(this, &Parser::subExpressionStart));
+
+  aoe_end->onEntry.connect(sigc::mem_fun(this, &Parser::subExpressionEnd));
+
+  // define transition rules
+  start->addTransition(Token(Token::Text), constant_text);
+  start->addTransition(Token(Token::MetatagStart), tag_start);
+
+  constant_text->addTransition(Token(Token::Text), constant_text);
+  constant_text->addTransition(Token(Token::MetatagStart), tag_start);
+  constant_text->addTransition(Token(Token::AreaOfEffectEnd), aoe_end);
+
+  tag_start->addTransition(Token(Token::Text), name);
+
+  name->addTransition(Token(Token::Text), name);
+  name->addTransition(Token(Token::ArgumentListStart), arguments_start);
+
+  arguments_start->addTransition(Token(Token::ArgumentListEnd), arguments_end);
+  arguments_start->addTransition(Token(Token::Text), arguments_text);
+
+  arguments_text->addTransition(Token(Token::Text), arguments_text);
+  arguments_text->addTransition(Token(Token::ArgumentListEnd), arguments_end);
+
+  arguments_end->addTransition(Token(Token::Text), constant_text);
+  arguments_end->addTransition(Token(Token::AreaOfEffectStart), aoe_start);
+  arguments_end->addTransition(Token(Token::AreaOfEffectEnd), aoe_end);
+
+  aoe_start->addTransition(Token(Token::Text), constant_text);
+  aoe_start->addTransition(Token(Token::MetatagStart), tag_start);
+  aoe_start->addTransition(Token(Token::AreaOfEffectEnd), aoe_end);
+
+  aoe_end->addTransition(Token(Token::Text), constant_text);
+
 }
 
 Parser::~Parser(void)
@@ -76,75 +111,75 @@ Parser::TagEntry::Pointer
 Parser::parse(const UnicodeString &expression_text)
 {
   FO("Parser::parse(const UnicodeString &expression_text)");
+  VAL(expression_text);
   Tokenizer::Pointer tokenizer = boost::make_shared<Tokenizer>(expression_text);
   lexer = boost::make_shared<Lexer>(tokenizer);
-  TagEntry::Pointer root = boost::make_shared<TagEntry>(-1, "", "");
-  current_state = start_point.get();
 
-  parse(root);
+  entry_stack.push(boost::make_shared<TagEntry>()); //TODO: remove
 
-  return root;
-}
-
-Parser::ParsePoint *
-Parser::ParsePoint::getNextExitPoint(Token::TokenKind type)
-{
-  if (exitPoints.count(type) > 0)
-    return exitPoints[type];
-  return NULL;
-}
-
-void
-Parser::parse(TagEntry::Pointer parent)
-{
-  FO("Parser::parse(TagEntry::Pointer parent, Lexer::Pointer lexer)");
-  assert(parent);
-  ParsePoint *next_state = NULL;
-  while (!lexer->atEnd()) {
-    VAL(lexer->getCurrent().value);
-    next_state = current_state->getNextExitPoint(lexer->getCurrent().type);
-    if (next_state == NULL)
-      break; //error?
-    if (current_state->onExit)
-      (this->*current_state->onExit)();
-    if (next_state->onEntry)
-      (this->*next_state->onEntry)();
-    current_state = next_state;
-    lexer->next();
+  state_machine.setIterator(lexer);
+  try {
+    state_machine.start();
+  } catch(StateMachineException &e) {
+    throw ParserException(e.what());
   }
 
-  if (!lexer->atEnd()) {
-    ERR("Unexpected end of expression");
-    return;
-  }
-
-  if (current_state->onExit)
-    (this->*current_state->onExit)();
-
+  VAL(entry_stack.size());
+  return entry_stack.top();
 }
 
 void
-Parser::OnMetatagStartEntry(void)
+Parser::addEntryToParent(const Token &current_token)
 {
-  MSG("Parser::OnMetatagStartEntry(const ParsePoint::Pointer)");
+  FO("Parser::addEntryToParent(const Token &current_token)");
+  assert(!entry_stack.empty());
+  assert(tag_entry);
+  entry_stack.top()->addAreaOfEffectMember(tag_entry);
+  tag_entry.reset();
 }
 
 void
-Parser::OnMetatagStartExit(void)
+Parser::createNewEntry(const Token &current_token)
 {
-  MSG("Parser::OnMetatagStartExit(const ParsePoint::Pointer)");
+  FO("Parser::createNewEntry(const Token &current_token)");
+  assert(!tag_entry);
+  tag_entry = boost::make_shared<TagEntry>();
 }
 
 void
-Parser::OnNameEnd(void)
+Parser::addToEntryName(const Token &current_token)
 {
-  FO("Parser::OnNameEnd(const ParsePoint *)");
+  FO("Parser::addToEntryName(const Token &current_token)");
+  VAL(current_token.value);
+  assert(tag_entry);
+  tag_entry->name += current_token.value;
 }
 
 void
-Parser::OnArgumentListEnd(void)
+Parser::addToEntryArguments(const Token &current_token)
 {
-  FO("Parser::OnArgumentListEnd(const ParsePoint *)");
+  FO("Parser::addToEntryArguments(const Token &current_token)");
+  VAL(current_token.value);
+  assert(tag_entry);
+  tag_entry->arguments += current_token.value;
+}
+
+void
+Parser::subExpressionStart(const Token &current_token)
+{
+  FO("Parser::subExpressionStart(const Token &current_token)");
+  if (entry_stack.empty())
+    entry_stack.push(boost::make_shared<TagEntry>());
+  assert(entry_stack.top()->areaOfEffectMembers.size() > 0);
+  entry_stack.push(entry_stack.top()->areaOfEffectMembers.back());
+}
+
+void
+Parser::subExpressionEnd(const Token &current_token)
+{
+  FO("Parser::subExpressionEnd(const Token &current_token)");
+  assert(entry_stack.size() > 0);
+  entry_stack.pop();
 }
 
 /* ------------------------------------------------------------------------- */

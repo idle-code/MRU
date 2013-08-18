@@ -2,6 +2,7 @@
 #define METATAG_EXPRESSION_PARSER_HPP
 
 #include "MetatagExpressionLexer.hpp"
+#include "StateMachine.hpp"
 #include <stdexcept>
 #include <map>
 
@@ -23,8 +24,9 @@ public:
     UnicodeString arguments;
     MemberList areaOfEffectMembers;
 
+    TagEntry(void);
     TagEntry(int position, const UnicodeString &name, const UnicodeString &arguments);
-    void addAreaOfEffectMember(int position, const UnicodeString &name, const UnicodeString &arguments);
+    void addAreaOfEffectMember(Pointer sub_tag);
     bool haveAreaOfEffectMembers(void) const;
   };
 
@@ -38,20 +40,23 @@ public:
 
 private: 
   Parser(const Parser &other); //disabled
+  void setUpStateMachine(void);
+  typedef StateMachine<Token> StateMachineType;
+  StateMachineType state_machine;
 
-  TagEntry::Pointer last_tag_entry;
+  TagEntry::Pointer tag_entry;
+  std::stack<TagEntry::Pointer> entry_stack;
   Lexer::Pointer lexer;
 
-  void parse(TagEntry::Pointer parent);
-
-  void onMetatagStartEntry(void);
-  void onMetatagStartExit(void);
-  
-  void onNameEnd(void);
-  void onArgumentListEnd(void);
+  void addEntryToParent(const Token &current_token);
+  void createNewEntry(const Token &current_token);
+  void addToEntryName(const Token &current_token);
+  void addToEntryArguments(const Token &current_token);
+  void subExpressionStart(const Token &current_token); 
+  void subExpressionEnd(const Token &current_token); 
 };
 
-
+/* ------------------------------------------------------------------------- */
 
 class ParserException : public std::runtime_error {
 public: 

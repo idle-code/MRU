@@ -22,6 +22,15 @@ struct Token {
     AreaOfEffectEnd,
     EscapeSequence
   } type;
+
+  Token(void) { }
+  Token(TokenKind kind)
+    : type(kind) { }
+
+  bool operator<(const Token &other) const
+  {
+    return type < other.type;
+  }
 };
 
 inline bool
