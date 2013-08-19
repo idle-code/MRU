@@ -2,7 +2,7 @@
 #define METATAG_EXPRESSION_LEXER_HPP
 
 #include "Iterator.hpp"
-#include "MetatagExpressionTokenizer.hpp"
+#include "MetatagExpression/Tokenizer.hpp"
 #include <list>
 
 class MetatagExpressionLexer_tests;

@@ -62,25 +62,12 @@ add_library (SortingFileIterator "SortingFileIterator.cpp")
 
 add_library (FilteringFileIterator "FilteringFileIterator.cpp")
 
-add_library (Metatag "Metatag.cpp")
-
 add_library (UnicodeStringIterator "UnicodeStringIterator.cpp")
 
 add_library (TokenizerBase "TokenizerBase.cpp")
 target_link_libraries (TokenizerBase UnicodeStringIterator ${LIBS})
 
-add_library (MetatagExpressionTokenizer "MetatagExpressionTokenizer.cpp")
-target_link_libraries (MetatagExpressionTokenizer TokenizerBase ${LIBS})
-
-add_library (MetatagExpressionLexer "MetatagExpressionLexer.cpp")
-target_link_libraries (MetatagExpressionLexer MetatagExpressionTokenizer ${LIBS})
-
-add_library (MetatagExpressionParser "MetatagExpressionParser.cpp")
-target_link_libraries (MetatagExpressionParser MetatagExpressionLexer ${LIBS})
-#set (LIBS MetatagExpressionParser ${LIBS})
-
-#add_library (MetatagExpression "MetatagExpression.cpp")
-#set (LIBS MetatagExpression ${LIBS})
+add_subdirectory ("MetatagExpression")
 
 #add_executable (mru "main.cpp" "MruCore.cpp")
 #target_link_libraries (mru ${LIBS} ${CMAKE_DL_LIBS})

@@ -4,7 +4,7 @@
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "MetatagExpressionParser.hpp"
+#include "MetatagExpression/Parser.hpp"
 #include "types.hpp"
 
 using namespace CppUnit;

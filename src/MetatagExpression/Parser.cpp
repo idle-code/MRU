@@ -1,6 +1,6 @@
 #include "tests/UnicodeStringStreamOperator.hpp" //temporary
-#include "MetatagExpressionParser.hpp"
-#include "MetatagExpressionLexer.hpp"
+#include "MetatagExpression/Parser.hpp"
+#include "MetatagExpression/Lexer.hpp"
 #include <boost/make_shared.hpp>
 
 namespace mru {
@@ -110,8 +110,8 @@ Parser::~Parser(void)
 Parser::TagEntry::Pointer
 Parser::parse(const UnicodeString &expression_text)
 {
-  FO("Parser::parse(const UnicodeString &expression_text)");
-  VAL(expression_text);
+  //FO("Parser::parse(const UnicodeString &expression_text)");
+  //VAL(expression_text);
   Tokenizer::Pointer tokenizer = boost::make_shared<Tokenizer>(expression_text);
   lexer = boost::make_shared<Lexer>(tokenizer);
 
@@ -124,14 +124,16 @@ Parser::parse(const UnicodeString &expression_text)
     throw ParserException(e.what());
   }
 
-  VAL(entry_stack.size());
+  //VAL(entry_stack.size());
+  if (entry_stack.size() != 1)
+    throw ParserException("Unclosed area of effect");
   return entry_stack.top();
 }
 
 void
 Parser::addEntryToParent(const Token &current_token)
 {
-  FO("Parser::addEntryToParent(const Token &current_token)");
+  //FO("Parser::addEntryToParent(const Token &current_token)");
   assert(!entry_stack.empty());
   assert(tag_entry);
   entry_stack.top()->addAreaOfEffectMember(tag_entry);
@@ -141,7 +143,7 @@ Parser::addEntryToParent(const Token &current_token)
 void
 Parser::createNewEntry(const Token &current_token)
 {
-  FO("Parser::createNewEntry(const Token &current_token)");
+  //FO("Parser::createNewEntry(const Token &current_token)");
   assert(!tag_entry);
   tag_entry = boost::make_shared<TagEntry>();
 }
@@ -149,8 +151,8 @@ Parser::createNewEntry(const Token &current_token)
 void
 Parser::addToEntryName(const Token &current_token)
 {
-  FO("Parser::addToEntryName(const Token &current_token)");
-  VAL(current_token.value);
+  //FO("Parser::addToEntryName(const Token &current_token)");
+  //VAL(current_token.value);
   assert(tag_entry);
   tag_entry->name += current_token.value;
 }
@@ -158,8 +160,8 @@ Parser::addToEntryName(const Token &current_token)
 void
 Parser::addToEntryArguments(const Token &current_token)
 {
-  FO("Parser::addToEntryArguments(const Token &current_token)");
-  VAL(current_token.value);
+  //FO("Parser::addToEntryArguments(const Token &current_token)");
+  //VAL(current_token.value);
   assert(tag_entry);
   tag_entry->arguments += current_token.value;
 }
@@ -167,7 +169,7 @@ Parser::addToEntryArguments(const Token &current_token)
 void
 Parser::subExpressionStart(const Token &current_token)
 {
-  FO("Parser::subExpressionStart(const Token &current_token)");
+  //FO("Parser::subExpressionStart(const Token &current_token)");
   if (entry_stack.empty())
     entry_stack.push(boost::make_shared<TagEntry>());
   assert(entry_stack.top()->areaOfEffectMembers.size() > 0);
@@ -177,7 +179,7 @@ Parser::subExpressionStart(const Token &current_token)
 void
 Parser::subExpressionEnd(const Token &current_token)
 {
-  FO("Parser::subExpressionEnd(const Token &current_token)");
+  //FO("Parser::subExpressionEnd(const Token &current_token)");
   assert(entry_stack.size() > 0);
   entry_stack.pop();
 }

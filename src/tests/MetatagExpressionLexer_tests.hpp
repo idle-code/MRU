@@ -1,7 +1,7 @@
 #ifndef METATAG_EXPRESSION_TOKENIZER_TEST_HPP
 #define METATAG_EXPRESSION_TOKENIZER_TEST_HPP
 
-#include "MetatagExpressionLexer.hpp"
+#include "MetatagExpression/Lexer.hpp"
 #include "ConstIterator_tests.hpp"
 
 #include <cppunit/TestCase.h>

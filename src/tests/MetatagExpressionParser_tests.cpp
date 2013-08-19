@@ -147,10 +147,10 @@ MetatagExpressionParser_tests::nested_aoe(void)
 
   expression_root = parser.parse(expr_str);
 
-  MSG("Expected:");
-  print_entry_tree(expected_expression_root);
-  MSG("Provided:");
-  print_entry_tree(expression_root);
+  //MSG("Expected:");
+  //print_entry_tree(expected_expression_root);
+  //MSG("Provided:");
+  //print_entry_tree(expression_root);
 
   compare_entry_trees(expression_root);
 }

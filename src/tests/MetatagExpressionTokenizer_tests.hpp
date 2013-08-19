@@ -1,7 +1,7 @@
 #ifndef METATAG_EXPRESSION_TOKENIZER_TEST_HPP
 #define METATAG_EXPRESSION_TOKENIZER_TEST_HPP
 
-#include "MetatagExpressionTokenizer.hpp"
+#include "MetatagExpression/Tokenizer.hpp"
 
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>

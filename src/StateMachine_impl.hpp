@@ -64,8 +64,8 @@ StateMachine<TokenType, Predicate>::start(void)
   current_state->onEntry(TokenType());
 
   while(!token_iterator->atEnd()) {
-    MSG("-------------");
-    VAL(token_iterator->getCurrent().value);
+    //MSG("-------------");
+    //VAL(token_iterator->getCurrent().value);
     if (current_state->transitions.count(token_iterator->getCurrent()) == 0)
       throw StateMachineException("No transition found");
 
