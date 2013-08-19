@@ -3,7 +3,7 @@
 
 #include "plugins/MruPlugin.hpp"
 #include "plugin_manager.hpp"
-#include "Metatag.hpp"
+#include "MetatagExpression/Metatag.hpp"
 #include "glue.hpp"
 
 namespace mru

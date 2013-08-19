@@ -1,7 +1,7 @@
 #ifndef METATAG_EXPRESSION_PARSER_HPP
 #define METATAG_EXPRESSION_PARSER_HPP
 
-#include "MetatagExpressionLexer.hpp"
+#include "MetatagExpression/Lexer.hpp"
 #include "StateMachine.hpp"
 #include <stdexcept>
 #include <map>

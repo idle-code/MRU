@@ -7,26 +7,18 @@
 
 class MetatagExpression_tests; //forward declaration for tests
 
-namespace mru
-{
-
-class MetatagExpressionException : public std::runtime_error {
-public:
-  MetatagExpressionException(void) throw();
-  ~MetatagExpressionException(void) throw();
-
-};
+namespace mru {
+namespace MetatagExpression {
 
 /* ------------------------------------------------------------------------- */
 
-class MetatagExpression {
+class Expression {
 public:
-
   friend class ::MetatagExpression_tests;
 public:
-  MetatagExpression(void);
-  MetatagExpression(const UnicodeString &expression_text);
-  ~MetatagExpression(void);
+  Expression(void);
+  Expression(const UnicodeString &expression_text);
+  ~Expression(void);
 
   UnicodeString text(void) const;
 
@@ -36,6 +28,7 @@ private:
 
 /* ------------------------------------------------------------------------- */
 
+} /* namespace MetatagExpression */
 } /* namespace mru */
 
 #endif /* METATAG_EXPRESSION_HPP */
