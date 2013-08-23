@@ -2,8 +2,10 @@
 #define METATAG_EXPRESSION_HPP
 
 #include "types.hpp"
-#include "Metatag.hpp"
+#include "MetatagExpression/Metatag.hpp"
+#include "MetatagExpression/Parser.hpp"
 #include <stdexcept>
+#include <set>
 
 class MetatagExpression_tests; //forward declaration for tests
 
@@ -14,16 +16,26 @@ namespace MetatagExpression {
 
 class Expression {
 public:
+  typedef boost::shared_ptr<Expression> Pointer;
   friend class ::MetatagExpression_tests;
+
+  static Expression::Pointer parse(const UnicodeString &expression_text);
 public:
-  Expression(void);
-  Expression(const UnicodeString &expression_text);
   ~Expression(void);
 
   UnicodeString text(void) const;
 
-private:
+  std::set<UnicodeString> getUsedMetatagNames(void) const;
 
+private:
+  struct MetatagEntry : public Parser::TagEntry {
+    Metatag::Pointer metatag;
+  };
+
+  Expression(void);
+  Expression(Parser::TagEntry::Pointer expression_root);
+  
+  Parser::TagEntry::Pointer expression_root;
 };
 
 /* ------------------------------------------------------------------------- */
