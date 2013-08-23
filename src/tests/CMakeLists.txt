@@ -70,9 +70,9 @@ add_executable (MetatagExpressionParser_tests "MetatagExpressionParser_tests.cpp
 target_link_libraries (MetatagExpressionParser_tests ${LIBS} MetatagExpressionTokenizer MetatagExpressionLexer MetatagExpressionParser)
 add_test (MetatagExpressionParser_tests MetatagExpressionParser_tests)
 
-#add_executable (MetatagExpression_tests "MetatagExpression_tests.cpp")
-#target_link_libraries (MetatagExpression_tests ${LIBS})
-#add_test (MetatagExpression_tests MetatagExpression_tests)
+add_executable (MetatagExpression_tests "MetatagExpression_tests.cpp")
+target_link_libraries (MetatagExpression_tests ${LIBS} MetatagExpression MetatagExpressionTokenizer MetatagExpressionLexer MetatagExpressionParser)
+add_test (MetatagExpression_tests MetatagExpression_tests)
 
 # Other:
 

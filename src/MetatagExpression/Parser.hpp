@@ -38,6 +38,8 @@ public:
 
   TagEntry::Pointer parse(const UnicodeString &expression_text);
 
+  TagEntry::Pointer getExpressionRoot(void);
+
 private: 
   Parser(const Parser &other); //disabled
   void setUpStateMachine(void);

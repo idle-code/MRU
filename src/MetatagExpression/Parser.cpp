@@ -127,6 +127,12 @@ Parser::parse(const UnicodeString &expression_text)
   //VAL(entry_stack.size());
   if (entry_stack.size() != 1)
     throw ParserException("Unclosed area of effect");
+  return getExpressionRoot(); //TODO: remove and replace return type by void
+}
+
+Parser::TagEntry::Pointer
+Parser::getExpressionRoot(void)
+{
   return entry_stack.top();
 }
 
