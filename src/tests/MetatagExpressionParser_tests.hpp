@@ -4,7 +4,7 @@
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "MetatagExpression/Parser.hpp"
+#include "Metatag/Parser.hpp"
 #include "types.hpp"
 
 using namespace CppUnit;
@@ -40,18 +40,18 @@ public:
     CPPUNIT_TEST(simple_aoe);
     CPPUNIT_TEST(nested_aoe);
 
-    CPPUNIT_TEST_EXCEPTION(no_name, MetatagExpression::ParserException);
-    CPPUNIT_TEST_EXCEPTION(invalid_name, MetatagExpression::ParserException);
-    CPPUNIT_TEST_EXCEPTION(missing_arg_start, MetatagExpression::ParserException);
-    CPPUNIT_TEST_EXCEPTION(missing_arg_end, MetatagExpression::ParserException);
-    CPPUNIT_TEST_EXCEPTION(missing_aoe_end, MetatagExpression::ParserException);
-    CPPUNIT_TEST_EXCEPTION(aoe_in_text, MetatagExpression::ParserException);
-    CPPUNIT_TEST_EXCEPTION(arg_start_in_text, MetatagExpression::ParserException);
-    //CPPUNIT_TEST_EXCEPTION(, MetatagExpression::ParserException);
+    CPPUNIT_TEST_EXCEPTION(no_name, Metatag::Parser::Exception);
+    CPPUNIT_TEST_EXCEPTION(invalid_name, Metatag::Parser::Exception);
+    CPPUNIT_TEST_EXCEPTION(missing_arg_start, Metatag::Parser::Exception);
+    CPPUNIT_TEST_EXCEPTION(missing_arg_end, Metatag::Parser::Exception);
+    CPPUNIT_TEST_EXCEPTION(missing_aoe_end, Metatag::Parser::Exception);
+    CPPUNIT_TEST_EXCEPTION(aoe_in_text, Metatag::Parser::Exception);
+    CPPUNIT_TEST_EXCEPTION(arg_start_in_text, Metatag::Parser::Exception);
+    //CPPUNIT_TEST_EXCEPTION(, Metatag::Parser::Exception);
   CPPUNIT_TEST_SUITE_END();
 
 private:
-  typedef MetatagExpression::Parser Parser;
+  typedef Metatag::Parser Parser;
   Parser parser;
   Parser::TagEntry::Pointer expected_expression_root;
   Parser::TagEntry::Pointer expression_root;

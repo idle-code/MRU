@@ -67,7 +67,7 @@ add_library (UnicodeStringIterator "UnicodeStringIterator.cpp")
 add_library (TokenizerBase "TokenizerBase.cpp")
 target_link_libraries (TokenizerBase UnicodeStringIterator ${LIBS})
 
-add_subdirectory ("MetatagExpression")
+add_subdirectory ("Metatag")
 
 #add_executable (mru "main.cpp" "MruCore.cpp")
 #target_link_libraries (mru ${LIBS} ${CMAKE_DL_LIBS})

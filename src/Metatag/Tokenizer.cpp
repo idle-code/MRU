@@ -1,9 +1,9 @@
-#include "MetatagExpression/Tokenizer.hpp"
+#include "Metatag/Tokenizer.hpp"
 #include <unicode/schriter.h>
 #include <unicode/uchar.h>
 
 namespace mru {
-namespace MetatagExpression {
+namespace Metatag {
 
 Tokenizer::Tokenizer(const ConstUnicodeStringIterator &text_iterator)
   : TokenizerBase(text_iterator), escape_next(false)
@@ -41,6 +41,6 @@ Tokenizer::isControlCharacter(UChar character) const
   }
 }
 
-} /* namespace MetatagExpression */
+} /* namespace Metatag */
 } /* namespace mru */
 

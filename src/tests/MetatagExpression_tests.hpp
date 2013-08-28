@@ -1,7 +1,7 @@
 #ifndef METATAG_EXPRESSION_TEST_HPP
 #define METATAG_EXPRESSION_TEST_HPP
 
-#include "MetatagExpression/Expression.hpp"
+#include "Metatag/Expression.hpp"
 #include "types.hpp"
 
 #include <cppunit/TestCase.h>
@@ -13,7 +13,7 @@ using namespace mru;
 class MetatagExpression_tests : public TestCase {
 private:
   UnicodeString expr_str;
-  MetatagExpression::Expression::Pointer expr;
+  Metatag::Expression::Pointer expr;
   FileIterator::Pointer file_iterator;
   std::list<FilePath> file_list;
 public:

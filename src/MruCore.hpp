@@ -11,7 +11,7 @@
 #include "FileIterator.hpp"
 #include <sigc++/sigc++.h>
 #include <boost/filesystem.hpp>
-#include "MetatagExpression/Expression.hpp"
+#include "Metatag/Expression.hpp"
 #include <pthread.h>
 
 namespace mru
@@ -85,7 +85,7 @@ private:
   InputPlugin *m_input;
   OutputPlugin *m_output;
   FilePath m_directory;
-  MetatagExpression::Expression m_metatag_expression;
+  Metatag::Expression m_metatag_expression;
 
   friend void* worker_thread_main(void *a_core_pointer);
   pthread_t m_worker_thread;

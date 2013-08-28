@@ -10,7 +10,7 @@ MetatagExpressionTokenizer_tests::setUp(void)
 }
 
 void
-MetatagExpressionTokenizer_tests::compare_to_expected(MetatagExpression::Tokenizer &tokenizer)
+MetatagExpressionTokenizer_tests::compare_to_expected(Metatag::Tokenizer &tokenizer)
 {
   std::list<UnicodeString>::const_iterator eti = expected_words.begin();
   for(; eti != expected_words.end() && !tokenizer.atEnd(); ++eti) {
@@ -28,7 +28,7 @@ MetatagExpressionTokenizer_tests::compare_to_expected(MetatagExpression::Tokeniz
 void
 MetatagExpressionTokenizer_tests::empty_expr(void)
 {
-  MetatagExpression::Tokenizer tokenizer((UnicodeString()));
+  Metatag::Tokenizer tokenizer((UnicodeString()));
 
   compare_to_expected(tokenizer);
 }
@@ -40,7 +40,7 @@ MetatagExpressionTokenizer_tests::static_expr(void)
   
   WORD("Text");
 
-  MetatagExpression::Tokenizer tokenizer(expr_str);
+  Metatag::Tokenizer tokenizer(expr_str);
 
   compare_to_expected(tokenizer);
 }
@@ -57,7 +57,7 @@ MetatagExpressionTokenizer_tests::flat_expr(void)
   WORD("{");
   WORD("}");
 
-  MetatagExpression::Tokenizer tokenizer(expr_str);
+  Metatag::Tokenizer tokenizer(expr_str);
 
   compare_to_expected(tokenizer);
 }
@@ -85,7 +85,7 @@ MetatagExpressionTokenizer_tests::nested_expr(void)
   WORD("}");
   WORD(".ext");
 
-  MetatagExpression::Tokenizer tokenizer(expr_str);
+  Metatag::Tokenizer tokenizer(expr_str);
 
   compare_to_expected(tokenizer);
 }
@@ -104,7 +104,7 @@ MetatagExpressionTokenizer_tests::invalid_expr(void)
   WORD(")");
   WORD("{");
 
-  MetatagExpression::Tokenizer tokenizer(expr_str);
+  Metatag::Tokenizer tokenizer(expr_str);
 
   compare_to_expected(tokenizer);
 }
@@ -122,7 +122,7 @@ MetatagExpressionTokenizer_tests::escaped_expr(void)
   WORD("%");
   WORD("there");
 
-  MetatagExpression::Tokenizer tokenizer(expr_str);
+  Metatag::Tokenizer tokenizer(expr_str);
 
   compare_to_expected(tokenizer);
 }
@@ -136,7 +136,7 @@ MetatagExpressionTokenizer_tests::double_escaped_expr(void)
   WORD("\\");
   WORD("\\b");
 
-  MetatagExpression::Tokenizer tokenizer(expr_str);
+  Metatag::Tokenizer tokenizer(expr_str);
 
   compare_to_expected(tokenizer);
 }
@@ -148,7 +148,7 @@ MetatagExpressionTokenizer_tests::escaped_normal_expr(void)
 
   WORD("foo\\bar");
 
-  MetatagExpression::Tokenizer tokenizer(expr_str);
+  Metatag::Tokenizer tokenizer(expr_str);
 
   compare_to_expected(tokenizer);
 }

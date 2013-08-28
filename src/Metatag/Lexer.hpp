@@ -2,13 +2,13 @@
 #define METATAG_EXPRESSION_LEXER_HPP
 
 #include "Iterator.hpp"
-#include "MetatagExpression/Tokenizer.hpp"
+#include "Metatag/Tokenizer.hpp"
 #include <list>
 
 class MetatagExpressionLexer_tests;
 
 namespace mru {
-namespace MetatagExpression {
+namespace Metatag {
 
 struct Token {
   int position;
@@ -34,7 +34,7 @@ struct Token {
 };
 
 inline bool
-operator==(const MetatagExpression::Token &a, const MetatagExpression::Token &b)
+operator==(const Metatag::Token &a, const Metatag::Token &b)
 {
   return 
     (a.position == b.position) &&
@@ -61,7 +61,7 @@ private:
   int in_text_position;
 };
 
-} /* namespace MetatagExpression */
+} /* namespace Metatag */
 } /* namespace mru */
 
 #endif /* METATAG_EXPRESSION_LEXER_HPP */

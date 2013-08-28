@@ -4,7 +4,7 @@
 #include "TokenizerBase.hpp"
 
 namespace mru {
-namespace MetatagExpression {
+namespace Metatag {
 
 class Tokenizer : public TokenizerBase {
 public:
@@ -17,7 +17,7 @@ protected:
   bool escape_next;
 };
 
-} /* namespace MetatagExpression */
+} /* namespace Metatag */
 } /* namespace mru */
 
 #endif /* METATAG_EXPRESSION_TOKENIZER_HPP */

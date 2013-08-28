@@ -3,19 +3,19 @@
 
 #include "plugins/MruPlugin.hpp"
 #include "plugin_manager.hpp"
-#include "MetatagExpression/Metatag.hpp"
+#include "Metatag/MetatagBase.hpp"
 #include "glue.hpp"
 
 namespace mru
 {
 
-class MetatagPlugin : public MruPlugin, public Metatag {
+class MetatagPlugin : public MruPlugin, public Metatag::MetatagBase {
 public:
   typedef MetatagPlugin self_type;
 public:
   PLUGIN_INTERFACE("MetatagPlugin")
   MetatagPlugin(const name_type &name)
-    : MruPlugin(static_interface_name(), name), Metatag(glue_cast<UnicodeString>(name))
+    : MruPlugin(static_interface_name(), name), MetatagBase(glue_cast<UnicodeString>(name))
   { }
   
   virtual ~MetatagPlugin(void)

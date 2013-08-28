@@ -6,10 +6,10 @@
 namespace mru
 {
 
-class OutputPluginException : public MruPluginException {
+class OutputPluginException : public MruPlugin::Exception {
 public:
   OutputPluginException(const std::string &message)
-    : MruPluginException("OutputPlugin", message)
+    : MruPlugin::Exception("OutputPlugin", message)
   { }
 };
 

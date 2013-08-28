@@ -18,9 +18,9 @@ MetatagExpressionLexer_tests::tearDown(void)
 }
 
 void
-MetatagExpressionLexer_tests::compare_to_expected(MetatagExpression::Lexer &lexer)
+MetatagExpressionLexer_tests::compare_to_expected(Metatag::Lexer &lexer)
 {
-  std::list<MetatagExpression::Token>::const_iterator eti = expected_tokens.begin();
+  std::list<Metatag::Token>::const_iterator eti = expected_tokens.begin();
   for(; eti != expected_tokens.end() && !lexer.atEnd(); ++eti) {
     //std::cout << eti->value << " == " << lexer.getCurrent().value << std::endl;
     CPPUNIT_ASSERT_EQUAL(eti->value, lexer.getCurrent().value);
@@ -153,7 +153,7 @@ MetatagExpressionLexer_tests::getSampleValues(void)
   return expected_tokens;
 }
 
-mru::ConstIterator<MetatagExpression::Token>::Pointer
+mru::ConstIterator<Metatag::Token>::Pointer
 MetatagExpressionLexer_tests::getConstIterator(const ValueList &values_in_container)
 {
   expr_str.remove();

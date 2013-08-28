@@ -1,7 +1,7 @@
-#include "MetatagExpression/Lexer.hpp"
+#include "Metatag/Lexer.hpp"
 
 namespace mru {
-namespace MetatagExpression {
+namespace Metatag {
 
 Lexer::Lexer(Tokenizer::Pointer tokenizer)
   : tokenizer(tokenizer), in_text_position(0)
@@ -66,6 +66,6 @@ Lexer::determineTokenType(const UnicodeString &word) const
   }
 }
 
-} /* namespace MetatagExpression  */
+} /* namespace Metatag */
 } /* namespace mru */
 
