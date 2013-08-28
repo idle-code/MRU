@@ -4,10 +4,8 @@
 #include "MetatagExpression/Expression.hpp"
 #include "types.hpp"
 
-#include "UnicodeStringStreamOperator.hpp"
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
-
 
 using namespace CppUnit;
 using namespace mru;
@@ -15,7 +13,12 @@ using namespace mru;
 class MetatagExpression_tests : public TestCase {
 private:
   UnicodeString expr_str;
+  MetatagExpression::Expression::Pointer expr;
+  FileIterator::Pointer file_iterator;
+  std::list<FilePath> file_list;
 public:
+  MetatagExpression_tests(void);
+
   void setUp(void);
 
   void empty_expr(void);
@@ -27,20 +30,16 @@ public:
   void double_escaped_expr(void);
   void escaped_normal_expr(void);
 
-  void static_expr_evaluation(void);
-
-
 #if 1
   CPPUNIT_TEST_SUITE(MetatagExpression_tests);
     CPPUNIT_TEST(empty_expr);
     CPPUNIT_TEST(static_expr);
     CPPUNIT_TEST(flat_expr);
-    //CPPUNIT_TEST(nested_expr);
+    CPPUNIT_TEST(nested_expr);
     //CPPUNIT_TEST(invalid_expr);
     //CPPUNIT_TEST(escaped_expr);
     //CPPUNIT_TEST(double_escaped_expr);
     //CPPUNIT_TEST(escaped_normal_expr);
-    //CPPUNIT_TEST(static_expr_evaluation);
     //CPPUNIT_TEST(flat_expr);
   CPPUNIT_TEST_SUITE_END();
 #else

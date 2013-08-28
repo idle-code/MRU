@@ -1,10 +1,22 @@
-#include "MetatagExpression_tests.hpp"
 #include "glue.hpp"
+using mru::operator<<;
+#include "MetatagExpression_tests.hpp"
+#include "MockFileIterator.hpp"
+
+MetatagExpression_tests::MetatagExpression_tests(void)
+{
+  file_list.push_back("a");
+  file_list.push_back("b");
+  file_list.push_back("c");
+}
 
 void
 MetatagExpression_tests::setUp(void)
 {
   expr_str = UnicodeString();
+  expr.reset();
+  file_iterator = boost::make_shared<MockFileIterator>(file_list);
+  CPPUNIT_ASSERT(file_iterator);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -12,13 +24,9 @@ MetatagExpression_tests::setUp(void)
 void
 MetatagExpression_tests::empty_expr(void)
 {
-  MetatagExpression::Expression::Pointer expr = MetatagExpression::Expression::parse(UnicodeString());
-  CPPUNIT_ASSERT(expr != NULL);
-
-  std::set<UnicodeString> used_metatag_names = expr->getUsedMetatagNames();
-  CPPUNIT_ASSERT(used_metatag_names.size() == 1);
-
-  CPPUNIT_ASSERT_EQUAL(UnicodeString(), expr->text());
+  expr = MetatagExpression::Expression::parse(UnicodeString());
+  CPPUNIT_ASSERT(expr);
+  CPPUNIT_ASSERT_EQUAL(UnicodeString(), expr->evaluate(file_iterator));
 }
 
 void
@@ -26,38 +34,70 @@ MetatagExpression_tests::static_expr(void)
 {
   expr_str = glue_cast<UnicodeString>("Text");
 
-  MetatagExpression::Expression::Pointer expr = MetatagExpression::Expression::parse(expr_str);
-  CPPUNIT_ASSERT(expr != NULL);
+  expr = MetatagExpression::Expression::parse(expr_str);
+  CPPUNIT_ASSERT(expr);
 
-  std::set<UnicodeString> used_metatag_names = expr->getUsedMetatagNames();
-  CPPUNIT_ASSERT(used_metatag_names.size() == 1);
-
-  CPPUNIT_ASSERT_EQUAL(expr_str, expr->text());
+  CPPUNIT_ASSERT_EQUAL(expr_str, expr->evaluate(file_iterator));
 }
+
+class TestMetatag : public Metatag {
+public:
+  typedef boost::shared_ptr<TestMetatag> Pointer;
+  friend class Factory;
+  class Factory : public Metatag::Factory {
+  public:
+    Metatag::Pointer
+    create(void)
+    {
+      return boost::make_shared<TestMetatag>();
+    }
+  };
+public:
+  TestMetatag(void) : Metatag("Tag") { }
+
+  void
+  initialize(const UnicodeString &arguments)
+  {
+    this->arguments = "[" + arguments + "]"; 
+  }
+
+  UnicodeString
+  execute(const FileIterator::Pointer file_iterator , const UnicodeString &area_of_effect)
+  {
+    return arguments + "<" + area_of_effect + ">";
+  }
+public:
+  UnicodeString arguments;
+};
 
 void
 MetatagExpression_tests::flat_expr(void)
 {
-  expr_str = glue_cast<UnicodeString>("%Text()");
+  expr_str = glue_cast<UnicodeString>("%Tag()");
 
-  MetatagExpression::Expression::Pointer expr = MetatagExpression::Expression::parse(expr_str);
-  CPPUNIT_ASSERT(expr != NULL);
+  expr = MetatagExpression::Expression::parse(expr_str);
+  CPPUNIT_ASSERT(expr);
 
-  std::set<UnicodeString> used_metatag_names = expr->getUsedMetatagNames();
-  CPPUNIT_ASSERT(used_metatag_names.size() == 1);
+  MetatagExpression::Expression::FactoryMap factory_map;
+  factory_map.insert(std::make_pair("Tag", boost::make_shared<TestMetatag::Factory>()));
+  expr->bindFactoryMap(factory_map);
 
-  CPPUNIT_ASSERT_EQUAL(expr_str, expr->text());
+  CPPUNIT_ASSERT_EQUAL(glue_cast<UnicodeString>("[]<>"), expr->evaluate(file_iterator));
 }
 
 void
 MetatagExpression_tests::nested_expr(void)
 {
-  expr_str = glue_cast<UnicodeString>(" Text with spaces % And Token Name (in argument list) asdf {yet%Another(   ) token }.ext");
+  expr_str = glue_cast<UnicodeString>("Text with spaces %Tag(){yet another %Tag(   ) token }.ext");
 
-  MetatagExpression::Expression::Pointer expr = MetatagExpression::Expression::parse(expr_str);
-  CPPUNIT_ASSERT(expr != NULL);
+  expr = MetatagExpression::Expression::parse(expr_str);
+  CPPUNIT_ASSERT(expr);
 
-  CPPUNIT_ASSERT_EQUAL(expr_str, expr->text());
+  MetatagExpression::Expression::FactoryMap factory_map;
+  factory_map.insert(std::make_pair("Tag", boost::make_shared<TestMetatag::Factory>()));
+  expr->bindFactoryMap(factory_map);
+
+  CPPUNIT_ASSERT_EQUAL(glue_cast<UnicodeString>("Text with spaces []<yet another [   ]<> token >.ext"), expr->evaluate(file_iterator));
 }
 
 void
@@ -71,12 +111,16 @@ MetatagExpression_tests::invalid_expr(void)
 void
 MetatagExpression_tests::escaped_expr(void)
 {
-  expr_str = glue_cast<UnicodeString>("Some\\(text\\) here, but not %there");
+  expr_str = glue_cast<UnicodeString>("Some\\(text\\) here, but not %Tag(there)");
 
-  MetatagExpression::Expression::Pointer expr = MetatagExpression::Expression::parse(expr_str);
-  CPPUNIT_ASSERT(expr != NULL);
+  expr = MetatagExpression::Expression::parse(expr_str);
+  CPPUNIT_ASSERT(expr);
 
-  CPPUNIT_ASSERT_EQUAL(expr_str, expr->text());
+  MetatagExpression::Expression::FactoryMap factory_map;
+  factory_map.insert(std::make_pair("Tag", boost::make_shared<TestMetatag::Factory>()));
+  expr->bindFactoryMap(factory_map);
+
+  CPPUNIT_ASSERT_EQUAL(glue_cast<UnicodeString>("Some(text) here, but not [there]<>"), expr->evaluate(file_iterator));
 }
 
 void
@@ -100,14 +144,6 @@ MetatagExpression_tests::escaped_normal_expr(void)
 
   CPPUNIT_ASSERT_EQUAL(expr_str, expr->text());
 }
-
-
-void
-MetatagExpression_tests::static_expr_evaluation(void)
-{
-
-}
-
 
 #ifdef SINGLE_TEST_MODE
 

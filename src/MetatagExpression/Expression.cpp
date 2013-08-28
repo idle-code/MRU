@@ -11,6 +11,7 @@ Expression::Pointer
 Expression::parse(const UnicodeString &expression_text)
 {
   FO("Expression::parse(const UnicodeString &expression_text)");
+  VAL(expression_text);
   Parser parser;
   parser.parse(expression_text);
   Parser::TagEntry::Pointer expression_root = parser.getExpressionRoot();
@@ -23,39 +24,122 @@ Expression::text(void) const
   return UnicodeString();
 }
 
-void
-collectTagNames(const Parser::TagEntry::Pointer node, std::set<UnicodeString> &names_set)
-{
-  assert(node);
-  names_set.insert(node->name);
-  Parser::TagEntry::MemberList::const_iterator ei = node->areaOfEffectMembers.begin(); 
-  Parser::TagEntry::MemberList::const_iterator ei_end = node->areaOfEffectMembers.end(); 
-  for(; ei != ei_end; ++ei) {
-    collectTagNames(*ei, names_set);
-  }
-}
-
-std::set<UnicodeString>
-Expression::getUsedMetatagNames(void) const
-{
-  std::set<UnicodeString> used_metatag_names;
-
-  
-
-  return used_metatag_names;
-}
-
 Expression::Expression(void)
 { }
 
-Expression::Expression(Parser::TagEntry::Pointer expression_root)
-  : expression_root(expression_root)
+Expression::Expression(Parser::TagEntry::Pointer tag_entry_root)
+  : entry_tree_root(tag_entry_root)
 {
-  assert(expression_root);
+  assert(tag_entry_root);
 }
 
 Expression::~Expression(void)
 { }
+
+Expression::Node::Pointer
+Expression::createExpressionTree(Parser::TagEntry::Pointer expression_node, const FactoryMap &factory_map)
+{
+  Node::Pointer new_node = boost::make_shared<Node>();
+  FactoryMap::const_iterator metatag_factory = factory_map.find(expression_node->name);
+  if (metatag_factory == factory_map.end())
+    throw Metatag::Exception(expression_node->name, glue_cast<UnicodeString>("No binding found for '") + expression_node->name + "' metatag");
+
+  new_node->metatag = (*metatag_factory).second->create();
+  assert(new_node->metatag);
+  new_node->metatag->initialize(expression_node->arguments);
+
+  for(Parser::TagEntry::MemberList::const_iterator i = expression_node->areaOfEffectMembers.begin();
+      i != expression_node->areaOfEffectMembers.end();
+      ++i)
+  {
+    new_node->areaOfEffectMembers.push_back(createExpressionTree(*i, factory_map));
+  }
+
+  return new_node;
+}
+
+void
+Expression::bindFactoryMap(const FactoryMap &factory_map)
+{
+  metatag_factory_map = factory_map;
+  if (expression_root)
+    expression_root.reset();
+}
+
+const Expression::FactoryMap &
+Expression::getFactoryMap(void) const
+{
+  return metatag_factory_map;
+}
+
+namespace
+{
+
+class EchoMetatag : public Metatag {
+public:
+  typedef boost::shared_ptr<EchoMetatag> Pointer;
+  class Factory;
+  friend class Factory;
+
+  class Factory : public Metatag::Factory {
+  public:
+    Metatag::Pointer
+    create(void)
+    {
+      return boost::make_shared<EchoMetatag>();
+    }
+  };
+public:
+  EchoMetatag(void)
+    : Metatag("") { }
+
+  void
+  initialize(const UnicodeString &arguments)
+  {
+    text = arguments;
+  }
+
+  UnicodeString
+  execute(const FileIterator::Pointer file_iterator, const UnicodeString &area_of_effect)
+  {
+    return text + area_of_effect;
+  }
+private:
+  UnicodeString text;
+};
+
+} /* anonymous namespace */
+
+UnicodeString
+Expression::evaluate(const FileIterator::Pointer file_iterator)
+{
+  assert(file_iterator);
+  assert(entry_tree_root);
+
+  if (metatag_factory_map.find(UnicodeString()) == metatag_factory_map.end())
+    metatag_factory_map.insert(std::make_pair(UnicodeString(), boost::make_shared<EchoMetatag::Factory>()));
+
+  if (!expression_root)
+    expression_root = createExpressionTree(entry_tree_root, metatag_factory_map);
+  assert(expression_root);
+
+  return evaluate(file_iterator, expression_root);
+}
+
+UnicodeString
+Expression::evaluate(const FileIterator::Pointer file_iterator, Node::Pointer node)
+{
+  assert(file_iterator);
+  UnicodeString area_of_effect_text;
+  for (Node::MemberList::const_iterator i = node->areaOfEffectMembers.begin();
+       i != node->areaOfEffectMembers.end();
+       ++i)
+  {
+    area_of_effect_text += evaluate(file_iterator, *i);
+  } 
+
+  return node->metatag->execute(file_iterator, area_of_effect_text);
+}
 
 } /* namespace MetatagExpression */
 } /* namespace mru */
