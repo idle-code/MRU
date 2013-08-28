@@ -167,6 +167,12 @@ glue_cast<wxString, UnicodeString>(const UnicodeString &value)
 
 /* ------------------------------------------------------------------------- */
 
+inline std::ostream &
+operator<<(std::ostream &out, const UnicodeString &ustr)
+{
+  return out << glue_cast<std::string>(ustr);
+}
+
 } /* namespace mru */
 
 #endif

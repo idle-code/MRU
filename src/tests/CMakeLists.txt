@@ -71,7 +71,7 @@ target_link_libraries (MetatagExpressionParser_tests ${LIBS} MetatagExpressionTo
 add_test (MetatagExpressionParser_tests MetatagExpressionParser_tests)
 
 add_executable (MetatagExpression_tests "MetatagExpression_tests.cpp")
-target_link_libraries (MetatagExpression_tests ${LIBS} MetatagExpression MetatagExpressionTokenizer MetatagExpressionLexer MetatagExpressionParser)
+target_link_libraries (MetatagExpression_tests ${LIBS} MockFileIterator Metatag MetatagExpression MetatagExpressionTokenizer MetatagExpressionLexer MetatagExpressionParser)
 add_test (MetatagExpression_tests MetatagExpression_tests)
 
 # Other:

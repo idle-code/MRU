@@ -1,6 +1,6 @@
-#include "UnicodeStringStreamOperator.hpp"
-#include "MetatagExpressionParser_tests.hpp"
 #include "glue.hpp"
+using mru::operator<<;
+#include "MetatagExpressionParser_tests.hpp"
 
 void
 MetatagExpressionParser_tests::setUp(void)

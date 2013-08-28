@@ -11,6 +11,9 @@ target_link_libraries (MetatagExpressionLexer MetatagExpressionTokenizer ${LIBS}
 add_library (MetatagExpressionParser "Parser.cpp")
 target_link_libraries (MetatagExpressionParser MetatagExpressionLexer ${LIBS})
 
+add_library (Metatag "Metatag.cpp")
+target_link_libraries (Metatag ${LIBS})
+
 add_library (MetatagExpression "Expression.cpp")
-target_link_libraries (MetatagExpression MetatagExpressionParser ${LIBS})
+target_link_libraries (MetatagExpression Metatag MetatagExpressionParser ${LIBS})
 
