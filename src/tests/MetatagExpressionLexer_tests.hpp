@@ -1,7 +1,7 @@
 #ifndef METATAG_EXPRESSION_TOKENIZER_TEST_HPP
 #define METATAG_EXPRESSION_TOKENIZER_TEST_HPP
 
-#include "MetatagExpression/Lexer.hpp"
+#include "Metatag/Lexer.hpp"
 #include "ConstIterator_tests.hpp"
 
 #include <cppunit/TestCase.h>
@@ -10,11 +10,11 @@
 using namespace CppUnit;
 using namespace mru;
 
-class MetatagExpressionLexer_tests : public ConstIterator_tests<MetatagExpression::Token> {
+class MetatagExpressionLexer_tests : public ConstIterator_tests<Metatag::Token> {
 public:
-  typedef ConstIterator_tests<MetatagExpression::Token> Parent;
-  typedef MetatagExpression::Lexer Lexer;
-  typedef MetatagExpression::Tokenizer Tokenizer;
+  typedef ConstIterator_tests<Metatag::Token> Parent;
+  typedef Metatag::Lexer Lexer;
+  typedef Metatag::Tokenizer Tokenizer;
 public:
 
   void setUp(void);
@@ -30,7 +30,7 @@ public:
   void escaped_normal_expr(void);
 
   ValueList getSampleValues(void);
-  mru::ConstIterator<MetatagExpression::Token>::Pointer getConstIterator(const ValueList &values_in_container);
+  mru::ConstIterator<Metatag::Token>::Pointer getConstIterator(const ValueList &values_in_container);
 
   CPPUNIT_TEST_SUB_SUITE(MetatagExpressionLexer_tests, Parent);
     CPPUNIT_TEST(empty_expr);
@@ -45,25 +45,25 @@ public:
 
 private:
   UnicodeString expr_str;
-  std::list<MetatagExpression::Token> expected_tokens;
-  void compare_to_expected(MetatagExpression::Lexer &lexer);
+  std::list<Metatag::Token> expected_tokens;
+  void compare_to_expected(Metatag::Lexer &lexer);
 };
 
 #define TOKEN(VAL,TYPE) \
   { \
-    MetatagExpression::Token token; \
+    Metatag::Token token; \
     token.position = expr_str.indexOf(VAL);\
     token.value = VAL; \
-    token.type = MetatagExpression::Token::TYPE;  \
+    token.type = Metatag::Token::TYPE;  \
     expected_tokens.push_back(token); \
   }
 
 #define TOKENat(N,VAL,TYPE) \
   { \
-    MetatagExpression::Token token; \
+    Metatag::Token token; \
     token.position = N; \
     token.value = VAL; \
-    token.type = MetatagExpression::Token::TYPE;  \
+    token.type = Metatag::Token::TYPE;  \
     expected_tokens.push_back(token); \
   }
 

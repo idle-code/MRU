@@ -5,7 +5,7 @@
 #include "glue.hpp"
 
 namespace mru {
-namespace MetatagExpression {
+namespace Metatag {
 
 Expression::Pointer
 Expression::parse(const UnicodeString &expression_text)
@@ -42,7 +42,7 @@ Expression::createExpressionTree(Parser::TagEntry::Pointer expression_node, cons
   Node::Pointer new_node = boost::make_shared<Node>();
   FactoryMap::const_iterator metatag_factory = factory_map.find(expression_node->name);
   if (metatag_factory == factory_map.end())
-    throw Metatag::Exception(expression_node->name, glue_cast<UnicodeString>("No binding found for '") + expression_node->name + "' metatag");
+    throw MetatagBase::Exception(expression_node->name, glue_cast<UnicodeString>("No binding found for '") + expression_node->name + "' metatag");
 
   new_node->metatag = (*metatag_factory).second->create();
   assert(new_node->metatag);
@@ -75,15 +75,15 @@ Expression::getFactoryMap(void) const
 namespace
 {
 
-class EchoMetatag : public Metatag {
+class EchoMetatag : public MetatagBase {
 public:
   typedef boost::shared_ptr<EchoMetatag> Pointer;
   class Factory;
   friend class Factory;
 
-  class Factory : public Metatag::Factory {
+  class Factory : public MetatagBase::Factory {
   public:
-    Metatag::Pointer
+    MetatagBase::Pointer
     create(void)
     {
       return boost::make_shared<EchoMetatag>();
@@ -91,7 +91,7 @@ public:
   };
 public:
   EchoMetatag(void)
-    : Metatag("") { }
+    : MetatagBase("") { }
 
   void
   initialize(const UnicodeString &arguments)
@@ -141,6 +141,6 @@ Expression::evaluate(const FileIterator::Pointer file_iterator, Node::Pointer no
   return node->metatag->execute(file_iterator, area_of_effect_text);
 }
 
-} /* namespace MetatagExpression */
+} /* namespace Metatag */
 } /* namespace mru */
 

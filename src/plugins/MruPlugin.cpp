@@ -4,31 +4,6 @@
 namespace mru
 {
 
-MruPluginException::MruPluginException(const std::string &module, const UnicodeString &message)
-  : module(module), message(message)
-{ }
-
-MruPluginException::MruPluginException(const std::string &module, const std::string &message)
-  : module(module), message(glue_cast<UnicodeString>(message))
-{ }
-
-MruPluginException::~MruPluginException(void) throw()
-{ }
-
-const char *
-MruPluginException::what(void) const throw()
-{
-  return glue_cast<std::string>(message).c_str();
-}
-
-const UnicodeString &
-MruPluginException::getMessage(void) const throw()
-{
-  return message;
-}
-
-/* ------------------------------------------------------------------------- */
-
 MruPlugin::MruPlugin(const name_type &interface, const name_type &name)
   : plugin<MruPlugin>(interface, name), core(NULL)
 { }
@@ -50,6 +25,31 @@ MruCore *
 MruPlugin::getCore(void)
 {
   return core;
+}
+
+/* ------------------------------------------------------------------------- */
+
+MruPlugin::Exception::Exception(const std::string &module, const UnicodeString &message)
+  : module(module), message(message)
+{ }
+
+MruPlugin::Exception::Exception(const std::string &module, const std::string &message)
+  : module(module), message(glue_cast<UnicodeString>(message))
+{ }
+
+MruPlugin::Exception::~Exception(void) throw()
+{ }
+
+const char *
+MruPlugin::Exception::what(void) const throw()
+{
+  return glue_cast<std::string>(message).c_str();
+}
+
+const UnicodeString &
+MruPlugin::Exception::getMessage(void) const throw()
+{
+  return message;
 }
 
 } /* namespace mru */

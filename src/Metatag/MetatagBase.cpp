@@ -1,49 +1,50 @@
-#include "Metatag.hpp"
+#include "MetatagBase.hpp"
 #include "glue.hpp"
 
-namespace mru
-{
+namespace mru {
+namespace Metatag {
 
-Metatag::Metatag(const UnicodeString &name)
+MetatagBase::MetatagBase(const UnicodeString &name)
   : name(name)
 { }
 
-Metatag::~Metatag(void)
+MetatagBase::~MetatagBase(void)
 { }
 
 const UnicodeString &
-Metatag::getName(void) const
+MetatagBase::getName(void) const
 {
   return name;
 }
 
 void
-Metatag::reset(void)
+MetatagBase::reset(void)
 {
 
 }
 
 /* ------------------------------------------------------------------------- */
 
-Metatag::Exception::Exception(const UnicodeString &tag_name, const UnicodeString &message)
+MetatagBase::Exception::Exception(const UnicodeString &tag_name, const UnicodeString &message)
   : std::runtime_error(glue_cast<std::string>(message).c_str()),
     tag_name(tag_name), message(message)
 { }
 
-Metatag::Exception::~Exception(void) throw()
+MetatagBase::Exception::~Exception(void) throw()
 { }
 
 const char *
-Metatag::Exception::what(void) const throw()
+MetatagBase::Exception::what(void) const throw()
 {
   return (std::string("From tag ") + glue_cast<std::string>(tag_name) + ": " + glue_cast<std::string>(message)).c_str();
 }
 
 const UnicodeString &
-Metatag::Exception::getMessage(void) const throw()
+MetatagBase::Exception::getMessage(void) const throw()
 {
   return message;
 }
 
+} /* namespace Metatag */
 } /* namespace mru */
 

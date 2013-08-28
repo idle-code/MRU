@@ -14,7 +14,7 @@ public:
 
   void reset(void);
   void initialize(const UnicodeString &a_arguments);
-  UnicodeString execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect);
+  UnicodeString execute(const FileIterator::Pointer a_file_path, const UnicodeString &a_area_of_effect);
 private:
   int UnicodeStringToInt(const UnicodeString &a_value);
   int m_counter;

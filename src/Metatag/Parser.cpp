@@ -1,10 +1,10 @@
-#include "tests/UnicodeStringStreamOperator.hpp" //temporary
-#include "MetatagExpression/Parser.hpp"
-#include "MetatagExpression/Lexer.hpp"
+#include "glue.hpp"
+#include "Metatag/Parser.hpp"
+#include "Metatag/Lexer.hpp"
 #include <boost/make_shared.hpp>
 
 namespace mru {
-namespace MetatagExpression {
+namespace Metatag {
 
 Parser::TagEntry::TagEntry(void)
   : position(-1), name(""), arguments("")
@@ -121,12 +121,12 @@ Parser::parse(const UnicodeString &expression_text)
   try {
     state_machine.start();
   } catch(StateMachineException &e) {
-    throw ParserException(e.what());
+    throw Parser::Exception(e.what());
   }
 
   //VAL(entry_stack.size());
   if (entry_stack.size() != 1)
-    throw ParserException("Unclosed area of effect");
+    throw Parser::Exception("Unclosed area of effect");
   return getExpressionRoot(); //TODO: remove and replace return type by void
 }
 
@@ -192,31 +192,31 @@ Parser::subExpressionEnd(const Token &current_token)
 
 /* ------------------------------------------------------------------------- */
 
-ParserException::ParserException(const TagEntry::Pointer entry, const UnicodeString &message) throw()
+Parser::Exception::Exception(const TagEntry::Pointer entry, const UnicodeString &message) throw()
   : std::runtime_error(glue_cast<std::string>(message).c_str()),
     entry(entry), message(message)
 { }
 
-ParserException::ParserException(const UnicodeString &message) throw()
+Parser::Exception::Exception(const UnicodeString &message) throw()
   : std::runtime_error(glue_cast<std::string>(message).c_str()),
     message(message)
 { }
 
-ParserException::~ParserException(void) throw()
+Parser::Exception::~Exception(void) throw()
 { }
 
-const ParserException::TagEntry::Pointer
-ParserException::getEntry(void) const throw()
+const Parser::Exception::TagEntry::Pointer
+Parser::Exception::getEntry(void) const throw()
 {
   return entry;
 }
 
 const UnicodeString &
-ParserException::getMessage(void) const throw()
+Parser::Exception::getMessage(void) const throw()
 {
   return message;
 }
 
-} /* namespace MetatagExpression */
+} /* namespace Metatag */
 } /* namespace mru */
 

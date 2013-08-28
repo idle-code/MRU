@@ -1,7 +1,7 @@
 #ifndef METATAG_EXPRESSION_PARSER_HPP
 #define METATAG_EXPRESSION_PARSER_HPP
 
-#include "MetatagExpression/Lexer.hpp"
+#include "Metatag/Lexer.hpp"
 #include "StateMachine.hpp"
 #include <stdexcept>
 #include <map>
@@ -9,9 +9,7 @@
 class MetatagExpressionParser_tests; //forward declaration for tests
 
 namespace mru {
-namespace MetatagExpression {
-
-class ParserException;
+namespace Metatag {
 
 class Parser {
 public:
@@ -30,7 +28,8 @@ public:
     bool haveAreaOfEffectMembers(void) const;
   };
 
-  friend class ParserException;
+  class Exception;
+  friend class Exception;
   friend class ::MetatagExpressionParser_tests;
 public:
   Parser(void);
@@ -60,13 +59,13 @@ private:
 
 /* ------------------------------------------------------------------------- */
 
-class ParserException : public std::runtime_error {
+class Parser::Exception : public std::runtime_error {
 public: 
   typedef Parser::TagEntry TagEntry;
 public:
-  ParserException(const TagEntry::Pointer entry, const UnicodeString &message) throw();
-  ParserException(const UnicodeString &message) throw();
-  virtual ~ParserException(void) throw();
+  Exception(const TagEntry::Pointer entry, const UnicodeString &message) throw();
+  Exception(const UnicodeString &message) throw();
+  virtual ~Exception(void) throw();
 
   const TagEntry::Pointer getEntry(void) const throw();
   const UnicodeString& getMessage(void) const throw();
@@ -75,7 +74,7 @@ private:
   UnicodeString message;
 };
 
-} /* namespace MetatagExpression */
+} /* namespace Metatag */
 } /* namespace mru */
 
 #endif /* METATAG_EXPRESSION_PARSER_HPP */

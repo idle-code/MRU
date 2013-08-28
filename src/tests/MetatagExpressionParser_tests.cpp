@@ -19,11 +19,11 @@ MetatagExpressionParser_tests::compare_entry_trees(const Parser::TagEntry::Point
 }
 
 void
-print_entry_tree(const mru::MetatagExpression::Parser::TagEntry::Pointer root)
+print_entry_tree(const mru::Metatag::Parser::TagEntry::Pointer root)
 {
   MSG("name '" << root->name << "' args: '" << root->arguments << "' {");
-  mru::MetatagExpression::Parser::TagEntry::MemberList::const_iterator ei = root->areaOfEffectMembers.begin(); 
-  mru::MetatagExpression::Parser::TagEntry::MemberList::const_iterator ei_end = root->areaOfEffectMembers.end(); 
+  mru::Metatag::Parser::TagEntry::MemberList::const_iterator ei = root->areaOfEffectMembers.begin(); 
+  mru::Metatag::Parser::TagEntry::MemberList::const_iterator ei_end = root->areaOfEffectMembers.end(); 
   LEV_UP
   for(; ei != ei_end; ++ei) {
     print_entry_tree(*ei);

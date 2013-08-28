@@ -1,7 +1,7 @@
 #ifndef METATAG_EXPRESSION_TOKENIZER_TEST_HPP
 #define METATAG_EXPRESSION_TOKENIZER_TEST_HPP
 
-#include "MetatagExpression/Tokenizer.hpp"
+#include "Metatag/Tokenizer.hpp"
 
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -36,7 +36,7 @@ public:
 private:
   UnicodeString expr_str;
   std::list<UnicodeString> expected_words;
-  void compare_to_expected(MetatagExpression::Tokenizer &tokenizer);
+  void compare_to_expected(Metatag::Tokenizer &tokenizer);
 };
 
 #define WORD(VAL) \

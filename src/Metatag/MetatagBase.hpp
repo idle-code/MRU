@@ -4,8 +4,8 @@
 #include "types.hpp"
 #include "FileIterator.hpp"
 
-namespace mru
-{
+namespace mru {
+namespace Metatag {
 
 template<typename Base>
 class AbstractFactory {
@@ -16,16 +16,16 @@ public:
   }
 };
 
-class Metatag {
+class MetatagBase {
 public:
-  typedef boost::shared_ptr<Metatag> Pointer;
-  typedef AbstractFactory<Metatag> Factory;
+  typedef boost::shared_ptr<MetatagBase> Pointer;
+  typedef AbstractFactory<MetatagBase> Factory;
   class Exception;
   friend class Exception;
 public:
-  Metatag(const UnicodeString &name);
+  MetatagBase(const UnicodeString &name);
   const UnicodeString& getName(void) const;
-  virtual ~Metatag(void);
+  virtual ~MetatagBase(void);
 
   virtual void reset(void);
   virtual void initialize(const UnicodeString &arguments) = 0;
@@ -34,7 +34,7 @@ protected:
   UnicodeString name;
 };
 
-class Metatag::Exception : public std::runtime_error {
+class MetatagBase::Exception : public std::runtime_error {
 public:
   Exception(const UnicodeString &tag_name, const UnicodeString &message);
   ~Exception(void) throw();
@@ -45,6 +45,7 @@ private:
   UnicodeString message;
 };
 
+} /* namespace Metatag */
 } /* namespace mru */
 
 #endif /* METATAG_HPP */

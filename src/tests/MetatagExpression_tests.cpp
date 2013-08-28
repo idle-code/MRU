@@ -24,7 +24,7 @@ MetatagExpression_tests::setUp(void)
 void
 MetatagExpression_tests::empty_expr(void)
 {
-  expr = MetatagExpression::Expression::parse(UnicodeString());
+  expr = Metatag::Expression::parse(UnicodeString());
   CPPUNIT_ASSERT(expr);
   CPPUNIT_ASSERT_EQUAL(UnicodeString(), expr->evaluate(file_iterator));
 }
@@ -34,26 +34,26 @@ MetatagExpression_tests::static_expr(void)
 {
   expr_str = glue_cast<UnicodeString>("Text");
 
-  expr = MetatagExpression::Expression::parse(expr_str);
+  expr = Metatag::Expression::parse(expr_str);
   CPPUNIT_ASSERT(expr);
 
   CPPUNIT_ASSERT_EQUAL(expr_str, expr->evaluate(file_iterator));
 }
 
-class TestMetatag : public Metatag {
+class TestMetatag : public Metatag::MetatagBase {
 public:
   typedef boost::shared_ptr<TestMetatag> Pointer;
   friend class Factory;
-  class Factory : public Metatag::Factory {
+  class Factory : public MetatagBase::Factory {
   public:
-    Metatag::Pointer
+    MetatagBase::Pointer
     create(void)
     {
       return boost::make_shared<TestMetatag>();
     }
   };
 public:
-  TestMetatag(void) : Metatag("Tag") { }
+  TestMetatag(void) : MetatagBase("Tag") { }
 
   void
   initialize(const UnicodeString &arguments)
@@ -75,10 +75,10 @@ MetatagExpression_tests::flat_expr(void)
 {
   expr_str = glue_cast<UnicodeString>("%Tag()");
 
-  expr = MetatagExpression::Expression::parse(expr_str);
+  expr = Metatag::Expression::parse(expr_str);
   CPPUNIT_ASSERT(expr);
 
-  MetatagExpression::Expression::FactoryMap factory_map;
+  Metatag::Expression::FactoryMap factory_map;
   factory_map.insert(std::make_pair("Tag", boost::make_shared<TestMetatag::Factory>()));
   expr->bindFactoryMap(factory_map);
 
@@ -90,10 +90,10 @@ MetatagExpression_tests::nested_expr(void)
 {
   expr_str = glue_cast<UnicodeString>("Text with spaces %Tag(){yet another %Tag(   ) token }.ext");
 
-  expr = MetatagExpression::Expression::parse(expr_str);
+  expr = Metatag::Expression::parse(expr_str);
   CPPUNIT_ASSERT(expr);
 
-  MetatagExpression::Expression::FactoryMap factory_map;
+  Metatag::Expression::FactoryMap factory_map;
   factory_map.insert(std::make_pair("Tag", boost::make_shared<TestMetatag::Factory>()));
   expr->bindFactoryMap(factory_map);
 
@@ -105,7 +105,7 @@ MetatagExpression_tests::invalid_expr(void)
 {
   expr_str = glue_cast<UnicodeString>("%}(2\\1%}){");
 
-  MetatagExpression::Expression::parse(expr_str); // throw
+  Metatag::Expression::parse(expr_str); // throw
 }
 
 void
@@ -113,10 +113,10 @@ MetatagExpression_tests::escaped_expr(void)
 {
   expr_str = glue_cast<UnicodeString>("Some\\(text\\) here, but not %Tag(there)");
 
-  expr = MetatagExpression::Expression::parse(expr_str);
+  expr = Metatag::Expression::parse(expr_str);
   CPPUNIT_ASSERT(expr);
 
-  MetatagExpression::Expression::FactoryMap factory_map;
+  Metatag::Expression::FactoryMap factory_map;
   factory_map.insert(std::make_pair("Tag", boost::make_shared<TestMetatag::Factory>()));
   expr->bindFactoryMap(factory_map);
 
@@ -128,7 +128,7 @@ MetatagExpression_tests::double_escaped_expr(void)
 {
   expr_str = glue_cast<UnicodeString>("_\\\\_");
 
-  MetatagExpression::Expression::Pointer expr = MetatagExpression::Expression::parse(expr_str);
+  Metatag::Expression::Pointer expr = Metatag::Expression::parse(expr_str);
   CPPUNIT_ASSERT(expr != NULL);
 
   CPPUNIT_ASSERT_EQUAL(expr_str, expr->text());
@@ -139,7 +139,7 @@ MetatagExpression_tests::escaped_normal_expr(void)
 {
   expr_str = glue_cast<UnicodeString>("foo\\bar");
 
-  MetatagExpression::Expression::Pointer expr = MetatagExpression::Expression::parse(expr_str);
+  Metatag::Expression::Pointer expr = Metatag::Expression::parse(expr_str);
   CPPUNIT_ASSERT(expr != NULL);
 
   CPPUNIT_ASSERT_EQUAL(expr_str, expr->text());

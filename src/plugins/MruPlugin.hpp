@@ -6,24 +6,12 @@
 namespace mru
 {
 
-class MruPluginException : public std::exception {
-public:
-  MruPluginException(const std::string &module, const UnicodeString &message);
-  MruPluginException(const std::string &module, const std::string &message);
-  virtual ~MruPluginException(void) throw();
-  const char* what(void) const throw();
-  const UnicodeString& getMessage(void) const throw();
-private:
-  std::string module; 
-  UnicodeString message; 
-};
-
-/* ------------------------------------------------------------------------- */
-
 // forward declaration:
 class MruCore;
 
 class MruPlugin : public plugin<MruPlugin> {
+public:
+  class Exception;
 public:
   MruPlugin(const name_type &interface, const name_type &name);
   virtual ~MruPlugin(void);
@@ -34,6 +22,18 @@ public:
 
 private:
   MruCore *core;
+};
+
+class MruPlugin::Exception : public std::exception {
+public:
+  Exception(const std::string &module, const UnicodeString &message);
+  Exception(const std::string &module, const std::string &message);
+  virtual ~Exception(void) throw();
+  const char* what(void) const throw();
+  const UnicodeString& getMessage(void) const throw();
+private:
+  std::string module; 
+  UnicodeString message; 
 };
 
 } /* namespace mru */

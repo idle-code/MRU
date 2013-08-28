@@ -1,23 +1,23 @@
-#ifndef METATAG_EXPRESSION_HPP
-#define METATAG_EXPRESSION_HPP
+#ifndef EXPRESSION_HPP
+#define EXPRESSION_HPP
 
 #include "types.hpp"
-#include "MetatagExpression/Metatag.hpp"
-#include "MetatagExpression/Parser.hpp"
+#include "Metatag/MetatagBase.hpp"
+#include "Metatag/Parser.hpp"
 #include <stdexcept>
 #include <set>
 
 class MetatagExpression_tests; //forward declaration for tests
 
 namespace mru {
-namespace MetatagExpression {
+namespace Metatag {
 
 /* ------------------------------------------------------------------------- */
 
 class Expression {
 public:
   typedef boost::shared_ptr<Expression> Pointer;
-  typedef std::map<UnicodeString, Metatag::Factory::Pointer> FactoryMap;
+  typedef std::map<UnicodeString, MetatagBase::Factory::Pointer> FactoryMap;
   friend class ::MetatagExpression_tests;
   class Exception;
   //friend class Exception;
@@ -38,7 +38,7 @@ private:
     typedef boost::shared_ptr<Node> Pointer;
     typedef std::list<Pointer> MemberList;
 
-    Metatag::Pointer metatag;
+    MetatagBase::Pointer metatag;
     MemberList areaOfEffectMembers;
   };
 
@@ -57,11 +57,19 @@ private:
 
 class Expression::Exception : public std::runtime_error {
 public:
-  
+  Exception(const Expression::Node::Pointer node, const UnicodeString &message) throw();
+  Exception(const UnicodeString &message) throw();
+  virtual ~Exception(void) throw();
+
+  const Expression::Node::Pointer getEntry(void) const throw();
+  const UnicodeString& getMessage(void) const throw();
+private:
+  Expression::Node::Pointer node;
+  UnicodeString message;
 };
 
-} /* namespace MetatagExpression */
+} /* namespace Metatag */
 } /* namespace mru */
 
-#endif /* METATAG_EXPRESSION_HPP */
+#endif /* EXPRESSION_HPP */
 
