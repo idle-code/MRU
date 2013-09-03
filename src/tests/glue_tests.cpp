@@ -4,21 +4,6 @@
 #define TEST_TEXT "C:/foo/bar//some_other_directory/Spam.txt.xml"
 
 void
-glue_tests::wxString_and_filepath(void)
-{
-  FO("glue_tests::wxString_and_filepath(void)");
-  wxString wstr;
-  FilePath fp;
-
-  wstr = wxT(TEST_TEXT);
-  fp = glue_cast<FilePath>(wstr);
-  CPPUNIT_ASSERT(fp == TEST_TEXT);
-
-  wstr = glue_cast<wxString>(fp);
-  CPPUNIT_ASSERT(wstr == wxT(TEST_TEXT));
-}
-
-void
 glue_tests::UnicodeString_and_filepath(void)
 {
   FO("glue_tests::UnicodeString_and_filepath(void)");

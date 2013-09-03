@@ -32,6 +32,16 @@ PluginManager<PluginInterface, IdType>::createPlugin(const IdType &id)
   return (*plugin_factory).second->createPlugin();
 }
 
+template<typename PluginInterface, typename IdType>
+std::list<typename PluginManager<PluginInterface, IdType>::AbstractPluginFactory::Pointer>
+PluginManager<PluginInterface, IdType>::getFactoryList(void)
+{
+  std::list<typename PluginManager<PluginInterface, IdType>::AbstractPluginFactory::Pointer> factory_list;
+  for(typename FactoryMap::iterator i = factory_map.begin(); i != factory_map.end(); ++i)
+    factory_list.push_back(i->second);
+  return factory_list;
+}
+
 } /* namespace mru */
 
 #endif /* PLUGIN_MANAGER_IMPL_HPP */
