@@ -76,6 +76,14 @@ add_test (MetatagExpression_tests MetatagExpression_tests)
 
 # Other:
 
+add_executable (PluginManager_tests "PluginManager_tests.cpp")
+target_link_libraries (PluginManager_tests ${LIBS})
+add_test (PluginManager_tests PluginManager_tests)
+
+add_executable (MruCore_tests "MruCore_tests.cpp")
+target_link_libraries (MruCore_tests MruCore ${LIBS})
+add_test (MruCore_tests MruCore_tests)
+
 add_executable (glue_tests "glue_tests.cpp")
 target_link_libraries (glue_tests ${LIBS})
 add_test (glue_tests glue_tests)

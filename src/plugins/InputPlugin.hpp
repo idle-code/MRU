@@ -22,6 +22,8 @@ public:
 
 class InputPlugin : public MruPlugin {
 public:
+  typedef boost::shared_ptr<InputPlugin> Pointer;
+
   PLUGIN_INTERFACE("InputPlugin")
   InputPlugin(const name_type &name)
     : MruPlugin(static_interface_name(), name)

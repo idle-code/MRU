@@ -39,6 +39,7 @@ wxWidgetsUiApp::wxWidgetsUiApp(MruCore *a_mru_core)
   : wxApp(), m_core(a_mru_core)
 {
   int result = XInitThreads();
+  //FIXME?: check result?
 }
 
 wxWidgetsUiApp::~wxWidgetsUiApp(void)

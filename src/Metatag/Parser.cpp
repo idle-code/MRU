@@ -190,33 +190,6 @@ Parser::subExpressionEnd(const Token &current_token)
   entry_stack.pop();
 }
 
-/* ------------------------------------------------------------------------- */
-
-Parser::Exception::Exception(const TagEntry::Pointer entry, const UnicodeString &message) throw()
-  : std::runtime_error(glue_cast<std::string>(message).c_str()),
-    entry(entry), message(message)
-{ }
-
-Parser::Exception::Exception(const UnicodeString &message) throw()
-  : std::runtime_error(glue_cast<std::string>(message).c_str()),
-    message(message)
-{ }
-
-Parser::Exception::~Exception(void) throw()
-{ }
-
-const Parser::Exception::TagEntry::Pointer
-Parser::Exception::getEntry(void) const throw()
-{
-  return entry;
-}
-
-const UnicodeString &
-Parser::Exception::getMessage(void) const throw()
-{
-  return message;
-}
-
 } /* namespace Metatag */
 } /* namespace mru */
 
