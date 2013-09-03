@@ -76,6 +76,22 @@ PluginManager_tests::register_duplicate(void)
   manager->registerFactory(PluginFactory<EveningTestPlugin, ITestPlugin>::create("Morning")); //throw
 }
 
+void
+PluginManager_tests::factory_list(void)
+{
+  std::list<TestPluginManager::AbstractPluginFactory::Pointer> factory_list = manager->getFactoryList();
+  CPPUNIT_ASSERT_EQUAL(2u, factory_list.size());
+  TestPluginManager::AbstractPluginFactory::Pointer first_factory = factory_list.front();
+  TestPluginManager::AbstractPluginFactory::Pointer second_factory = factory_list.back();
+
+  // because order of factory list is not determined:
+  CPPUNIT_ASSERT(
+      (first_factory->getId() == "Morning" && second_factory->getId() == "Evening") ||
+      (first_factory->getId() == "Evening" && second_factory->getId() == "Morning")
+      );
+
+}
+
 #ifdef SINGLE_TEST_MODE
 
 #include <cppunit/ui/text/TestRunner.h>

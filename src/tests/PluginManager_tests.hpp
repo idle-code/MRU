@@ -27,6 +27,7 @@ public:
   void create_evening(void);
   void create_nonexisting(void);
   void register_duplicate(void);
+  void factory_list(void);
 
   CPPUNIT_TEST_SUITE(PluginManager_tests);
     CPPUNIT_TEST_EXCEPTION(null_factory, TestPluginManager::Exception);
@@ -34,6 +35,7 @@ public:
     CPPUNIT_TEST(create_evening);
     CPPUNIT_TEST_EXCEPTION(create_nonexisting, TestPluginManager::Exception);
     CPPUNIT_TEST_EXCEPTION(register_duplicate, TestPluginManager::Exception);
+    CPPUNIT_TEST(factory_list);
   CPPUNIT_TEST_SUITE_END();
 };
 

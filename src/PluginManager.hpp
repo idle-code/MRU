@@ -66,6 +66,7 @@ public:
   PluginManager(void);
   void registerFactory(typename AbstractPluginFactory::Pointer factory); 
   PluginPointer createPlugin(const IdType &id);
+  std::list<typename AbstractPluginFactory::Pointer> getFactoryList(void);
 
 private:
   PluginManager(const PluginManager &); //disabled

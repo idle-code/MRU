@@ -76,6 +76,12 @@ add_test (MetatagExpression_tests MetatagExpression_tests)
 
 # Other:
 
+add_library (test_module SHARED "test_module.cpp")
+target_link_libraries (test_module ${CMAKE_DL_LIBS})
+add_executable (DllModule_tests "DllModule_tests.cpp")
+target_link_libraries (DllModule_tests BsdDllModule ${LIBS})
+add_test (DllModule_tests DllModule_tests)
+
 add_executable (PluginManager_tests "PluginManager_tests.cpp")
 target_link_libraries (PluginManager_tests ${LIBS})
 add_test (PluginManager_tests PluginManager_tests)
