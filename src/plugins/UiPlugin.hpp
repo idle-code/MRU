@@ -10,6 +10,7 @@ namespace mru
 class UiPlugin : public MruPlugin {
 public:
   typedef UiPlugin self_type;
+  typedef boost::shared_ptr<UiPlugin> Pointer;
 public:
   PLUGIN_INTERFACE("UiPlugin")
   UiPlugin(const name_type &name)

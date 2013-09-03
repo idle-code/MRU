@@ -15,10 +15,10 @@
 namespace mru
 {
 
-MainWindow*
+MainWindow *
 MainWindow::m_instance = NULL;
 
-MainWindow*
+MainWindow *
 MainWindow::get_instance(void)
 {
   return m_instance;

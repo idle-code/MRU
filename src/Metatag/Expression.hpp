@@ -1,10 +1,10 @@
 #ifndef EXPRESSION_HPP
 #define EXPRESSION_HPP
 
+#include "MruException.hpp"
 #include "types.hpp"
-#include "Metatag/MetatagBase.hpp"
+#include "MetatagBase.hpp"
 #include "Metatag/Parser.hpp"
-#include <stdexcept>
 #include <set>
 
 class MetatagExpression_tests; //forward declaration for tests
@@ -55,17 +55,26 @@ private:
 
 /* ------------------------------------------------------------------------- */
 
-class Expression::Exception : public std::runtime_error {
+class Expression::Exception : public MruException {
 public:
-  Exception(const Expression::Node::Pointer node, const UnicodeString &message) throw();
-  Exception(const UnicodeString &message) throw();
-  virtual ~Exception(void) throw();
+  Exception(const Expression::Node::Pointer node, const UnicodeString &message) throw()
+    : MruException(message), node(node)
+  { }
 
-  const Expression::Node::Pointer getEntry(void) const throw();
-  const UnicodeString& getMessage(void) const throw();
+  Exception(const UnicodeString &message) throw()
+    : MruException(message)
+  { }
+
+  ~Exception(void) throw()
+  { }
+
+  const Expression::Node::Pointer
+  getEntry(void) const throw()
+  {
+    return node;
+  }
 private:
   Expression::Node::Pointer node;
-  UnicodeString message;
 };
 
 } /* namespace Metatag */

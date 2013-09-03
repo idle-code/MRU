@@ -13,9 +13,13 @@ Expression::parse(const UnicodeString &expression_text)
   FO("Expression::parse(const UnicodeString &expression_text)");
   VAL(expression_text);
   Parser parser;
-  parser.parse(expression_text);
-  Parser::TagEntry::Pointer expression_root = parser.getExpressionRoot();
-  return boost::shared_ptr<Expression>(new Expression(expression_root)); // cannot use make_shared due to private constructor
+  try {
+    parser.parse(expression_text);
+    Parser::TagEntry::Pointer expression_root = parser.getExpressionRoot();
+    return boost::shared_ptr<Expression>(new Expression(expression_root)); // cannot use make_shared due to private constructor
+  } catch (Metatag::Parser::Exception pe) {
+    throw Exception(pe.getMessage());
+  }
 }
 
 UnicodeString

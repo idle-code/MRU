@@ -23,7 +23,7 @@ find_package (SigC++ 2.2 REQUIRED)
 include_directories (${SigC++_INCLUDE_DIRS})
 set (LIBS ${LIBS} ${SigC++_LIBRARIES})
 
-find_package (Boost COMPONENTS locale system filesystem REQUIRED)
+find_package (Boost COMPONENTS program_options locale system filesystem REQUIRED)
 include_directories (${Boost_INCLUDE_DIRS})
 set (LIBS ${LIBS} ${Boost_LIBRARIES})
 
@@ -67,11 +67,16 @@ add_library (UnicodeStringIterator "UnicodeStringIterator.cpp")
 add_library (TokenizerBase "TokenizerBase.cpp")
 target_link_libraries (TokenizerBase UnicodeStringIterator ${LIBS})
 
+add_library (MetatagBase "MetatagBase.cpp")
+target_link_libraries (MetatagBase ${LIBS})
+
 add_subdirectory ("Metatag")
 
-#add_executable (mru "main.cpp" "MruCore.cpp")
-#target_link_libraries (mru ${LIBS} ${CMAKE_DL_LIBS})
-#set_target_properties (mru PROPERTIES ENABLE_EXPORTS TRUE)
+add_library (MruCore "MruCore.cpp" "MruDefaultConfiguration.cpp")
+
+add_executable (mru "main.cpp")
+target_link_libraries (mru MruCore ${LIBS} ${CMAKE_DL_LIBS})
+set_target_properties (mru PROPERTIES ENABLE_EXPORTS TRUE)
 
 add_subdirectory ("tests")
 

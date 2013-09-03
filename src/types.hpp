@@ -11,13 +11,12 @@
 
 namespace mru
 {
+using boost::property_tree::ptree;
 
 typedef boost::property_tree::ptree registry;
 typedef boost::property_tree::ptree::key_type name_type;
 typedef boost::filesystem::wpath FilePath;
 namespace bfs = boost::filesystem;
-
-typedef singleton<registry> reg;
 
 } /* namespace mru */
 

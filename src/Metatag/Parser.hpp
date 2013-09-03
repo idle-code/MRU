@@ -1,6 +1,7 @@
 #ifndef METATAG_EXPRESSION_PARSER_HPP
 #define METATAG_EXPRESSION_PARSER_HPP
 
+#include "MruException.hpp"
 #include "Metatag/Lexer.hpp"
 #include "StateMachine.hpp"
 #include <stdexcept>
@@ -59,19 +60,29 @@ private:
 
 /* ------------------------------------------------------------------------- */
 
-class Parser::Exception : public std::runtime_error {
+class Parser::Exception : public MruException {
 public: 
   typedef Parser::TagEntry TagEntry;
 public:
-  Exception(const TagEntry::Pointer entry, const UnicodeString &message) throw();
-  Exception(const UnicodeString &message) throw();
-  virtual ~Exception(void) throw();
+  Exception(const TagEntry::Pointer entry, const UnicodeString &message) throw()
+    : MruException(message), entry(entry)
+  { }
 
-  const TagEntry::Pointer getEntry(void) const throw();
-  const UnicodeString& getMessage(void) const throw();
+  Exception(const UnicodeString &message) throw()
+    : MruException(message)
+  { }
+
+  virtual ~Exception(void) throw()
+  { }
+
+  const TagEntry::Pointer
+  getEntry(void) const throw()
+  {
+    return entry;
+  }
+
 private:
   TagEntry::Pointer entry;
-  UnicodeString message;
 };
 
 } /* namespace Metatag */

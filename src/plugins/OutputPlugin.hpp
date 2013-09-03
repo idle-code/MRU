@@ -17,6 +17,8 @@ public:
 
 class OutputPlugin : public MruPlugin {
 public:
+  typedef boost::shared_ptr<OutputPlugin> Pointer;
+
   PLUGIN_INTERFACE("OutputPlugin")
   OutputPlugin(const name_type &name)
     : MruPlugin(static_interface_name(), name),

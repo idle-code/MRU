@@ -13,61 +13,49 @@
 #include <boost/filesystem.hpp>
 #include "Metatag/Expression.hpp"
 #include <pthread.h>
+#include "MruException.hpp"
 
-namespace mru
-{
-
-/*
-class MruException : public std::exception {
-public:
-  MruException(const std::string &a_module, const UnicodeString &a_message);
-  MruException(const std::string &a_module, const std::string &a_message);
-  virtual ~MruException(void) throw();
-  const char* what(void) const throw();
-  const UnicodeString& message(void) const throw();
-private:
-  std::string m_module; 
-  UnicodeString m_message; 
-};
-*/
-
-/* ------------------------------------------------------------------------- */
+namespace mru {
 
 class MruCore : public singleton<MruCore> {
 public:
   typedef MruCore self_type;
+  typedef boost::shared_ptr<MruCore> Pointer;
+
+  class Exception;
   
 public: // generic methods
   MruCore(void);
   ~MruCore(void);
 
-  registry& getRegistry(void);
+  void loadConfiguration(const FilePath &configuration_file);
 
-  int start(int a_argc, char **a_argv);
+  int start(int argc, char **argv);
 
-  bool loadConfiguration(const FilePath &a_file = FilePath()); 
-  bool saveConfiguration(const FilePath &a_file = FilePath()); 
+  UiPlugin::Pointer getUiPlugin(void);
+  void setUiPlugin(UiPlugin::Pointer plugin);
 
-  UiPlugin* getUiPlugin(void);
-  OutputPlugin* getOutputPlugin(void);
+  OutputPlugin::Pointer getOutputPlugin(void);
+  void setOutputPlugin(OutputPlugin::Pointer plugin);
 
-  std::list<std::string> getAvailableMetatags(void);
+  InputPlugin::Pointer getInputPlugin(void);
+  void setInputPlugin(InputPlugin::Pointer plugin);
 
 public: // program state/configuration
-  void setDirectory(const FilePath &a_directory);
-  const FilePath& getDirectory(void) const;
+  void setDirectory(const FilePath &directory);
+  const FilePath getDirectory(void) const;
   sigc::signal<void, FilePath> SignalDirectoryChanged;
   
-  void setFileFilter(const UnicodeString &a_filter);
+  void setFileFilter(const UnicodeString &filter);
   const UnicodeString& getFileFilter(void);
   sigc::signal<void, UnicodeString> SignalFileFilterChanged;
 
-  void setMetatagExpression(const UnicodeString &a_expression);
-  UnicodeString getMetatagExpression(void);
-  sigc::signal<void, const UnicodeString &> SignalMetatagExpressionChanged;
+  void setMetatagExpression(Metatag::Expression::Pointer expression);
+  Metatag::Expression::Pointer getMetatagExpression(void);
+  sigc::signal<void, const Metatag::Expression::Pointer> SignalMetatagExpressionChanged;
 
   FileIterator::Pointer getIterator(void);
-  FilePath generateNewFilepath(const FileIterator *a_iterator);
+  FilePath generateNewFilepath(const FileIterator::Pointer file_iterator);
 
 public: // ranaming process
   void resetState(void);
@@ -76,25 +64,30 @@ public: // ranaming process
   void stopRename(void);
   sigc::signal<void> SignalRenameStopped;
 
-  sigc::signal<void, const UnicodeString &> SignalMetatagException;
-  sigc::signal<void, const UnicodeString &> SignalOutputException;
   sigc::signal<void, FilePath, FilePath> SignalFilenameChange;
+private:
+  void loadDefaultConfiguration(void);
+  void saveConfiguration(void);
+  void applyConfiguration(void);
 
 private:
-  UiPlugin *m_ui;
-  InputPlugin *m_input;
-  OutputPlugin *m_output;
-  FilePath m_directory;
-  Metatag::Expression m_metatag_expression;
+  boost::property_tree::ptree reg;
+  UiPlugin::Pointer ui_plugin;
+  InputPlugin::Pointer input_plugin;
+  OutputPlugin::Pointer output_plugin;
+  Metatag::Expression::Pointer metatag_expression;
+};
 
-  friend void* worker_thread_main(void *a_core_pointer);
-  pthread_t m_worker_thread;
+/* ------------------------------------------------------------------------- */
 
-  int loadModulesDirectory(const FilePath &a_directory, bool a_recursively =true);
-  int loadDefaultModules(void);
-  int loadMetatags(void);
-  bool m_bindings_outdated;
-  void bindMetatags(void);
+class MruCore::Exception : public MruException {
+public:
+  Exception(const UnicodeString &message) throw()
+    : MruException(message)
+  { }
+  
+  ~Exception(void) throw()
+  { }
 };
 
 } /* namespace mru */
