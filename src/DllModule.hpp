@@ -10,7 +10,7 @@ namespace mru {
 class DllModule {
 public:
   typedef boost::shared_ptr<DllModule> Pointer;
-  class Exception;
+  MODULE_EXCEPTION(DllModule, MruException);
 public:
   virtual ~DllModule(void) { }
 
@@ -25,16 +25,6 @@ public:
   {
     return reinterpret_cast<SymbolType>(getSymbol(symbol));
   }
-};
-
-class DllModule::Exception : public MruException {
-public:
-  Exception(const UnicodeString &message) throw()
-    : MruException(message)
-  { }
-  
-  ~Exception(void) throw()
-  { }
 };
 
 } /* namespace mru  */

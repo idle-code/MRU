@@ -33,8 +33,8 @@ public:
 
   CPPUNIT_TEST_SUITE(InputPlugin_tests);
     CPPUNIT_TEST(construction);
-    CPPUNIT_TEST_EXCEPTION(non_existing_exception, InputPluginException);
-    CPPUNIT_TEST_EXCEPTION(bad_config_exception, InputPluginException);
+    CPPUNIT_TEST_EXCEPTION(non_existing_exception, InputPlugin::Exception);
+    CPPUNIT_TEST_EXCEPTION(bad_config_exception, InputPlugin::Exception);
     CPPUNIT_TEST(flat_files);
     CPPUNIT_TEST(flat_directories);
     CPPUNIT_TEST(recursive_files);

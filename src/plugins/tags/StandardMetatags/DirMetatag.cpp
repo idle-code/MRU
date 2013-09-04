@@ -3,13 +3,6 @@
 namespace mru
 {
 
-DirMetatag::DirMetatag(void)
-  : MetatagPlugin(static_implementation_name())
-{ }
-
-DirMetatag::~DirMetatag(void)
-{ }
-
 void
 DirMetatag::initialize(const UnicodeString &a_arguments)
 {

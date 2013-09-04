@@ -3,13 +3,6 @@
 namespace mru
 {
 
-TextCaseMetatag::TextCaseMetatag(void)
-  : MetatagPlugin(static_implementation_name())
-{ }
-
-TextCaseMetatag::~TextCaseMetatag(void)
-{ }
-
 void
 TextCaseMetatag::initialize(const UnicodeString &a_arguments)
 {

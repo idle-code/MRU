@@ -6,23 +6,15 @@
 namespace mru
 {
 
-class OutputPluginException : public MruPlugin::Exception {
-public:
-  OutputPluginException(const std::string &message)
-    : MruPlugin::Exception("OutputPlugin", message)
-  { }
-};
-
 /* ------------------------------------------------------------------------- */
 
 class OutputPlugin : public MruPlugin {
 public:
   typedef boost::shared_ptr<OutputPlugin> Pointer;
+  MODULE_EXCEPTION(OutputPlugin, MruPlugin::Exception);
 
-  PLUGIN_INTERFACE("OutputPlugin")
-  OutputPlugin(const name_type &name)
-    : MruPlugin(static_interface_name(), name),
-      create_new_path(false), override_target(false)
+  OutputPlugin(void)
+    : create_new_path(false), override_target(false)
   { }
 
   virtual void createDirectory(const FilePath &path) = 0;
@@ -58,9 +50,18 @@ private:
   bool override_target;
 };
 
-typedef plugin_manager<OutputPlugin> OutputPluginManager;
+typedef PluginManager<OutputPlugin> OutputPluginManager;
 
 } /* namespace mru */
+
+#define EXPORT_OUTPUT_PLUGIN_FACTORY(factory) \
+  extern "C" { \
+    void register_output_plugin(OutputPluginManager::Pointer plugin_manager) { \
+      assert(plugin_manager); \
+      plugin_manager->registerFactory(factory); \
+    } \
+  }
+
 
 #endif /* OUTPUT_PLUGIN_HPP */
 

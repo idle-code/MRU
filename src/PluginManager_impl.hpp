@@ -6,6 +6,13 @@ namespace mru
 {
 
 template<typename PluginInterface, typename IdType>
+typename PluginManager<PluginInterface, IdType>::Pointer
+PluginManager<PluginInterface, IdType>::create(void)
+{
+  return boost::make_shared< PluginManager<PluginInterface, IdType> >();
+}
+
+template<typename PluginInterface, typename IdType>
 PluginManager<PluginInterface, IdType>::PluginManager(void)
 { }
 

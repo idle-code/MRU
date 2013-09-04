@@ -5,10 +5,7 @@ namespace mru
 {
 
 CountMetatag::CountMetatag(void)
-  : MetatagPlugin(static_implementation_name()), m_counter(0), m_start(0), m_step(1)
-{ }
-
-CountMetatag::~CountMetatag(void)
+  : m_counter(0), m_start(0), m_step(1)
 { }
 
 void

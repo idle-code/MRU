@@ -4,6 +4,7 @@
 #include "types.hpp"
 #include "glue.hpp"
 #include <stdexcept>
+#include <stack>
 
 namespace mru
 {
@@ -23,7 +24,16 @@ public:
   }
 protected:
   UnicodeString message;
+  std::stack<UnicodeString> module_path;
 };
+
+#define MODULE_EXCEPTION(Module, ParentException) \
+class Exception : public ParentException { \
+public: \
+  Exception(const UnicodeString &message) throw() \
+    : ParentException(message) { module_path.push(#Module); } \
+  virtual ~Exception(void) throw() { } \
+}
 
 } /* namespace mru */
 

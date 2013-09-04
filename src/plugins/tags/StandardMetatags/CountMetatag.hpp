@@ -8,9 +8,8 @@ namespace mru
 
 class CountMetatag : public MetatagPlugin {
 public:
-  PLUGIN_NAME("Count")
+  PLUGIN_FACTORY(CountMetatag, MetatagPlugin, "Count");
   CountMetatag(void);
-  ~CountMetatag(void);
 
   void reset(void);
   void initialize(const UnicodeString &a_arguments);

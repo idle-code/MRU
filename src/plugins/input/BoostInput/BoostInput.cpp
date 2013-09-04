@@ -46,10 +46,6 @@ BoostFileIterator<IteratorType>::m_end_iterator;
 
 /* ------------------------------------------------------------------------- */
 
-BoostInput::BoostInput(void)
-  : InputPlugin(static_implementation_name())
-{ }
-
 namespace
 {
 
@@ -77,7 +73,7 @@ FileIterator::Pointer
 BoostInput::getFileIterator(const FilePath &a_path)
 {
   if(!includeFiles() && !includeDirectories())
-    throw InputPluginException(std::string("Bad input configuration - no files will ever met specified conditions"));
+    throw InputPlugin::Exception(UnicodeString("Bad input configuration - no files will ever met specified conditions"));
   
   try {
     FileIterator::Pointer file_iterator;
@@ -93,13 +89,13 @@ BoostInput::getFileIterator(const FilePath &a_path)
     //else include both    
     return file_iterator;
   } catch (bfs::filesystem_error fe) {
-    throw InputPluginException(std::string(fe.what()));
+    throw InputPlugin::Exception(UnicodeString(fe.what()));
   }
 }
 
 } /* namespace mru */
 
-EXPORT_START
-  EXPORT_PLUGIN(mru::BoostInput)
-EXPORT_END
+//EXPORT_START
+//  EXPORT_PLUGIN(mru::BoostInput)
+//EXPORT_END
 

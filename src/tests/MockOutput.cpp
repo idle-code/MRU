@@ -3,20 +3,15 @@
 namespace mru
 {
 
-MockOutput::MockOutput(void)
-  : OutputPlugin(static_implementation_name()),
-    file_list()
-{ }
-
 void
 MockOutput::createDirectory(const FilePath &path)
 {
   if(exists(path))
-    throw OutputPluginException("Cannot create directory because specified path already exists");
+    throw OutputPlugin::Exception("Cannot create directory because specified path already exists");
   FilePath parent_dir = path.parent_path(); 
   if(!exists(parent_dir)) {
     if (!createNewPath())
-      throw OutputPluginException("Cannot create directory because parent path of specified path doesn't exists");
+      throw OutputPlugin::Exception("Cannot create directory because parent path of specified path doesn't exists");
     else if(!parent_dir.empty())
       createDirectory(parent_dir);
   }
@@ -28,7 +23,7 @@ void
 MockOutput::removeDirectory(const FilePath &path)
 {
   if (!exists(path))
-    throw OutputPluginException("Cannot remove nonexisting directory");
+    throw OutputPlugin::Exception("Cannot remove nonexisting directory");
 
   FileList::iterator file_iterator = getIterator(path);
   assert(file_iterator != file_list.end());
@@ -51,14 +46,14 @@ void
 MockOutput::move(const FilePath &source_path, const FilePath &destination_path)
 {
   if (!exists(source_path))
-    throw OutputPluginException("Cannot move because source path doesn't exists");
+    throw OutputPlugin::Exception("Cannot move because source path doesn't exists");
   if (!overrideTarget() && exists(destination_path))
-    throw OutputPluginException("Cannot move because target path exists");
+    throw OutputPlugin::Exception("Cannot move because target path exists");
 
   FilePath parent_dir = destination_path.parent_path();
   if (!exists(parent_dir)) {
     if (!createNewPath())
-      throw OutputPluginException("Cannot move because parent path of specified path doesn't exists");
+      throw OutputPlugin::Exception("Cannot move because parent path of specified path doesn't exists");
     else
       createDirectory(parent_dir);
   }
@@ -73,14 +68,14 @@ void
 MockOutput::copy(const FilePath &source_path, const FilePath &destination_path)
 {
   if (!exists(source_path))
-    throw OutputPluginException("Cannot copy because source path doesn't exists");
+    throw OutputPlugin::Exception("Cannot copy because source path doesn't exists");
   if (!overrideTarget() && exists(destination_path))
-    throw OutputPluginException("Cannot copy because target path exists");
+    throw OutputPlugin::Exception("Cannot copy because target path exists");
 
   FilePath parent_dir = destination_path.parent_path();
   if (!exists(parent_dir)) {
     if (!createNewPath())
-      throw OutputPluginException("Cannot move because parent path of specified path doesn't exists");
+      throw OutputPlugin::Exception("Cannot move because parent path of specified path doesn't exists");
     else
       createDirectory(parent_dir);
   }
@@ -95,14 +90,14 @@ void
 MockOutput::link(const FilePath &source_path, const FilePath &destination_path)
 {
   if (!exists(source_path))
-    throw OutputPluginException("Cannot copy because source path doesn't exists");
+    throw OutputPlugin::Exception("Cannot copy because source path doesn't exists");
   if (!overrideTarget() && exists(destination_path))
-    throw OutputPluginException("Cannot copy because target path exists");
+    throw OutputPlugin::Exception("Cannot copy because target path exists");
 
   FilePath parent_dir = destination_path.parent_path();
   if (!exists(parent_dir)) {
     if (!createNewPath())
-      throw OutputPluginException("Cannot move because parent path of specified path doesn't exists");
+      throw OutputPlugin::Exception("Cannot move because parent path of specified path doesn't exists");
     else
       createDirectory(parent_dir);
   }
@@ -118,11 +113,11 @@ FilePath
 MockOutput::resolveLink(const FilePath &path) const
 {
   if (!exists(path))
-    throw OutputPluginException("Cannot resolve link because specified path doesn't exists");
+    throw OutputPlugin::Exception("Cannot resolve link because specified path doesn't exists");
 
   LinkList::const_iterator link_iterator = getLinkIterator(path); 
   if (link_iterator == link_list.end())
-    throw OutputPluginException("Specified file is not a link");
+    throw OutputPlugin::Exception("Specified file is not a link");
   return link_iterator->second;
 }
 
