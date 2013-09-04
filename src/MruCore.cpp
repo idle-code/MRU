@@ -12,10 +12,7 @@ namespace mru {
 MruCore::MruCore(void)
 {
   // create all managers (it is need to be done before any dynamic module could be loaded):
-  UiPluginManager::set_instance(new UiPluginManager("UiPlugin"));
-  InputPluginManager::set_instance(new InputPluginManager("InputPlugin"));
-  OutputPluginManager::set_instance(new OutputPluginManager("OutputPlugin"));
-  MetatagPluginManager::set_instance(new MetatagPluginManager("MetatagPlugin"));
+  metatag_plugin_manager = MetatagPluginManager::create();
 
   loadDefaultConfiguration();
 }
@@ -37,12 +34,6 @@ MruCore::~MruCore(void)
 {
   FO("MruCore::~MruCore(void)");
   saveConfiguration();
-
-  // destroy all managers (it's not mandatory (imo) becouse we are exiting anyway...): 
-  MetatagPluginManager::destroy_instance();
-  OutputPluginManager::destroy_instance();
-  InputPluginManager::destroy_instance();
-  UiPluginManager::destroy_instance();
 }
 
 void

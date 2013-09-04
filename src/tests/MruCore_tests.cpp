@@ -11,8 +11,6 @@ MruCore_tests::without_arguments(void)
 {
   MruCore::Pointer core = boost::make_shared<MruCore>();
 
-  UiPluginManager *ui_plugin_manager = UiPluginManager::get_instance();
-
   int result = core->start(0, NULL);
   
 }

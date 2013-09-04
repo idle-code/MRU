@@ -3,123 +3,119 @@
 namespace mru
 {
 
-BoostOutput::BoostOutput(void)
-  : OutputPlugin(static_implementation_name())
-{ }
-
 void
-BoostOutput::createDirectory(const FilePath &a_path)
+BoostOutput::createDirectory(const FilePath &path)
 {
-  if(exists(a_path))
-    throw OutputPluginException("Cannot create directory because specified path already exists");
-  FilePath parent_dir = a_path.parent_path(); 
+  if(exists(path))
+    throw OutputPlugin::Exception("Cannot create directory because specified path already exists");
+  FilePath parent_dir = path.parent_path(); 
   if(!exists(parent_dir)) {
     if (!createNewPath())
-      throw OutputPluginException("Cannot create directory because parent path of specified path doesn't exists");
+      throw OutputPlugin::Exception("Cannot create directory because parent path of specified path doesn't exists");
     else if(!parent_dir.empty())
-      bfs::create_directories(a_path);
+      bfs::create_directories(path);
   }
 
-  bfs::create_directory(a_path);
+  bfs::create_directory(path);
 }
 
 void
-BoostOutput::removeDirectory(const FilePath &a_path)
+BoostOutput::removeDirectory(const FilePath &path)
 {
-  if (!exists(a_path))
-    throw OutputPluginException("Cannot remove nonexisting directory");
+  if (!exists(path))
+    throw OutputPlugin::Exception("Cannot remove nonexisting directory");
 
-  bfs::remove_all(a_path);
+  bfs::remove_all(path);
 }
 
 bool
-BoostOutput::exists(const FilePath &a_path) const
+BoostOutput::exists(const FilePath &path) const
 {
-  if (a_path.empty())
+  if (path.empty())
     return false;
   
-  return bfs::exists(a_path);
+  return bfs::exists(path);
 }
 
 void
-BoostOutput::move(const FilePath &a_source_path, const FilePath &a_destination_path)
+BoostOutput::move(const FilePath &source_path, const FilePath &destination_path)
 {
-  if (!exists(a_source_path))
-    throw OutputPluginException("Cannot move because source path doesn't exists");
+  if (!exists(source_path))
+    throw OutputPlugin::Exception("Cannot move because source path doesn't exists");
 
-  FilePath parent_dir = a_destination_path.parent_path();
+  FilePath parent_dir = destination_path.parent_path();
   if (!exists(parent_dir)) {
     if (!createNewPath())
-      throw OutputPluginException("Cannot move because parent path of specified path doesn't exists");
+      throw OutputPlugin::Exception("Cannot move because parent path of specified path doesn't exists");
     else
       bfs::create_directories(parent_dir);
   }
-  if(exists(a_destination_path)) {
+  if(exists(destination_path)) {
     if (overrideTarget())
-      bfs::remove_all(a_destination_path);
+      bfs::remove_all(destination_path);
     else
-      throw OutputPluginException("Cannot move because target path exists");
+      throw OutputPlugin::Exception("Cannot move because target path exists");
   }
   
-  bfs::rename(a_source_path, a_destination_path);
+  bfs::rename(source_path, destination_path);
 }
 
 void
-BoostOutput::copy(const FilePath &a_source_path, const FilePath &a_destination_path)
+BoostOutput::copy(const FilePath &source_path, const FilePath &destination_path)
 {
-  if (!exists(a_source_path))
-    throw OutputPluginException("Cannot move because source path doesn't exists");
+  if (!exists(source_path))
+    throw OutputPlugin::Exception("Cannot move because source path doesn't exists");
 
-  FilePath parent_dir = a_destination_path.parent_path();
+  FilePath parent_dir = destination_path.parent_path();
   if (!exists(parent_dir)) {
     if (!createNewPath())
-      throw OutputPluginException("Cannot move because parent path of specified path doesn't exists");
+      throw OutputPlugin::Exception("Cannot move because parent path of specified path doesn't exists");
     else
       bfs::create_directories(parent_dir);
   }
 
-  if(exists(a_destination_path)) {
+  if(exists(destination_path)) {
     if (overrideTarget())
-      bfs::remove_all(a_destination_path);
+      bfs::remove_all(destination_path);
     else
-      throw OutputPluginException("Cannot move because target path exists");
+      throw OutputPlugin::Exception("Cannot move because target path exists");
   }
 
-  bfs::copy(a_source_path, a_destination_path);
+  bfs::copy(source_path, destination_path);
 }
 
 void
-BoostOutput::link(const FilePath &a_source_path, const FilePath &a_destination_path)
+BoostOutput::link(const FilePath &source_path, const FilePath &destination_path)
 {
-  if (!exists(a_source_path))
-    throw OutputPluginException("Cannot move because source path doesn't exists");
+  if (!exists(source_path))
+    throw OutputPlugin::Exception("Cannot move because source path doesn't exists");
 
-  FilePath parent_dir = a_destination_path.parent_path();
+  FilePath parent_dir = destination_path.parent_path();
   if (!exists(parent_dir)) {
     if (!createNewPath())
-      throw OutputPluginException("Cannot move because parent path of specified path doesn't exists");
+      throw OutputPlugin::Exception("Cannot move because parent path of specified path doesn't exists");
     else
       bfs::create_directories(parent_dir);
   }
-  if(exists(a_destination_path)) {
+  if(exists(destination_path)) {
     if (overrideTarget())
-      bfs::remove_all(a_destination_path);
+      bfs::remove_all(destination_path);
     else
-      throw OutputPluginException("Cannot move because target path exists");
+      throw OutputPlugin::Exception("Cannot move because target path exists");
   }
 
-  bfs::create_symlink(a_source_path, a_destination_path);
+  bfs::create_symlink(source_path, destination_path);
 }
 
 FilePath
-BoostOutput::resolveLink(const FilePath &a_path) const
+BoostOutput::resolveLink(const FilePath &path) const
 {
-  if (!exists(a_path))
-    throw OutputPluginException("Cannot resolve link because specified path doesn't exists");
-  if (!bfs::is_symlink(a_path))
-    throw OutputPluginException("Specified file is not a link");
+  if (!exists(path))
+    throw OutputPlugin::Exception("Cannot resolve link because specified path doesn't exists");
+  if (!bfs::is_symlink(path))
+    throw OutputPlugin::Exception("Specified file is not a link");
 
-  return bfs::read_symlink(a_path);
+  return bfs::read_symlink(path);
 }
 
 } /* namespace mru */

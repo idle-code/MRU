@@ -13,13 +13,6 @@ glue_cast<UnicodeString, TagLib::String>(const TagLib::String &a_value)
   return glue_cast<UnicodeString>(a_value.toWString());
 }
 
-AudioMetatag::AudioMetatag(void)
-  : MetatagPlugin(static_implementation_name())
-{ }
-
-AudioMetatag::~AudioMetatag(void)
-{ }
-
 void
 AudioMetatag::initialize(const UnicodeString &a_arguments)
 {
@@ -76,7 +69,7 @@ AudioMetatag::execute(const FileIterator::Pointer a_file_path, const UnicodeStri
 
 } /* getNamespace mru */
 
-EXPORT_START
-  EXPORT_PLUGIN(mru::AudioMetatag)
-EXPORT_END
+METATAG_EXPORTS_START
+  EXPORT_METATAG_PLUGIN_FACTORY(mru::AudioMetatag::Factory::create())
+METATAG_EXPORTS_END
 

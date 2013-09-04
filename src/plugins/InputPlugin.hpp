@@ -8,26 +8,10 @@
 namespace mru
 {
 
-class InputPluginException : public MruPlugin::Exception {
-public:
-  InputPluginException(const UnicodeString &message)
-    : MruPlugin::Exception("InputPlugin", message)
-  { }
-  InputPluginException(const std::string &message)
-    : MruPlugin::Exception("InputPlugin", message)
-  { }
-};
-
-/* ------------------------------------------------------------------------- */
-
 class InputPlugin : public MruPlugin {
 public:
+  MODULE_EXCEPTION(InputPlugin, MruPlugin::Exception);
   typedef boost::shared_ptr<InputPlugin> Pointer;
-
-  PLUGIN_INTERFACE("InputPlugin")
-  InputPlugin(const name_type &name)
-    : MruPlugin(static_interface_name(), name)
-  { }
 
   virtual FileIterator::Pointer getFileIterator(const FilePath &path) = 0;
 
@@ -64,9 +48,17 @@ private:
   bool search_recursively;
 };
 
-typedef plugin_manager<InputPlugin> InputPluginManager;
+typedef PluginManager<InputPlugin> InputPluginManager;
 
 } /* namespace mru */
+
+#define EXPORT_INPUT_PLUGIN_FACTORY(factory) \
+  extern "C" { \
+    void register_input_plugin(InputPluginManager::Pointer plugin_manager) { \
+      assert(plugin_manager); \
+      plugin_manager->registerFactory(factory); \
+    } \
+  }
 
 #endif /* INPUT_PLUGIN_HPP */
 

@@ -67,49 +67,49 @@ public:
 #if 1
   CPPUNIT_TEST_SUITE(OutputPlugin_tests);
     // file creation (for test only)
-    //CPPUNIT_TEST_EXCEPTION(create_existing_file, OutputPluginException);
+    //CPPUNIT_TEST_EXCEPTION(create_existing_file, OutputPlugin::Exception);
     CPPUNIT_TEST(exists_file);
     CPPUNIT_TEST(exists_directory);
     CPPUNIT_TEST(exists_no_target);
     CPPUNIT_TEST(exists_empty);
     // directory creation
     CPPUNIT_TEST(create_directory);
-    CPPUNIT_TEST_EXCEPTION(create_directory_no_target_path_exists, OutputPluginException);
+    CPPUNIT_TEST_EXCEPTION(create_directory_no_target_path_exists, OutputPlugin::Exception);
     CPPUNIT_TEST(create_directory_no_target_path_exists_create_new);
-    CPPUNIT_TEST_EXCEPTION(create_directory_target_exists, OutputPluginException);
-    CPPUNIT_TEST_EXCEPTION(create_directory_target_file_exists, OutputPluginException);
-    CPPUNIT_TEST_EXCEPTION(create_directory_target_exists_override, OutputPluginException);
+    CPPUNIT_TEST_EXCEPTION(create_directory_target_exists, OutputPlugin::Exception);
+    CPPUNIT_TEST_EXCEPTION(create_directory_target_file_exists, OutputPlugin::Exception);
+    CPPUNIT_TEST_EXCEPTION(create_directory_target_exists_override, OutputPlugin::Exception);
     CPPUNIT_TEST(remove_directory);
-    CPPUNIT_TEST_EXCEPTION(remove_directory_no_source_exists, OutputPluginException);
+    CPPUNIT_TEST_EXCEPTION(remove_directory_no_source_exists, OutputPlugin::Exception);
     // move
-    CPPUNIT_TEST_EXCEPTION(move_target_exists, OutputPluginException);
+    CPPUNIT_TEST_EXCEPTION(move_target_exists, OutputPlugin::Exception);
     CPPUNIT_TEST(move_target_exists_override);
     CPPUNIT_TEST(move_no_target_exists);
-    CPPUNIT_TEST_EXCEPTION(move_no_source_exists, OutputPluginException);
-    CPPUNIT_TEST_EXCEPTION(move_no_target_path_exists, OutputPluginException);
+    CPPUNIT_TEST_EXCEPTION(move_no_source_exists, OutputPlugin::Exception);
+    CPPUNIT_TEST_EXCEPTION(move_no_target_path_exists, OutputPlugin::Exception);
     CPPUNIT_TEST(move_no_target_path_exists_create_new);
     // copy
-    CPPUNIT_TEST_EXCEPTION(copy_target_exists, OutputPluginException);
+    CPPUNIT_TEST_EXCEPTION(copy_target_exists, OutputPlugin::Exception);
     CPPUNIT_TEST(copy_target_exists_override);
     CPPUNIT_TEST(copy_no_target_exists);
-    CPPUNIT_TEST_EXCEPTION(copy_no_source_exists, OutputPluginException);
-    CPPUNIT_TEST_EXCEPTION(copy_no_target_path_exists, OutputPluginException);
+    CPPUNIT_TEST_EXCEPTION(copy_no_source_exists, OutputPlugin::Exception);
+    CPPUNIT_TEST_EXCEPTION(copy_no_target_path_exists, OutputPlugin::Exception);
     CPPUNIT_TEST(copy_no_target_path_exists_create_new);
     // link
-    CPPUNIT_TEST_EXCEPTION(link_target_exists, OutputPluginException);
+    CPPUNIT_TEST_EXCEPTION(link_target_exists, OutputPlugin::Exception);
     CPPUNIT_TEST(link_target_exists_override);
     CPPUNIT_TEST(link_no_target_exists);
-    CPPUNIT_TEST_EXCEPTION(link_no_source_exists, OutputPluginException);
-    CPPUNIT_TEST_EXCEPTION(link_no_target_path_exists, OutputPluginException);
+    CPPUNIT_TEST_EXCEPTION(link_no_source_exists, OutputPlugin::Exception);
+    CPPUNIT_TEST_EXCEPTION(link_no_target_path_exists, OutputPlugin::Exception);
     CPPUNIT_TEST(link_no_target_path_exists_create_new);
     
     CPPUNIT_TEST(resolveLink_target_exists);
-    CPPUNIT_TEST_EXCEPTION(resolveLink_not_link_target_exists, OutputPluginException);
-    CPPUNIT_TEST_EXCEPTION(resolveLink_no_target_exists, OutputPluginException);
+    CPPUNIT_TEST_EXCEPTION(resolveLink_not_link_target_exists, OutputPlugin::Exception);
+    CPPUNIT_TEST_EXCEPTION(resolveLink_no_target_exists, OutputPlugin::Exception);
   CPPUNIT_TEST_SUITE_END_ABSTRACT();
 #else
   CPPUNIT_TEST_SUITE(OutputPlugin_tests);
-    //CPPUNIT_TEST_EXCEPTION(create_directory_no_target_path_exists, OutputPluginException);
+    //CPPUNIT_TEST_EXCEPTION(create_directory_no_target_path_exists, OutputPlugin::Exception);
     CPPUNIT_TEST(create_directory_no_target_path_exists_create_new);
   CPPUNIT_TEST_SUITE_END_ABSTRACT();
 #endif

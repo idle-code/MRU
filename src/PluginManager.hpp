@@ -61,7 +61,8 @@ public:
   typedef boost::shared_ptr< PluginManager<PluginInterface, IdType> > Pointer;
   typedef AbstractPluginFactory<PluginInterface, IdType> AbstractPluginFactory;
   typedef typename AbstractPluginFactory::PluginPointer PluginPointer;
-  class Exception;
+  MODULE_EXCEPTION(PluginManager, MruException);
+  static Pointer create(void);
 public:
   PluginManager(void);
   void registerFactory(typename AbstractPluginFactory::Pointer factory); 
@@ -75,22 +76,19 @@ private:
   FactoryMap factory_map;
 };
 
-template<typename PluginInterface, typename IdType>
-class PluginManager<PluginInterface, IdType>::Exception : public MruException {
-public:
-  Exception(const UnicodeString &message) throw()
-    : MruException(message)
-  { }
-  
-  ~Exception(void) throw()
-  { }
-};
-
 } /* namespace mru */
 
 #define PLUGIN_MANAGER_IMPL_HPP
 #include "PluginManager_impl.hpp"
 #undef PLUGIN_MANAGER_IMPL_HPP
+
+#define PLUGIN_FACTORY(PluginClass, PluginInterface, TagId) \
+  class Factory : public PluginFactory<PluginClass, PluginInterface> { \
+  public: \
+    static Pointer create(void) { \
+      return PluginFactory<PluginClass, PluginInterface>::create(TagId); \
+    } \
+  };
 
 #endif /* PLUGIN_MANAGER_HPP */
 

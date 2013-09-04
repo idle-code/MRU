@@ -4,11 +4,13 @@
 #include "DirMetatag.hpp"
 #include "TextCaseMetatag.hpp"
 
-EXPORT_START
-  EXPORT_PLUGIN(mru::CountMetatag)
-  EXPORT_PLUGIN(mru::ExtMetatag)
-  EXPORT_PLUGIN(mru::NameMetatag)
-  EXPORT_PLUGIN(mru::DirMetatag)
-  EXPORT_PLUGIN(mru::TextCaseMetatag)
-EXPORT_END
+#include "plugins/MetatagPlugin.hpp"
+
+METATAG_EXPORTS_START
+  EXPORT_METATAG_PLUGIN_FACTORY(mru::CountMetatag::Factory::create())
+  EXPORT_METATAG_PLUGIN_FACTORY(mru::ExtMetatag::Factory::create())
+  EXPORT_METATAG_PLUGIN_FACTORY(mru::NameMetatag::Factory::create())
+  EXPORT_METATAG_PLUGIN_FACTORY(mru::DirMetatag::Factory::create())
+  EXPORT_METATAG_PLUGIN_FACTORY(mru::TextCaseMetatag::Factory::create())
+METATAG_EXPORTS_END
 

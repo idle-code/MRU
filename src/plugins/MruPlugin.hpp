@@ -1,19 +1,19 @@
 #ifndef MRUPLUGIN_HPP
 #define MRUPLUGIN_HPP
 
-#include "plugin_manager.hpp"
+#include "PluginManager.hpp"
+#include <cassert>
 
-namespace mru
-{
+namespace mru {
 
 // forward declaration:
 class MruCore;
 
-class MruPlugin : public plugin<MruPlugin> {
+class MruPlugin {
 public:
-  class Exception;
+  MODULE_EXCEPTION(MruPlugin, MruException);
 public:
-  MruPlugin(const name_type &interface, const name_type &name);
+  MruPlugin(void);
   virtual ~MruPlugin(void);
   
   virtual bool Init(MruCore *mru_core);
@@ -24,19 +24,8 @@ private:
   MruCore *core;
 };
 
-class MruPlugin::Exception : public std::exception {
-public:
-  Exception(const std::string &module, const UnicodeString &message);
-  Exception(const std::string &module, const std::string &message);
-  virtual ~Exception(void) throw();
-  const char* what(void) const throw();
-  const UnicodeString& getMessage(void) const throw();
-private:
-  std::string module; 
-  UnicodeString message; 
-};
-
 } /* namespace mru */
+
 
 #endif /* MRUPLUGIN_HPP */
 

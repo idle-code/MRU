@@ -22,7 +22,7 @@ public:
   typedef MruCore self_type;
   typedef boost::shared_ptr<MruCore> Pointer;
 
-  class Exception;
+  MODULE_EXCEPTION(MruCore, MruException);
   
 public: // generic methods
   MruCore(void);
@@ -75,19 +75,8 @@ private:
   UiPlugin::Pointer ui_plugin;
   InputPlugin::Pointer input_plugin;
   OutputPlugin::Pointer output_plugin;
+  MetatagPluginManager::Pointer metatag_plugin_manager;
   Metatag::Expression::Pointer metatag_expression;
-};
-
-/* ------------------------------------------------------------------------- */
-
-class MruCore::Exception : public MruException {
-public:
-  Exception(const UnicodeString &message) throw()
-    : MruException(message)
-  { }
-  
-  ~Exception(void) throw()
-  { }
 };
 
 } /* namespace mru */

@@ -8,5 +8,5 @@ include_directories ("/usr/include")
 set (LIBS ${LIBS} "-ltag")
 
 add_library (AudioMetatag MODULE "AudioMetatag.cpp")
-target_link_libraries (AudioMetatag ${LIBS} plugin_manager)
+target_link_libraries (AudioMetatag ${LIBS})
 

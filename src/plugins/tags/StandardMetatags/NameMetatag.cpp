@@ -3,13 +3,6 @@
 namespace mru
 {
 
-NameMetatag::NameMetatag(void)
-  : MetatagPlugin(static_implementation_name())
-{ }
-
-NameMetatag::~NameMetatag(void)
-{ }
-
 void
 NameMetatag::initialize(const UnicodeString &a_arguments)
 { }

@@ -3,13 +3,6 @@
 namespace mru
 {
 
-ExtMetatag::ExtMetatag(void)
-  : MetatagPlugin(static_implementation_name())
-{ }
-
-ExtMetatag::~ExtMetatag(void)
-{ }
-
 void
 ExtMetatag::initialize(const UnicodeString &a_arguments)
 {

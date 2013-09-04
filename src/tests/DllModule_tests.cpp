@@ -1,6 +1,7 @@
 #include "DllModule_tests.hpp"
 
 #include "BsdDllModule.hpp"
+#define TEST_MODULE "./libtest_module.so"
 
 void
 DllModule_tests::setUp(void)
@@ -27,7 +28,7 @@ DllModule_tests::load_existing_non_dll(void)
 void
 DllModule_tests::load_existing(void)
 {
-  module->load("./libtest_module.so");
+  module->load(TEST_MODULE);
   CPPUNIT_ASSERT(module->isLoaded());
 
 }
@@ -35,7 +36,7 @@ DllModule_tests::load_existing(void)
 void
 DllModule_tests::unload(void)
 {
-  module->load("./libtest_module.so");
+  module->load(TEST_MODULE);
   CPPUNIT_ASSERT(module->isLoaded());
 
   module->unLoad();
@@ -54,7 +55,7 @@ typedef int (*HelloFunction)(void);
 void
 DllModule_tests::load_nonexisting_symbol(void)
 {
-  module->load("./libtest_module.so");
+  module->load(TEST_MODULE);
   CPPUNIT_ASSERT(module->isLoaded());
   
   HelloFunction goodbye = module->get<HelloFunction>("goodbye");
@@ -64,7 +65,7 @@ DllModule_tests::load_nonexisting_symbol(void)
 void
 DllModule_tests::load_symbol(void)
 {
-  module->load("./libtest_module.so");
+  module->load(TEST_MODULE);
   CPPUNIT_ASSERT(module->isLoaded());
   
   HelloFunction hello = module->get<HelloFunction>("hello");

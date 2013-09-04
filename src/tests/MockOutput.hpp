@@ -10,10 +10,6 @@ namespace mru
 
 class MockOutput : public OutputPlugin {
 public:
-  PLUGIN_NAME("MockOutput")
-  
-  MockOutput(void);
-
   void createDirectory(const FilePath &path);
   void removeDirectory(const FilePath &path);
   

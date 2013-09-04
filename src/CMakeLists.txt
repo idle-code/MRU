@@ -31,20 +31,11 @@ if (NOT TARGET debug_l)
   add_definitions (-DDEBUG_L)
 endif()
 
-#TODO: make registry library
-#add_subdirectory ("data_tree")
-#include_directories ("data_tree")
-#set (LIBS ${LIBS} registry)
-
-add_subdirectory ("plugin_manager")
-include_directories ("plugin_manager")
-
 #add_executable (dt_test "dt_test.cpp")
 #target_link_libraries (dt_test ${LIBS}) 
 
 add_subdirectory ("plugins")
 include_directories ("plugins")
-set (LIBS ${LIBS} plugin_manager)
 
 #add_subdirectory ("metatag")
 #include_directories ("metatag")

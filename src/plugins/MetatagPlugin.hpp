@@ -2,7 +2,6 @@
 #define METATAG_PLUGIN_HPP
 
 #include "plugins/MruPlugin.hpp"
-#include "plugin_manager.hpp"
 #include "MetatagBase.hpp"
 #include "glue.hpp"
 
@@ -11,11 +10,10 @@ namespace mru
 
 class MetatagPlugin : public MruPlugin, public Metatag::MetatagBase {
 public:
-  typedef MetatagPlugin self_type;
-public:
-  PLUGIN_INTERFACE("MetatagPlugin")
-  MetatagPlugin(const name_type &name)
-    : MruPlugin(static_interface_name(), name), MetatagBase(glue_cast<UnicodeString>(name))
+  MODULE_EXCEPTION(MetatagPlugin, MruPlugin::Exception);
+
+  MetatagPlugin(void)
+    : MetatagBase(glue_cast<UnicodeString>(name))
   { }
   
   virtual ~MetatagPlugin(void)
@@ -23,9 +21,27 @@ public:
 
 };
 
-typedef plugin_manager<MetatagPlugin> MetatagPluginManager;
+typedef PluginManager<MetatagPlugin> MetatagPluginManager;
 
 } /* namespace mru */
+
+#define METATAG_FACTORY(MetatagClass) \
+  class Factory : public PluginManager<MetatagClass>::AbstractPluginFactory> { \
+  public: \
+    adsf \
+  };
+
+#define METATAG_EXPORTS_START \
+  extern "C" { \
+    void register_metatag_plugins(mru::MetatagPluginManager::Pointer plugin_manager) { \
+      assert(plugin_manager);
+
+#define EXPORT_METATAG_PLUGIN_FACTORY(factory) \
+      plugin_manager->registerFactory(factory);
+
+#define METATAG_EXPORTS_END \
+    } \
+  }
 
 #endif /* METATAG_PLUGIN_HPP */
 
