@@ -13,11 +13,12 @@ main(int argc, char **argv)
 {
   FO("main(int argc, char **argv)");
 
+  FilePath config_file;
 
   po::options_description desc("Command line parameters");
   desc.add_options()
-    ("help", "show help message")
-    ("config", po::value<FilePath>(), "configuration file to use")
+    ("help,h", "show help message")
+    ("config,c", po::value<FilePath>(&config_file), "configuration file to use")
     ;
 
   po::variables_map vm;
@@ -38,11 +39,14 @@ main(int argc, char **argv)
     MruCore::Pointer core = boost::make_shared<MruCore>();  
 
     if (vm.count("config"))
-      core->loadConfiguration(vm["config"].as<FilePath>());
+      core->loadConfiguration(config_file);
 
     return core->start(argc, argv);
   } catch (MruCore::Exception &ce) {
-    std::cerr << "Core exception catched during program execution: " << glue_cast<std::string>(ce.getMessage()) << std::endl;
+    std::cerr << "Core exception catched during program execution: \n" << glue_cast<std::string>(ce.getMessage()) << std::endl;
+    return -1;
+  } catch (MruException &me) {
+    std::cerr << "MRU exception catched during program execution: \n" << glue_cast<std::string>(me.getMessage()) << std::endl;
     return -1;
   }
 }

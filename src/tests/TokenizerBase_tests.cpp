@@ -1,8 +1,6 @@
-#include "UnicodeStringStreamOperator.hpp"
 #include "TokenizerBase_tests.hpp"
 #include <unicode/schriter.h>
 #include <unicode/uchar.h>
-#include "glue.hpp"
 
 void
 TokenizerBase_tests::setUp(void)

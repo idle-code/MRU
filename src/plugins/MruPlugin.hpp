@@ -26,6 +26,15 @@ private:
 
 } /* namespace mru */
 
+#define EXPORT_PLUGIN_FACTORY(PLUGIN_INTERFACE, PLUGIN_TYPE) \
+  extern "C" { \
+    void register##PLUGIN_INTERFACE##Factory (mru::PLUGIN_INTERFACE::Manager::Pointer plugin_manager) { \
+      assert(plugin_manager); \
+      plugin_manager->registerFactory(PLUGIN_TYPE::Factory::createRaw(#PLUGIN_TYPE)); \
+    } \
+  }
+
+  //void unregister##PluginType##Factory (
 
 #endif /* MRUPLUGIN_HPP */
 

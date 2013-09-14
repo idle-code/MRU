@@ -65,17 +65,28 @@ public: // ranaming process
   sigc::signal<void> SignalRenameStopped;
 
   sigc::signal<void, FilePath, FilePath> SignalFilenameChange;
+
 private:
   void loadDefaultConfiguration(void);
   void saveConfiguration(void);
   void applyConfiguration(void);
+  template<typename PluginType>
+  void loadAllModulesIn(const FilePath &directory, typename PluginType::Manager::Pointer plugin_manager);
+  template<typename PluginType>
+  void loadModule(const FilePath &module_path, typename PluginType::Manager::Pointer plugin_manager);
+  std::list<FilePath> listFilesInDirectory(const FilePath &directory);
 
 private:
   boost::property_tree::ptree reg;
   UiPlugin::Pointer ui_plugin;
   InputPlugin::Pointer input_plugin;
   OutputPlugin::Pointer output_plugin;
+
+  InputPlugin::Manager::Pointer input_plugin_manager;
+  OutputPlugin::Manager::Pointer output_plugin_manager;
+  UiPlugin::Manager::Pointer ui_plugin_manager;
   MetatagPluginManager::Pointer metatag_plugin_manager;
+
   Metatag::Expression::Pointer metatag_expression;
 };
 

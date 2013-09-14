@@ -1,13 +1,14 @@
 #ifndef METATAG_EXPRESSION_TOKENIZER_TEST_HPP
 #define METATAG_EXPRESSION_TOKENIZER_TEST_HPP
 
+#include "glue.hpp"
+using namespace mru;
 #include "Metatag/Tokenizer.hpp"
 
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
 
 using namespace CppUnit;
-using namespace mru;
 
 class MetatagExpressionTokenizer_tests : public TestCase {
 public:

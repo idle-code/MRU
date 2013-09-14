@@ -43,7 +43,6 @@ MetatagExpression_tests::static_expr(void)
 class TestMetatag : public Metatag::MetatagBase {
 public:
   typedef boost::shared_ptr<TestMetatag> Pointer;
-  friend class Factory;
   class Factory : public MetatagBase::Factory {
   public:
     MetatagBase::Pointer
@@ -52,6 +51,7 @@ public:
       return boost::make_shared<TestMetatag>();
     }
   };
+  friend class Factory;
 public:
   TestMetatag(void) : MetatagBase("Tag") { }
 

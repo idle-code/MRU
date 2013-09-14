@@ -27,16 +27,16 @@ add_library (MockFileIterator "MockFileIterator.cpp")
 target_link_libraries (MockFileIterator FileIterator)
 
 add_executable (FilteringFileIterator_tests "FilteringFileIterator_tests.cpp")
-target_link_libraries (FilteringFileIterator_tests FilteringFileIterator MockFileIterator ${LIBS})
+target_link_libraries (FilteringFileIterator_tests FileIterator MockFileIterator ${LIBS})
 add_test (FilteringFileIterator_tests FilteringFileIterator_tests)
 
 add_executable (SortingFileIterator_tests "SortingFileIterator_tests.cpp")
-target_link_libraries (SortingFileIterator_tests SortingFileIterator MockFileIterator ${LIBS})
+target_link_libraries (SortingFileIterator_tests FileIterator MockFileIterator ${LIBS})
 add_test (SortingFileIterator_tests SortingFileIterator_tests)
 
 # InputPlugin tests:
 add_executable (BoostInput_tests "BoostInput_tests.cpp" "InputPlugin_tests.cpp")
-target_link_libraries (BoostInput_tests BoostInputShared FilteringFileIterator SortingFileIterator FileIterator)
+target_link_libraries (BoostInput_tests BoostInputShared FileIterator)
 target_link_libraries (BoostInput_tests ${LIBS})
 add_test (BoostInput_tests BoostInput_tests)
 
