@@ -16,6 +16,7 @@ public:
   typedef boost::shared_ptr< AbstractPluginFactory<PluginInterface, IdType> > Pointer;
   typedef boost::shared_ptr<PluginInterface> PluginPointer;
 public:
+  virtual ~AbstractPluginFactory(void) { }
   virtual PluginPointer createPlugin(void) = 0;
   virtual IdType getId(void) const = 0;
 };
@@ -23,24 +24,43 @@ public:
 template<typename PluginClass, typename PluginInterface, typename IdType=std::string>
 class PluginFactory : public AbstractPluginFactory<PluginInterface, IdType> {
 public:
+  typedef PluginFactory<PluginClass, PluginInterface, IdType> Self;
   typedef AbstractPluginFactory<PluginInterface, IdType> Parent;
-  typedef boost::shared_ptr< PluginFactory<PluginClass, PluginInterface, IdType> > Pointer;
+  typedef boost::shared_ptr<Self> Pointer;
   typedef typename Parent::PluginPointer PluginPointer;
-
-  static Pointer
-  create(const IdType &id)
+  
+  static void destroyFactory(Self *&factory_pointer)
   {
-    return boost::make_shared<PluginFactory>(id);
+    FO("static void destroyFactory(Self *factory_pointer)");
+    VAL(factory_pointer);
+    delete factory_pointer;
+    factory_pointer = NULL;
+  }
+
+  static void destroyPlugin(PluginInterface *plugin_pointer)
+  {
+    delete plugin_pointer;
+  }
+
+  static Self::Pointer
+  createSharedFactory(const IdType &id)
+  {
+    return boost::shared_ptr<PluginFactory>(new Self(id), &Self::destroyFactory);
+  }
+
+  static Self *
+  createFactory(const IdType &id)
+  {
+    return new Self(id);
   }
 public:
-
   PluginFactory(const IdType &id)
     : id(id) { }
 
   PluginPointer
   createPlugin(void)
   {
-    return boost::make_shared<PluginClass>();
+    return boost::shared_ptr<PluginClass>(new PluginClass(), &Self::destroyPlugin);
   }
 
   IdType

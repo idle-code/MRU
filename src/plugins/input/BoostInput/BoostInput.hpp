@@ -9,6 +9,8 @@ namespace mru
 
 class BoostInput : public InputPlugin {
 public:
+  typedef PluginFactory<BoostInput, InputPlugin> Factory;
+  MODULE_EXCEPTION(BoostInput, InputPlugin::Exception);
   FileIterator::Pointer getFileIterator(const FilePath &a_path);
 };
 

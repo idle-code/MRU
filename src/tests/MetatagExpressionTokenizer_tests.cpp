@@ -1,6 +1,4 @@
-#include "UnicodeStringStreamOperator.hpp"
 #include "MetatagExpressionTokenizer_tests.hpp"
-#include "glue.hpp"
 
 void
 MetatagExpressionTokenizer_tests::setUp(void)

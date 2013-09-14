@@ -95,7 +95,5 @@ BoostInput::getFileIterator(const FilePath &a_path)
 
 } /* namespace mru */
 
-//EXPORT_START
-//  EXPORT_PLUGIN(mru::BoostInput)
-//EXPORT_END
+EXPORT_PLUGIN_FACTORY(InputPlugin, mru::BoostInput);
 

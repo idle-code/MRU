@@ -120,3 +120,5 @@ BoostOutput::resolveLink(const FilePath &path) const
 
 } /* namespace mru */
 
+EXPORT_OUTPUT_PLUGIN_FACTORY(mru::BoostOutput::Factory::create("BoostOutput"));
+

@@ -10,6 +10,10 @@ namespace mru
 
 class InputPlugin : public MruPlugin {
 public:
+  typedef PluginManager<InputPlugin> Manager;
+  typedef void (*RegisterFunctionType)(Manager::Pointer);
+  static const char* RegisterFunctionName(void) { return "registerInputPluginFactory"; }
+
   MODULE_EXCEPTION(InputPlugin, MruPlugin::Exception);
   typedef boost::shared_ptr<InputPlugin> Pointer;
 
@@ -48,17 +52,7 @@ private:
   bool search_recursively;
 };
 
-typedef PluginManager<InputPlugin> InputPluginManager;
-
 } /* namespace mru */
-
-#define EXPORT_INPUT_PLUGIN_FACTORY(factory) \
-  extern "C" { \
-    void register_input_plugin(InputPluginManager::Pointer plugin_manager) { \
-      assert(plugin_manager); \
-      plugin_manager->registerFactory(factory); \
-    } \
-  }
 
 #endif /* INPUT_PLUGIN_HPP */
 

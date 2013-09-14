@@ -8,6 +8,8 @@ namespace mru
 
 class BoostOutput : public OutputPlugin {
 public:
+  typedef PluginFactory<BoostOutput, OutputPlugin> Factory;
+
   void createDirectory(const FilePath &path);
   void removeDirectory(const FilePath &path);
 

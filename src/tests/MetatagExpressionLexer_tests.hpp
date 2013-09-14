@@ -1,14 +1,14 @@
 #ifndef METATAG_EXPRESSION_TOKENIZER_TEST_HPP
 #define METATAG_EXPRESSION_TOKENIZER_TEST_HPP
 
+#include "glue.hpp"
+using namespace mru;
 #include "Metatag/Lexer.hpp"
 #include "ConstIterator_tests.hpp"
 
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
-
 using namespace CppUnit;
-using namespace mru;
 
 class MetatagExpressionLexer_tests : public ConstIterator_tests<Metatag::Token> {
 public:

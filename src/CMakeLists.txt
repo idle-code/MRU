@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 2.8)
 
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
+#set (CMAKE_CXX_FLAGS "-g -fpermissive -fPIC")
 set (CMAKE_CXX_FLAGS "-g -ferror-limit=3 -fPIC")
 #set (CMAKE_CXX_FLAGS "-g -ferror-limit=3")
 include_directories ("./")
@@ -41,11 +42,7 @@ include_directories ("plugins")
 #include_directories ("metatag")
 #set (LIBS ${LIBS} metatag)
 
-add_library (FileIterator "FileIterator.cpp")
-
-add_library (SortingFileIterator "SortingFileIterator.cpp")
-
-add_library (FilteringFileIterator "FilteringFileIterator.cpp")
+add_library (FileIterator "FileIterator.cpp" "SortingFileIterator.cpp" "FilteringFileIterator.cpp")
 
 add_library (UnicodeStringIterator "UnicodeStringIterator.cpp")
 
@@ -60,6 +57,7 @@ add_subdirectory ("Metatag")
 add_library (BsdDllModule "BsdDllModule.cpp")
 
 add_library (MruCore "MruCore.cpp" "MruDefaultConfiguration.cpp")
+target_link_libraries (MruCore BsdDllModule ${LIBS}) 
 
 add_executable (mru "main.cpp")
 target_link_libraries (mru MruCore ${LIBS} ${CMAKE_DL_LIBS})

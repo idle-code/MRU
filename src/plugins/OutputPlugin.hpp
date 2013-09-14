@@ -10,6 +10,10 @@ namespace mru
 
 class OutputPlugin : public MruPlugin {
 public:
+  typedef PluginManager<OutputPlugin> Manager;
+  typedef void (*RegisterFunctionType)(Manager::Pointer);
+  static const char* RegisterFunctionName(void) { return "register_output_plugin"; }
+
   typedef boost::shared_ptr<OutputPlugin> Pointer;
   MODULE_EXCEPTION(OutputPlugin, MruPlugin::Exception);
 
@@ -50,18 +54,15 @@ private:
   bool override_target;
 };
 
-typedef PluginManager<OutputPlugin> OutputPluginManager;
-
 } /* namespace mru */
 
 #define EXPORT_OUTPUT_PLUGIN_FACTORY(factory) \
   extern "C" { \
-    void register_output_plugin(OutputPluginManager::Pointer plugin_manager) { \
+    void register_output_plugin(mru::OutputPlugin::Manager::Pointer plugin_manager) { \
       assert(plugin_manager); \
       plugin_manager->registerFactory(factory); \
     } \
   }
-
 
 #endif /* OUTPUT_PLUGIN_HPP */
 

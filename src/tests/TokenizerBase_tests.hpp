@@ -1,13 +1,14 @@
 #ifndef TOKENIZER_TESTS_HPP
 #define TOKENIZER_TESTS_HPP
 
+#include "glue.hpp"
+using namespace mru;
 #include "TokenizerBase.hpp"
 #include "ConstIterator_tests.hpp"
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
 
 using namespace CppUnit;
-using namespace mru;
 
 class TokenizerBase_tests : public ConstIterator_tests<UnicodeString> {
 public:

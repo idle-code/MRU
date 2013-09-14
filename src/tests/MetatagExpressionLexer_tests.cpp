@@ -1,6 +1,4 @@
-#include "UnicodeStringStreamOperator.hpp"
 #include "MetatagExpressionLexer_tests.hpp"
-#include "glue.hpp"
 #include <boost/make_shared.hpp>
 
 void
@@ -20,6 +18,7 @@ MetatagExpressionLexer_tests::tearDown(void)
 void
 MetatagExpressionLexer_tests::compare_to_expected(Metatag::Lexer &lexer)
 {
+  using namespace mru;
   std::list<Metatag::Token>::const_iterator eti = expected_tokens.begin();
   for(; eti != expected_tokens.end() && !lexer.atEnd(); ++eti) {
     //std::cout << eti->value << " == " << lexer.getCurrent().value << std::endl;
