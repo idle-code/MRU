@@ -39,7 +39,7 @@ protected:
 class Exception : public ParentException { \
 public: \
   Exception(const UnicodeString &message) throw() \
-    : ParentException(message) { module_path.push_back(#Module); } \
+    : ParentException(message) { MruException::module_path.push_back(#Module); } \
   virtual ~Exception(void) throw() { } \
 }
 

@@ -2,19 +2,13 @@
 #define PLUGIN_MANAGER_TESTS_HPP
 
 #include "PluginManager.hpp"
+#include "TestPlugin.hpp"
 
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
 
 using namespace mru;
 using namespace CppUnit;
-
-class ITestPlugin {
-public:
-  typedef boost::shared_ptr<ITestPlugin> Pointer;
-
-  virtual std::string sayHello(void) = 0;
-};
 
 class PluginManager_tests : public TestCase {
 public:
