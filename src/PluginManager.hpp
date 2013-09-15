@@ -83,11 +83,13 @@ public:
   typedef typename AbstractPluginFactory::PluginPointer PluginPointer;
   MODULE_EXCEPTION(PluginManager, MruException);
   static Pointer create(void);
+
+  typedef std::list<typename AbstractPluginFactory::Pointer> FactoryList;
 public:
   PluginManager(void);
   void registerFactory(typename AbstractPluginFactory::Pointer factory); 
   PluginPointer createPlugin(const IdType &id);
-  std::list<typename AbstractPluginFactory::Pointer> getFactoryList(void);
+  FactoryList getFactoryList(void);
 
 private:
   PluginManager(const PluginManager &); //disabled

@@ -76,8 +76,9 @@ add_test (MetatagExpression_tests MetatagExpression_tests)
 
 # Other:
 
-add_library (test_module SHARED "test_module.cpp")
-target_link_libraries (test_module ${CMAKE_DL_LIBS})
+add_library (TestModule SHARED "TestModule.cpp")
+target_link_libraries (TestModule ${CMAKE_DL_LIBS})
+
 add_executable (DllModule_tests "DllModule_tests.cpp")
 target_link_libraries (DllModule_tests BsdDllModule ${LIBS})
 add_test (DllModule_tests DllModule_tests)
@@ -85,6 +86,10 @@ add_test (DllModule_tests DllModule_tests)
 add_executable (PluginManager_tests "PluginManager_tests.cpp")
 target_link_libraries (PluginManager_tests ${LIBS})
 add_test (PluginManager_tests PluginManager_tests)
+
+add_executable (DynamicPluginManager_tests "DynamicPluginManager_tests.cpp")
+target_link_libraries (DynamicPluginManager_tests ${LIBS})
+add_test (DynamicPluginManager_tests DynamicPluginManager_tests)
 
 add_executable (MruCore_tests "MruCore_tests.cpp")
 target_link_libraries (MruCore_tests MruCore ${LIBS})

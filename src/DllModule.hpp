@@ -11,10 +11,11 @@ class DllModule {
 public:
   typedef boost::shared_ptr<DllModule> Pointer;
   MODULE_EXCEPTION(DllModule, MruException);
+
 public:
   virtual ~DllModule(void) { }
 
-  virtual void load(const FilePath &module_file) = 0;
+  virtual void load(const FilePath &module_path) = 0;
   virtual bool isLoaded(void) const = 0;
   virtual void unLoad(void) = 0;
 
