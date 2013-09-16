@@ -17,6 +17,19 @@ PluginManager<PluginInterface, IdType>::PluginManager(void)
 { }
 
 template<typename PluginInterface, typename IdType>
+PluginManager<PluginInterface, IdType>::~PluginManager(void)
+{
+}
+
+template<typename PluginInterface, typename IdType>
+void
+PluginManager<PluginInterface, IdType>::registerFactory(AbstractPluginFactory *factory_pointer, DestroyFunction destroy_function)
+{
+  typename AbstractPluginFactory::Pointer factory(factory_pointer, destroy_function);
+  registerFactory(factory);
+}
+
+template<typename PluginInterface, typename IdType>
 void
 PluginManager<PluginInterface, IdType>::registerFactory(typename AbstractPluginFactory::Pointer factory)
 {

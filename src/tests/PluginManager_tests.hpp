@@ -2,7 +2,7 @@
 #define PLUGIN_MANAGER_TESTS_HPP
 
 #include "PluginManager.hpp"
-#include "TestPlugin.hpp"
+#include "TestModule.hpp"
 
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>

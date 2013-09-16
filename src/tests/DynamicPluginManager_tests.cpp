@@ -11,28 +11,31 @@ DynamicPluginManager_tests::setUp(void)
 void
 DynamicPluginManager_tests::load_nonexisting(void)
 {
-  manager->registerModule("./libTestModule.so");
-  DynamicTestPluginManager::FactoryList factory_list = manager->getFactoryList();
-  
-  CPPUNIT_ASSERT_EQUAL(1, factory_list.size());
+  DllModule::Pointer loaded_module = manager->loadModule("./nonexisting");
 }
 
 void
 DynamicPluginManager_tests::load_existing(void)
 {
+  DllModule::Pointer loaded_module = manager->loadModule("./libTestModule.so");
+  CPPUNIT_ASSERT(loaded_module);
 
+  DynamicTestPluginManager::FactoryList factory_list = manager->getFactoryList();
+  CPPUNIT_ASSERT_EQUAL(2u, factory_list.size());
 }
 
 void
 DynamicPluginManager_tests::load_loaded(void)
 {
+  DllModule::Pointer loaded_module1 = manager->loadModule("./libTestModule.so");
+  DllModule::Pointer loaded_module2 = manager->loadModule("./libTestModule.so");
+  CPPUNIT_ASSERT(loaded_module1);
+  CPPUNIT_ASSERT(loaded_module2);
 
-}
+  CPPUNIT_ASSERT(loaded_module1 == loaded_module2);
 
-void
-DynamicPluginManager_tests::create_noon(void)
-{
-
+  DynamicTestPluginManager::FactoryList factory_list = manager->getFactoryList();
+  CPPUNIT_ASSERT_EQUAL(2u, factory_list.size());
 }
 
 #ifdef SINGLE_TEST_MODE

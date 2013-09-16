@@ -56,13 +56,5 @@ private:
 
 } /* namespace mru */
 
-#define EXPORT_OUTPUT_PLUGIN_FACTORY(factory) \
-  extern "C" { \
-    void register_output_plugin(mru::OutputPlugin::Manager::Pointer plugin_manager) { \
-      assert(plugin_manager); \
-      plugin_manager->registerFactory(factory); \
-    } \
-  }
-
 #endif /* OUTPUT_PLUGIN_HPP */
 

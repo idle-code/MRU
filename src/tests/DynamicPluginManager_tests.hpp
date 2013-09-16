@@ -2,7 +2,7 @@
 #define DYNAMIC_PLUGIN_MANAGER_TESTS_HPP
 
 #include "DynamicPluginManager.hpp"
-#include "TestPlugin.hpp"
+#include "TestModule.hpp"
 
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -19,14 +19,11 @@ public:
   void load_nonexisting(void);
   void load_existing(void);
   void load_loaded(void);
-  void create_noon(void);
 
   CPPUNIT_TEST_SUITE(DynamicPluginManager_tests);
-    CPPUNIT_TEST(load_nonexisting);
+    CPPUNIT_TEST_EXCEPTION(load_nonexisting, DllModule::Exception);
     CPPUNIT_TEST(load_existing);
     CPPUNIT_TEST(load_loaded);
-    CPPUNIT_TEST(create_noon);
-    //CPPUNIT_TEST();
   CPPUNIT_TEST_SUITE_END();
 };
 

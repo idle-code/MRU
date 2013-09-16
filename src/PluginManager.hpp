@@ -25,34 +25,34 @@ template<typename PluginClass, typename PluginInterface, typename IdType=std::st
 class PluginFactory : public AbstractPluginFactory<PluginInterface, IdType> {
 public:
   typedef PluginFactory<PluginClass, PluginInterface, IdType> Self;
-  typedef AbstractPluginFactory<PluginInterface, IdType> Parent;
+  typedef AbstractPluginFactory<PluginInterface, IdType> AbstractPluginFactory;
   typedef boost::shared_ptr<Self> Pointer;
-  typedef typename Parent::PluginPointer PluginPointer;
+  typedef typename AbstractPluginFactory::PluginPointer PluginPointer;
   
-  static void destroyFactory(Self *&factory_pointer)
-  {
-    FO("static void destroyFactory(Self *factory_pointer)");
-    VAL(factory_pointer);
-    delete factory_pointer;
-    factory_pointer = NULL;
-  }
-
   static void destroyPlugin(PluginInterface *plugin_pointer)
   {
     delete plugin_pointer;
   }
 
   static Self::Pointer
-  createSharedFactory(const IdType &id)
+  createFactory(const IdType &id)
   {
-    return boost::shared_ptr<PluginFactory>(new Self(id), &Self::destroyFactory);
+    return boost::shared_ptr<PluginFactory>(allocateFactory(id), &Self::destroyFactory);
   }
 
   static Self *
-  createFactory(const IdType &id)
+  allocateFactory(const IdType &id)
   {
-    return new Self(id);
+    Self *new_factory = new Self(id);
+    return new_factory;
   }
+
+  static void
+  destroyFactory(AbstractPluginFactory *factory_pointer)
+  {
+    delete factory_pointer;
+  }
+
 public:
   PluginFactory(const IdType &id)
     : id(id) { }
@@ -85,14 +85,18 @@ public:
   static Pointer create(void);
 
   typedef std::list<typename AbstractPluginFactory::Pointer> FactoryList;
+  typedef void (*DestroyFunction)(AbstractPluginFactory *factory_pointer);
 public:
   PluginManager(void);
+  virtual ~PluginManager(void);
   void registerFactory(typename AbstractPluginFactory::Pointer factory); 
+  void registerFactory(AbstractPluginFactory *factory_pointer, DestroyFunction destroy_function); 
   PluginPointer createPlugin(const IdType &id);
   FactoryList getFactoryList(void);
 
-private:
+protected:
   PluginManager(const PluginManager &); //disabled
+  PluginManager& operator=(const PluginManager &); //disabled
 
   typedef std::map<IdType, typename AbstractPluginFactory::Pointer> FactoryMap;
   FactoryMap factory_map;
