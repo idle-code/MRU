@@ -1,35 +1,13 @@
 #include "PluginManager_tests.hpp"
 
-class MorningTestPlugin : public ITestPlugin {
-public:
-  typedef PluginFactory<MorningTestPlugin, ITestPlugin> Factory;
-  MorningTestPlugin(void) { }
-
-  std::string
-  sayHello(void) {
-    return "Morning!";
-  }
-};
-
-class EveningTestPlugin : public ITestPlugin {
-public:
-  typedef PluginFactory<EveningTestPlugin, ITestPlugin> Factory;
-  EveningTestPlugin(void) { }
-
-  std::string
-  sayHello(void) {
-    return "Good evening!";
-  }
-};
-
 /* ------------------------------------------------------------------------- */
 
 void
 PluginManager_tests::setUp(void)
 {
   manager = boost::make_shared<TestPluginManager>();
-  manager->registerFactory(MorningTestPlugin::Factory::create("Morning"));
-  manager->registerFactory(EveningTestPlugin::Factory::create("Evening"));
+  manager->registerFactory(MorningTestPlugin::Factory::createFactory("Morning"));
+  manager->registerFactory(EveningTestPlugin::Factory::createFactory("Evening"));
 }
 
 /* ------------------------------------------------------------------------- */
@@ -73,7 +51,7 @@ PluginManager_tests::create_nonexisting(void)
 void
 PluginManager_tests::register_duplicate(void)
 {
-  manager->registerFactory(PluginFactory<EveningTestPlugin, ITestPlugin>::create("Morning")); //throw
+  manager->registerFactory(PluginFactory<EveningTestPlugin, ITestPlugin>::createFactory("Morning")); //throw
 }
 
 void

@@ -3,6 +3,7 @@
 
 #include "PluginManager.hpp"
 #include "DllModule.hpp"
+#include <map>
 
 namespace mru {
 
@@ -10,15 +11,17 @@ template<typename PluginInterface, typename IdType=std::string>
 class DynamicPluginManager : public PluginManager<PluginInterface, IdType> {
 public:
   typedef DynamicPluginManager Self;
+  typedef boost::shared_ptr<Self> Pointer;
   typedef PluginManager<PluginInterface, IdType> Parent;
   MODULE_EXCEPTION(DynamicPluginManager, Parent::Exception);
 public:
   DynamicPluginManager(void);
+  ~DynamicPluginManager(void);
 
-  void registerModule(const FilePath &module_path);
+  DllModule::Pointer loadModule(const FilePath &module_path);
   
 private:
-  std::list<DllModule::Pointer> loaded_modules;
+  std::map<FilePath, DllModule::Pointer> loaded_modules;
 };
 
 } /* namespace mru */

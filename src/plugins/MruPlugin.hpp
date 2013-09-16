@@ -30,7 +30,7 @@ private:
   extern "C" { \
     void register##PLUGIN_INTERFACE##Factory (mru::PLUGIN_INTERFACE::Manager::Pointer plugin_manager) { \
       assert(plugin_manager); \
-      plugin_manager->registerFactory(PLUGIN_TYPE::Factory::createRaw(#PLUGIN_TYPE)); \
+      plugin_manager->registerFactory(PLUGIN_TYPE::Factory::allocateFactory(#PLUGIN_TYPE), &PLUGIN_TYPE::Factory::destroyFactory); \
     } \
   }
 

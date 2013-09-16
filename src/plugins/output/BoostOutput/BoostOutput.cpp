@@ -97,6 +97,7 @@ BoostOutput::link(const FilePath &source_path, const FilePath &destination_path)
     else
       bfs::create_directories(parent_dir);
   }
+
   if(exists(destination_path)) {
     if (overrideTarget())
       bfs::remove_all(destination_path);
@@ -120,5 +121,5 @@ BoostOutput::resolveLink(const FilePath &path) const
 
 } /* namespace mru */
 
-EXPORT_OUTPUT_PLUGIN_FACTORY(mru::BoostOutput::Factory::create("BoostOutput"));
+EXPORT_PLUGIN_FACTORY(OutputPlugin, mru::BoostOutput);
 

@@ -21,7 +21,6 @@ BsdDllModule::~BsdDllModule(void)
 void
 BsdDllModule::load(const FilePath &module_file)
 {
-  FO("BsdDllModule::load(const FilePath &module_file)");
   module_handle = dlopen(module_file.c_str(), RTLD_LAZY); //RTLD_NOW);
   if(module_handle == NULL)
     throw Exception(UnicodeString("Couldn't open '") + module_file.c_str() + "' as dynamic module: " + dlerror());
@@ -48,7 +47,6 @@ BsdDllModule::unLoad(void)
 void *
 BsdDllModule::getSymbol(const char *symbol)
 {
-  FO("BsdDllModule::getSymbol(const char *symbol)");
   if (!isLoaded())
     throw Exception("Module not loaded");
   return dlsym(module_handle, symbol);
