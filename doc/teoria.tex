@@ -1,11 +1,11 @@
 \chapter{Teoria}
 \label{teoria}
 \par
-W~niniejszym rozdziale postaram się przybliżyć problem identyfikatorów plików opisując środowisko w którym występuje.
+W~niniejszym rozdziale postaram się przybliżyć problem identyfikatorów plików opisując środowisko w~którym występuje.
 
 \section{Dane w~systemie komputerowym}
 \par
-Jednym z~podstawowych elementów systemu komputerowego jest jego pamięć. Od początku istnienia komputerów istniała potrzeba składowania danych wymaganych przy praktycznie każdych operacjach wykonywanych przez jednostkę centralną komputera. Jako że pierwsze systemy komputerowe były wykorzystywane do obliczeń typowo matematycznych, algorytmy na nich uruchamiane nie wymagały wielkich kontenerów na dane. W~tych czasach wbudowane rejestry oraz ulotna pamięć RAM zaspokajały potrzemy rynku. Jednak wraz z~rozwojem sprzętu i~algorytmów na nim uruchamianych pojawiła się potrzeba przechowywania coraz to większej ilości danych jak, a także (dzięki zastosowaniu architektury von Neumanna) samych programów. Pojawiła się idea nieulotnej oraz bardziej pojemnej pamięci --- dysku twardego.\\
+Jednym z~podstawowych elementów systemu komputerowego jest jego pamięć. Od początku istnienia komputerów istniała potrzeba składowania danych wymaganych przy praktycznie każdych operacjach wykonywanych przez jednostkę centralną komputera. Jako że pierwsze systemy komputerowe były wykorzystywane do obliczeń typowo matematycznych, algorytmy na nich uruchamiane nie wymagały wielkich kontenerów na dane. W~tych czasach wbudowane rejestry oraz ulotna pamięć RAM zaspokajały potrzemy rynku. Jednak wraz z~rozwojem sprzętu i~algorytmów na nim uruchamianych pojawiła się potrzeba przechowywania coraz to większej ilości danych jak, a~także (dzięki zastosowaniu architektury von Neumanna) samych programów. Pojawiła się idea nieulotnej oraz bardziej pojemnej pamięci --- dysku twardego.\\
 
 \par
 Pojemności pierwszych dysków twardych stanowiły promil dzisiejszych jednostek toteż nie wymagały stosowania systemów plików --- były po prostu nieulotnym rozszerzeniem pamięci operacyjnej RAM. Jednak wraz ze zwiększeniem ich pojemności oraz generalizacją oprogramowania, pojawiła się potrzeba standaryzowania i~kategoryzacji przechowywanych na dyskach danych, która spowodowała powstanie systemów plików.
@@ -33,7 +33,7 @@ Niniejsza praca skupia się na problemie opisywania danych w~tradycyjnych system
 Tradycyjne systemy plików pozwalają na przechowywanie danych w~drzewiastej strukturze danych zwanej drzewem katalogów. W~większości implementacji każdy węzeł takiego drzewa może być katalogiem albo plikiem albo dowiązaniem do innego węzła. Dodatkowo węzły katalogów jako jedyne mogę posiadać węzły podległe --- podkatalogi\cite{website:filesystems-howto}.\\
 Każdy węzeł (prócz węzła-korzenia) jest identyfikowany przez unikalny względem węzła-rodzica identyfikator zwany nazwą pliku.\\
 Lista kolejnych nazw odseparowanych przez umowny symbol stanowi ścieżkę do pliku.
-Ścieżki mogą być rozwijane względem aktualnej pozycji w drzewie katalogów bądź od jego korzenia, odpowiednio nazywa się je ścieżkami względnymi oraz bezwzględnymi.
+Ścieżki mogą być rozwijane względem aktualnej pozycji w~drzewie katalogów bądź od jego korzenia, odpowiednio nazywa się je ścieżkami względnymi oraz bezwzględnymi.
 Warto zauważyć iż struktura drzewa katalogów nie wymusza sposobu rozkładu danych w~systemie plików --- tak długo jak identyfikatory pozostają unikalne, pliki przez nie opisywane mogą znajdować się w~tym samym katalogu\footnote{W praktyce ilość plików które mogą należeć do jednego węzła zależy od implementacji.}.
 
 \subsection{Różnice w~identyfikacji plików wśród różnych systemów operacyjnych}
