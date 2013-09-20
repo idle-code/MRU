@@ -7,6 +7,13 @@
 namespace mru {
 
 template<typename PluginInterface, typename IdType>
+typename DynamicPluginManager<PluginInterface, IdType>::Pointer
+DynamicPluginManager<PluginInterface, IdType>::create(void)
+{
+  return boost::make_shared<Self>();
+}
+
+template<typename PluginInterface, typename IdType>
 DynamicPluginManager<PluginInterface, IdType>::DynamicPluginManager(void)
 {
 

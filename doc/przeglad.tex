@@ -1,8 +1,8 @@
 \chapter{Przegląd istniejących rozwiązań}
 \par
-Jako że problem zmiany identyfikatorów plików znany już jest od lat, na rynku istnieje wiele programów próbujących się z~nim uporać. Wiele z~istniejących rozwiązań zostało zaprojektowanych dla plików konkretnego typu lub są modułami większych aplikacji lecz istnieje kilka\footnote{Aplikacje zostały wybrane ze względu na ich popularność i~podejście do rozwiązania problemu} implementacji gotowych do ogólnego zastosowania.
+Jako że problem zmiany identyfikatorów plików znany już jest od lat, powstało wiele programów próbujących się z~nim uporać. Wiele z~istniejących rozwiązań zostało zaprojektowanych dla plików konkretnego typu lub są modułami większych aplikacji lecz istnieje kilka\footnote{Aplikacje zostały wybrane ze względu na ich popularność i~podejście do rozwiązania problemu} implementacji przeznaczonych do ogólnego zastosowania.
 \par
-Poniżej zostały przedstawione trzy wybrane implementacje wraz z~subiektywną opinią o~nich.
+Poniżej zostały przedstawione trzy wybrane implementacje wraz z~subiektywną opinią na ich temat.
 
 \section{Bulk Rename Utility}
 \begin{figure}[h]
@@ -13,11 +13,11 @@ Poniżej zostały przedstawione trzy wybrane implementacje wraz z~subiektywną o
 \end{figure}
 
 \par
-Jednym z~bardziej zaawansowanych i~polecanych programów na platformę Microsoft Windows jest \textit{Bulk Rename Utility}. Aplikacja umożliwia ekstrakcje metadanych z~plików audio (z tagów ID3v1) i~obrazów zawierających dane EXIF. Posiada ona także wiele funkcjonalności związanych z~modyfikacją istniejącej nazwy --- takich jak zastępowanie z~użyciem wyrażeń regularnych.
+Jednym z~bardziej zaawansowanych i~polecanych programów na platformę Microsoft Windows jest \textit{Bulk Rename Utility}. Aplikacja umożliwia ekstrakcje metadanych z~plików audio (zawartych w tagach ID3v1) i~obrazów zawierających dane EXIF. Posiada ona także wiele funkcjonalności związanych z~modyfikacją istniejącej nazwy --- takich jak zastępowanie z~użyciem wyrażeń regularnych.
 Program wyróżnia się wsparciem dla modyfikacji nazw i~atrybutów katalogów, a~także zwartym interfejsem.
-Narzędzie to nie wspiera jednak zmiany kolejności wykonywania działań na nazwie --- wszystkie operacje mają swoją pozycje w~kolejce wywołania i~istnieje jedynie możliwość ich włączenia lub wyłączenia.\\
+Narzędzie to nie wspiera jednak zmiany kolejności wykonywania działań na nazwie --- wszystkie operacje posiadają stałą pozycje w~kolejce wywołania i~istnieje jedynie możliwość ich włączenia lub wyłączenia.\\
 
-\textit{Bulk~Rename~Utility} posiada również odpowiednik bez interfejsu graficznego --- \textit{Bulk~Rename~Command} --- który jest oddzielnym programem udostępniającym funkcjonalność programu z~linii poleceń.
+\textit{Bulk~Rename~Utility} posiada również odpowiednik bez interfejsu graficznego --- \textit{Bulk~Rename~Command} --- który jest oddzielnym programem udostępniającym funkcjonalność programu z~linii poleceń (co może znaleźć zastosowanie w skryptach powłoki).
 
 \section{Métamorphose}
 \begin{figure}[h]
@@ -45,19 +45,19 @@ Zaletą programu jest duży wybór wtyczek pozwalających także na modyfikacje 
 
 \section{Inne rozwiązania}
 \par
-Osoby korzystające z~nowoczesnych systemów \texttt{POSIX}-owych posiadają ciekawą alternatywę dla jakichkolwiek specjalizowanych aplikacji --- tekstową powłokę zwaną shellem.\\
-Nowoczesne powłoki shell takie jak \texttt{zsh} czy \texttt{bash} posiadają funkcjonalności umożliwiające łączenie wyników wywołań wielu komend co wraz z~bogatą liczbą programów dostępnych dla wspomnianych systemów, umożliwia stworzenie polecenia które mogłoby w~prosty modyfikować identyfikatory plików.\\
+Osoby korzystające z~systemów \texttt{POSIX}-owych posiadają ciekawą alternatywę dla jakichkolwiek specjalizowanych aplikacji --- tekstową powłokę zwaną shellem.\\
+Nowoczesne powłoki shell takie jak \texttt{zsh} czy \texttt{bash} posiadają funkcjonalności umożliwiające łączenie wyników wywołań wielu komend co wraz z~bogatą liczbą programów dostępnych dla wspomnianych systemów, umożliwia stworzenie polecenia które mogłoby w~prosty sposób modyfikować identyfikatory plików.\\
 
 
 \begin{lstlisting}[label=shell-rename, caption={Polecenie powłoki zmieniające roszerzenia plików JPEG}]
-find ./ -name *.JPG -exec rename -v 's/\.JPG/\.jpg/' {} \;
+find ./ -name "*.JPG" -exec rename -v 's/\.JPG/\.jpg/' {} \;
 \end{lstlisting}
 
 \par
 Na listingu \ref{shell-rename} zostało pokazane przykładowe polecenie powłoki zamieniające rozszerzenia plików JPEG z~'\textit{JPG}' na '\textit{jpg}'.
 Wykorzystuje ono dwa programy:
 \begin{itemize}
-\item \texttt{find} --- znajduje pliki o~rozszerzeniu kończącym się na '\textit{.JPG}' (przez zastosowanie parametru \texttt{-name *.JPG})
+\item \texttt{find} --- znajduje pliki o~rozszerzeniu kończącym się na '\textit{.JPG}' (przez zastosowanie parametru \texttt{-name "*.JPG"})
 \item \texttt{rename} --- dokonuje faktycznej zmiany nazwy dla pojedynczego pliku
 \end{itemize}
-Polecenia realizujące proste zmiany nazw mogą zostać napisane przez średnio-wprawionego użytkownika powłoki jednak bardziej zaawansowane wymagają użycie wielu programów i~nie są tak trywialne jak wyżej wymieniony przykład.
+Polecenia realizujące proste zmiany nazw mogą zostać napisane przez średnio-zaawansowanego użytkownika powłoki jednak aby otrzymać bardziej złożone modyfikacje wymagane jest użycie wielu programów co nie jest tak trywialne jak wyżej wymieniony przykład.

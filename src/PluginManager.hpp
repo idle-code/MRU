@@ -112,7 +112,7 @@ protected:
   class Factory : public PluginFactory<PluginClass, PluginInterface> { \
   public: \
     static Pointer create(void) { \
-      return PluginFactory<PluginClass, PluginInterface>::create(TagId); \
+      return PluginFactory<PluginClass, PluginInterface>::createFactory(TagId); \
     } \
   };
 

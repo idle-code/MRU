@@ -9,8 +9,9 @@ namespace mru
 class UiPlugin : public MruPlugin {
 public:
   typedef PluginManager<UiPlugin> Manager;
+  typedef DynamicPluginManager<UiPlugin> DynamicManager;
   typedef void (*RegisterFunctionType)(Manager::Pointer);
-  static const char* RegisterFunctionName(void) { return "register_ui_plugin"; }
+  static const char* getRegisterFunctionName(void) { return "register_ui_plugin"; }
 
   typedef boost::shared_ptr<UiPlugin> Pointer;
   

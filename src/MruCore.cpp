@@ -18,10 +18,10 @@ namespace mru {
 MruCore::MruCore(void)
 {
   // create all managers (it is need to be done before any dynamic module could be loaded):
-  input_plugin_manager = InputPlugin::Manager::create();
-  output_plugin_manager = OutputPlugin::Manager::create();
-  ui_plugin_manager = UiPlugin::Manager::create();
-  metatag_plugin_manager = MetatagPluginManager::create();
+  input_plugin_manager = InputPlugin::DynamicManager::create();
+  output_plugin_manager = OutputPlugin::DynamicManager::create();
+  ui_plugin_manager = UiPlugin::DynamicManager::create();
+  metatag_plugin_manager = MetatagPlugin::DynamicManager::create();
 
   loadDefaultConfiguration();
 }
@@ -82,7 +82,7 @@ MruCore::start(int argc, char **argv)
 
 template<typename PluginType>
 void
-MruCore::loadAllModulesIn(const FilePath &directory, typename PluginType::Manager::Pointer plugin_manager)
+MruCore::loadAllModulesIn(const FilePath &directory, typename PluginType::DynamicManager::Pointer plugin_manager)
 {
   std::list<FilePath> file_list = listFilesInDirectory(directory);
 
@@ -90,26 +90,14 @@ MruCore::loadAllModulesIn(const FilePath &directory, typename PluginType::Manage
   std::list<FilePath>::const_iterator end = file_list.end();
   for(; file_iter != end; ++file_iter) {
     try {
-      loadModule<PluginType>(*file_iter, plugin_manager);
+      MSG("Loading " << *file_iter);
+      plugin_manager->loadModule(*file_iter);
     } catch (DllModule::Exception &e) {
+      WARN(e.getMessage());
+    } catch (MruException &e) {
       WARN(e.getMessage());
     }
   }
-}
-
-template<typename PluginType>
-void
-MruCore::loadModule(const FilePath &module_path, typename PluginType::Manager::Pointer plugin_manager)
-{
-  MSG("Loading '" << module_path << "'...");
-  typename DllModule::Pointer plugin_dll = BsdDllModule::create();
-  plugin_dll->load(module_path);
-
-  typename PluginType::RegisterFunctionType register_function = plugin_dll->get<typename PluginType::RegisterFunctionType>(PluginType::RegisterFunctionName());
-  if (!register_function)
-    throw Exception(glue_cast<UnicodeString>("No '") + PluginType::RegisterFunctionName() + "' method exported in module: " + module_path.c_str());
-
-  register_function(plugin_manager);
 }
 
 std::list<FilePath>
