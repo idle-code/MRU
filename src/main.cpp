@@ -35,19 +35,19 @@ main(int argc, char **argv)
     return 1;
   }
 
-  try {
+  //try {
     MruCore::Pointer core = boost::make_shared<MruCore>();  
 
     if (vm.count("config"))
       core->loadConfiguration(config_file);
 
     return core->start(argc, argv);
-  } catch (MruCore::Exception &ce) {
-    std::cerr << "Core exception catched during program execution: \n" << glue_cast<std::string>(ce.getMessage()) << std::endl;
-    return -1;
-  } catch (MruException &me) {
-    std::cerr << "MRU exception catched during program execution: \n" << glue_cast<std::string>(me.getMessage()) << std::endl;
-    return -1;
-  }
+  //} catch (MruCore::Exception &ce) {
+  //  std::cerr << "Core exception catched during program execution: \n" << glue_cast<std::string>(ce.getMessage()) << std::endl;
+  //  return -1;
+  //} catch (MruException &me) {
+  //  std::cerr << "MRU exception catched during program execution: \n" << glue_cast<std::string>(me.getMessage()) << std::endl;
+  //  return -1;
+  //}
 }
 

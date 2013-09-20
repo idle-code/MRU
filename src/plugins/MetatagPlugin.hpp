@@ -10,6 +10,9 @@ namespace mru
 
 class MetatagPlugin : public MruPlugin, public Metatag::MetatagBase {
 public:
+  typedef PluginManager<MetatagPlugin> Manager;
+  typedef DynamicPluginManager<MetatagPlugin> DynamicManager;
+  static const char* getRegisterFunctionName(void) { return "register_metatag_plugins"; }
   MODULE_EXCEPTION(MetatagPlugin, MruPlugin::Exception);
 
   MetatagPlugin(void)
@@ -21,8 +24,6 @@ public:
 
 };
 
-typedef PluginManager<MetatagPlugin> MetatagPluginManager;
-
 } /* namespace mru */
 
 #define METATAG_FACTORY(MetatagClass) \
@@ -33,7 +34,7 @@ typedef PluginManager<MetatagPlugin> MetatagPluginManager;
 
 #define METATAG_EXPORTS_START \
   extern "C" { \
-    void register_metatag_plugins(mru::MetatagPluginManager::Pointer plugin_manager) { \
+    void register_metatag_plugins(mru::MetatagPlugin::Manager::Pointer plugin_manager) { \
       assert(plugin_manager);
 
 #define EXPORT_METATAG_PLUGIN_FACTORY(factory) \

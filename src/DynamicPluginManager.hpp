@@ -14,6 +14,7 @@ public:
   typedef boost::shared_ptr<Self> Pointer;
   typedef PluginManager<PluginInterface, IdType> Parent;
   MODULE_EXCEPTION(DynamicPluginManager, Parent::Exception);
+  static Pointer create(void);
 public:
   DynamicPluginManager(void);
   ~DynamicPluginManager(void);

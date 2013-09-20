@@ -11,8 +11,9 @@ namespace mru
 class OutputPlugin : public MruPlugin {
 public:
   typedef PluginManager<OutputPlugin> Manager;
+  typedef DynamicPluginManager<OutputPlugin> DynamicManager;
   typedef void (*RegisterFunctionType)(Manager::Pointer);
-  static const char* RegisterFunctionName(void) { return "register_output_plugin"; }
+  static const char* getRegisterFunctionName(void) { return "register_output_plugin"; }
 
   typedef boost::shared_ptr<OutputPlugin> Pointer;
   MODULE_EXCEPTION(OutputPlugin, MruPlugin::Exception);

@@ -11,8 +11,9 @@ namespace mru
 class InputPlugin : public MruPlugin {
 public:
   typedef PluginManager<InputPlugin> Manager;
+  typedef DynamicPluginManager<InputPlugin> DynamicManager;
   typedef void (*RegisterFunctionType)(Manager::Pointer);
-  static const char* RegisterFunctionName(void) { return "registerInputPluginFactory"; }
+  static const char* getRegisterFunctionName(void) { return "registerInputPluginFactory"; }
 
   MODULE_EXCEPTION(InputPlugin, MruPlugin::Exception);
   typedef boost::shared_ptr<InputPlugin> Pointer;

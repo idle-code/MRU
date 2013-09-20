@@ -1,6 +1,7 @@
 #ifndef MRUPLUGIN_HPP
 #define MRUPLUGIN_HPP
 
+#include "DynamicPluginManager.hpp"
 #include "PluginManager.hpp"
 #include <cassert>
 
@@ -28,7 +29,7 @@ private:
 
 #define EXPORT_PLUGIN_FACTORY(PLUGIN_INTERFACE, PLUGIN_TYPE) \
   extern "C" { \
-    void register##PLUGIN_INTERFACE##Factory (mru::PLUGIN_INTERFACE::Manager::Pointer plugin_manager) { \
+    void register##PLUGIN_INTERFACE##Factory (mru::PLUGIN_INTERFACE::Manager *plugin_manager) { \
       assert(plugin_manager); \
       plugin_manager->registerFactory(PLUGIN_TYPE::Factory::allocateFactory(#PLUGIN_TYPE), &PLUGIN_TYPE::Factory::destroyFactory); \
     } \

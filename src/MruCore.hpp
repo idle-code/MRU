@@ -71,9 +71,7 @@ private:
   void saveConfiguration(void);
   void applyConfiguration(void);
   template<typename PluginType>
-  void loadAllModulesIn(const FilePath &directory, typename PluginType::Manager::Pointer plugin_manager);
-  template<typename PluginType>
-  void loadModule(const FilePath &module_path, typename PluginType::Manager::Pointer plugin_manager);
+  void loadAllModulesIn(const FilePath &directory, typename PluginType::DynamicManager::Pointer plugin_manager);
   std::list<FilePath> listFilesInDirectory(const FilePath &directory);
 
 private:
@@ -82,10 +80,10 @@ private:
   InputPlugin::Pointer input_plugin;
   OutputPlugin::Pointer output_plugin;
 
-  InputPlugin::Manager::Pointer input_plugin_manager;
-  OutputPlugin::Manager::Pointer output_plugin_manager;
-  UiPlugin::Manager::Pointer ui_plugin_manager;
-  MetatagPluginManager::Pointer metatag_plugin_manager;
+  InputPlugin::DynamicManager::Pointer input_plugin_manager;
+  OutputPlugin::DynamicManager::Pointer output_plugin_manager;
+  UiPlugin::DynamicManager::Pointer ui_plugin_manager;
+  MetatagPlugin::DynamicManager::Pointer metatag_plugin_manager;
 
   Metatag::Expression::Pointer metatag_expression;
 };
