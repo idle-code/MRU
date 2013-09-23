@@ -1,4 +1,5 @@
 #include "PathValidator.hpp"
+#include "glue_extension.hpp"
 #include <wx/textctrl.h>
 #include "glue.hpp"
 #include <boost/filesystem.hpp>
@@ -8,12 +9,12 @@ namespace mru
 
 namespace bfs = boost::filesystem;
 
-PathValidator::PathValidator(bool a_exists, bool a_is_directory, filepath_type *a_destination)
+PathValidator::PathValidator(bool a_exists, bool a_is_directory, FilePath *a_destination)
   : m_exists(a_exists), m_is_directory(a_is_directory),
     m_destination_specified(a_destination != NULL), m_destination(a_destination)
 {
   if(!m_destination_specified)
-    a_destination = new filepath_type;
+    a_destination = new FilePath;
 }
 
 PathValidator::~PathValidator(void)
@@ -30,7 +31,7 @@ PathValidator::PathValidator(const PathValidator &a_other)
   if(m_destination_specified)
     m_destination = a_other.m_destination;
   else
-    m_destination = new filepath_type;
+    m_destination = new FilePath;
 }
 
 wxObject *
@@ -47,9 +48,9 @@ PathValidator::Validate(wxWindow *a_parent)
     return false;
 
   wxString value = control->GetValue(); 
-  if(m_exists && !bfs::exists(glue_cast<filepath_type>(value)))
+  if(m_exists && !bfs::exists(glue_cast<FilePath>(value)))
     return false;
-  if(m_is_directory && !bfs::is_directory(glue_cast<filepath_type>(value)))
+  if(m_is_directory && !bfs::is_directory(glue_cast<FilePath>(value)))
     return false;
 
   return true;
@@ -71,7 +72,7 @@ PathValidator::TransferFromWindow(void)
   wxTextCtrl *control = dynamic_cast<wxTextCtrl*>(GetWindow());
   if(control == NULL)
     return false;
-  *m_destination = glue_cast<filepath_type>(control->GetValue());
+  *m_destination = glue_cast<FilePath>(control->GetValue());
   return true; 
 }
 

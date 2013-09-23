@@ -93,7 +93,7 @@ set_target_properties (DynamicPluginManager_tests PROPERTIES ENABLE_EXPORTS TRUE
 add_test (DynamicPluginManager_tests DynamicPluginManager_tests)
 
 add_executable (MruCore_tests "MruCore_tests.cpp")
-target_link_libraries (MruCore_tests MruCore ${LIBS})
+target_link_libraries (MruCore_tests MruCore FileIterator ${LIBS})
 add_test (MruCore_tests MruCore_tests)
 
 add_executable (glue_tests "glue_tests.cpp")

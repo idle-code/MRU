@@ -9,7 +9,7 @@ namespace mru
 
 class PathValidator : public wxValidator {
 public:
-  PathValidator(bool a_exists, bool a_is_directory, filepath_type *a_destination =NULL);
+  PathValidator(bool a_exists, bool a_is_directory, FilePath *a_destination =NULL);
   ~PathValidator(void);
   PathValidator(const PathValidator &a_other);
 
@@ -21,7 +21,7 @@ public:
 private:
   bool m_exists, m_is_directory;
   bool m_destination_specified;
-  filepath_type *m_destination;
+  FilePath *m_destination;
 };
 
 } /* namespace mru */

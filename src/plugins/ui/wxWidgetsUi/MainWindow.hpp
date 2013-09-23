@@ -13,69 +13,69 @@ public:
   typedef MainWindow self_type;
   static MainWindow* get_instance(void);
 public:
-  MainWindow(MruCore *a_mru_core);
+  MainWindow(MruCore *mru_core);
   ~MainWindow(void);
 
   void fill_filelist(void);
   
 private:
   static MainWindow *m_instance;
-  void OnClose(wxCommandEvent &a_evt);
+  void OnClose(wxCommandEvent &evt);
 private:
   // metatag list
   wxListBox *m_metatag_listbox;
-  void OnMetatagListClick(wxCommandEvent &a_evt); 
+  void OnMetatagListClick(wxCommandEvent &evt); 
   // metatag expression
   wxTextCtrl *m_metatag_textctrl;
-  void OnMetatagTextCtrlChange(wxCommandEvent &a_evt);
+  void OnMetatagTextCtrlChange(wxCommandEvent &evt);
   // template
   wxButton *m_metatag_load_template_button;
-  void OnMetatagLoadTemplateButtonClick(wxCommandEvent &a_evt);
+  void OnMetatagLoadTemplateButtonClick(wxCommandEvent &evt);
 
   // source directory
-  filepath_type m_source_directory;
+  FilePath m_source_directory;
   wxTextCtrl *m_source_directory_textctrl;
-  void OnSourceDirectoryTextCtrlChange(wxCommandEvent &a_evt);
+  void OnSourceDirectoryTextCtrlChange(wxCommandEvent &evt);
 
   wxButton *m_source_directory_button;
-  void OnSourceDirectoryButtonClick(wxCommandEvent &a_evt);
+  void OnSourceDirectoryButtonClick(wxCommandEvent &evt);
   
   // source directory mask
   wxTextCtrl *m_source_directory_mask_textctrl;
-  void OnSourceDirectoryMaskTextCtrlChange(wxCommandEvent &a_evt);
+  void OnSourceDirectoryMaskTextCtrlChange(wxCommandEvent &evt);
 
   // top checkboxes
   wxCheckBox *m_work_on_directories_checkbox;
-  void OnWorkOnDirectoriesCheckboxClick(wxCommandEvent &a_evt);
+  void OnWorkOnDirectoriesCheckboxClick(wxCommandEvent &evt);
   wxCheckBox *m_include_directories_checkbox;
-  void OnIncludeDirectoriesCheckboxClick(wxCommandEvent &a_evt);
+  void OnIncludeDirectoriesCheckboxClick(wxCommandEvent &evt);
   wxCheckBox *m_include_files_checkbox;
-  void OnIncludeFilesCheckboxClick(wxCommandEvent &a_evt);
+  void OnIncludeFilesCheckboxClick(wxCommandEvent &evt);
   wxCheckBox *m_reset_on_directory_change;
-  void OnResetOnDirectoryChangeCheckboxClick(wxCommandEvent &a_evt);
+  void OnResetOnDirectoryChangeCheckboxClick(wxCommandEvent &evt);
 
   // bottom panel
   wxCheckBox *m_auto_preview_checkbox;
-  void OnAutoPreviewCheckboxClick(wxCommandEvent &a_evt);
+  void OnAutoPreviewCheckboxClick(wxCommandEvent &evt);
   wxButton *m_preview_button;
-  void OnPreviewButtonClick(wxCommandEvent &a_evt);
+  void OnPreviewButtonClick(wxCommandEvent &evt);
   wxButton *m_start_button;
-  void OnStartButtonClick(wxCommandEvent &a_evt);
+  void OnStartButtonClick(wxCommandEvent &evt);
   wxSpinCtrl *m_preview_size_spinctrl;
-  void OnPreviewSizeSpinCtrlSpin(wxCommandEvent &a_evt);
+  void OnPreviewSizeSpinCtrlSpin(wxCommandEvent &evt);
 
   void OnRenameStartedEvent(void);
   void OnRenameStoppedEvent(void);
-  void OnRenameStarted(wxCommandEvent &a_evt);
-  void OnRenameStopped(wxCommandEvent &a_evt);
-  void OnFileRenamed(filepath_type a_before, filepath_type a_after);
-  void OnRenameErrorEvent(const UnicodeString &a_message);
-  void OnRenameError(wxCommandEvent &a_evt);
+  void OnRenameStarted(wxCommandEvent &evt);
+  void OnRenameStopped(wxCommandEvent &evt);
+  void OnFileRenamed(FilePath before, FilePath after);
+  void OnRenameErrorEvent(const MruException &exception);
+  void OnRenameError(wxCommandEvent &evt);
 
   // file list
   wxListCtrl *m_file_listctrl;
-  void OnFileListSize(wxSizeEvent &a_evt);
-  void OnFileListClick(wxCommandEvent &a_evt);
+  void OnFileListSize(wxSizeEvent &evt);
+  void OnFileListClick(wxCommandEvent &evt);
 private:
   MruCore* m_core;
   int m_preview_size;

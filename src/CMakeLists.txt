@@ -57,10 +57,10 @@ add_subdirectory ("Metatag")
 add_library (BsdDllModule "BsdDllModule.cpp")
 
 add_library (MruCore "MruCore.cpp" "MruDefaultConfiguration.cpp")
-target_link_libraries (MruCore BsdDllModule ${LIBS}) 
+target_link_libraries (MruCore BsdDllModule MetatagExpression ${LIBS}) 
 
 add_executable (mru "main.cpp")
-target_link_libraries (mru MruCore ${LIBS} ${CMAKE_DL_LIBS})
+target_link_libraries (mru MruCore FileIterator ${LIBS} ${CMAKE_DL_LIBS})
 set_target_properties (mru PROPERTIES ENABLE_EXPORTS TRUE)
 
 add_subdirectory ("tests")
