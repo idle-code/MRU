@@ -10,7 +10,6 @@ namespace mru
 {
 
 wxWidgetsUi::wxWidgetsUi(void)
-  : UiPlugin(static_implementation_name())
 { }
 
 wxWidgetsUi::~wxWidgetsUi(void)
@@ -21,7 +20,7 @@ wxWidgetsUi::start(int a_argc, char *a_argv[])
 {
   FO("wxWidgetsUi::start(int a_argc, char *a_argv[])");
   
-  detail::wxWidgetsUiApp *app = new detail::wxWidgetsUiApp(core());
+  detail::wxWidgetsUiApp *app = new detail::wxWidgetsUiApp(getCore());
   wxApp::SetInstance(app);
   int result = wxEntry(a_argc, a_argv);
   VAL(result);
@@ -38,6 +37,7 @@ namespace detail
 wxWidgetsUiApp::wxWidgetsUiApp(MruCore *a_mru_core)
   : wxApp(), m_core(a_mru_core)
 {
+  assert(m_core);
   int result = XInitThreads();
   //FIXME?: check result?
 }
@@ -68,7 +68,6 @@ wxWidgetsUiApp::OnInit(void)
 
 } /* namespace mru */
 
-EXPORT_START
-  EXPORT_PLUGIN(mru::wxWidgetsUi)
-EXPORT_END
+EXPORT_PLUGIN_FACTORY(UiPlugin, mru::wxWidgetsUi)
+
 

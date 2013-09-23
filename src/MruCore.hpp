@@ -6,9 +6,13 @@
 #include "plugins/OutputPlugin.hpp"
 #include "plugins/MetatagPlugin.hpp"
 
+#include "FilteringFileIterator.hpp"
+#include <unicode/regex.h>
+#include "SortingFileIterator.hpp"
+#include "FileIterator.hpp"
+
 #include "types.hpp"
 #include "patterns.hpp"
-#include "FileIterator.hpp"
 #include <sigc++/sigc++.h>
 #include <boost/filesystem.hpp>
 #include "Metatag/Expression.hpp"
@@ -24,7 +28,7 @@ public:
 
   MODULE_EXCEPTION(MruCore, MruException);
   
-public: // generic methods
+public:
   MruCore(void);
   ~MruCore(void);
 
@@ -41,21 +45,27 @@ public: // generic methods
   InputPlugin::Pointer getInputPlugin(void);
   void setInputPlugin(InputPlugin::Pointer plugin);
 
-public: // program state/configuration
+  std::list<std::string> getAvailableMetatags(void);
+
+public: // configuration
   void setDirectory(const FilePath &directory);
   const FilePath getDirectory(void) const;
   sigc::signal<void, FilePath> SignalDirectoryChanged;
   
   void setFileFilter(const UnicodeString &filter);
-  const UnicodeString& getFileFilter(void);
+  const UnicodeString getFileFilter(void);
   sigc::signal<void, UnicodeString> SignalFileFilterChanged;
 
+  void setSortExpression(const UnicodeString &filter);
+  const UnicodeString getSortExpression(void);
+  sigc::signal<void, UnicodeString> SignalSortExpressionChanged;
+
+  void setMetatagExpression(const UnicodeString &expression);
   void setMetatagExpression(Metatag::Expression::Pointer expression);
   Metatag::Expression::Pointer getMetatagExpression(void);
   sigc::signal<void, const Metatag::Expression::Pointer> SignalMetatagExpressionChanged;
 
-  FileIterator::Pointer getIterator(void);
-  FilePath generateNewFilepath(const FileIterator::Pointer file_iterator);
+  boost::property_tree::ptree& getConfigTree(void);
 
 public: // ranaming process
   void resetState(void);
@@ -64,7 +74,12 @@ public: // ranaming process
   void stopRename(void);
   sigc::signal<void> SignalRenameStopped;
 
+  sigc::signal<void, MruException &> SignalRenameError;
   sigc::signal<void, FilePath, FilePath> SignalFilenameChange;
+
+  FileIterator::Pointer getDirectoryIterator(void);
+
+  FilePath generateNewFilepath(const FileIterator::Pointer file_iterator);
 
 private:
   void loadDefaultConfiguration(void);
@@ -86,6 +101,19 @@ private:
   MetatagPlugin::DynamicManager::Pointer metatag_plugin_manager;
 
   Metatag::Expression::Pointer metatag_expression;
+  Metatag::Expression::Pointer sorting_expression;
+  UnicodeString file_filter_glob;
+  class GlobFilterPredicate : public FilteringFileIterator::FilterPredicate {
+  public:
+    typedef boost::shared_ptr<GlobFilterPredicate> Pointer;
+    static Pointer create(const UnicodeString &glob_expression);
+    GlobFilterPredicate(const UnicodeString &glob_expression);
+    bool operator()(const FilePath &path);
+  private:
+    UErrorCode matcher_status;
+    icu::RegexMatcher matcher;
+  };
+  GlobFilterPredicate::Pointer file_filter_predicate;
 };
 
 } /* namespace mru */

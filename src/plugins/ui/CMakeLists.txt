@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8)
 
 #add_subdirectory ("TextUi")
-#add_subdirectory ("wxWidgetsUi")
+add_subdirectory ("wxWidgetsUi")
 

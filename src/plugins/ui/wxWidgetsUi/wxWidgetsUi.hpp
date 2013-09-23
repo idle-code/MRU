@@ -27,8 +27,8 @@ private:
 class wxWidgetsUi : public UiPlugin {
 public:
   typedef wxWidgetsUi self_type;
+  typedef PluginFactory<wxWidgetsUi, UiPlugin> Factory;
 public:
-  PLUGIN_NAME("wxWidgetsUi")
   wxWidgetsUi(void);
   ~wxWidgetsUi(void);
 

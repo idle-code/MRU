@@ -11,7 +11,7 @@ public:
   typedef PluginManager<UiPlugin> Manager;
   typedef DynamicPluginManager<UiPlugin> DynamicManager;
   typedef void (*RegisterFunctionType)(Manager::Pointer);
-  static const char* getRegisterFunctionName(void) { return "register_ui_plugin"; }
+  static const char* getRegisterFunctionName(void) { return "registerUiPluginFactory"; }
 
   typedef boost::shared_ptr<UiPlugin> Pointer;
   
@@ -19,15 +19,6 @@ public:
 };
 
 } /* namespace mru */
-
-#define EXPORT_UI_PLUGIN_FACTORY(factory) \
-  extern "C" { \
-    void register_ui_plugin(mru::UiPlugin::Manager::Pointer plugin_manager) { \
-      assert(plugin_manager); \
-      plugin_manager->registerFactory(factory); \
-    } \
-  }
-
 
 #endif /* UI_PLUGIN_HPP */
 

@@ -10,6 +10,9 @@
 #include "DllModule.hpp"
 #include "BsdDllModule.hpp"
 
+#include "Metatag/Parser.hpp"
+
+
 #include <boost/property_tree/xml_parser.hpp>
 
 namespace mru {
@@ -48,6 +51,8 @@ int
 MruCore::start(int argc, char **argv)
 {
   FO("MruCore::start(void)");
+
+  metatag_expression = Metatag::Expression::parse(glue_cast<UnicodeString>(reg.get<std::string>("run.metatag.expression")));
 
   loadAllModulesIn<InputPlugin>(reg.get<std::string>("plugin.input.directory"), input_plugin_manager);
   loadAllModulesIn<OutputPlugin>(reg.get<std::string>("plugin.output.directory"), output_plugin_manager);
@@ -140,6 +145,8 @@ void
 MruCore::setUiPlugin(UiPlugin::Pointer plugin)
 {
   ui_plugin = plugin;
+  if (ui_plugin)
+    ui_plugin->Init(this);
 }
 
 OutputPlugin::Pointer
@@ -152,6 +159,8 @@ void
 MruCore::setOutputPlugin(OutputPlugin::Pointer plugin)
 {
   output_plugin = plugin;
+  if (output_plugin)
+    output_plugin->Init(this);
 }
 
 InputPlugin::Pointer
@@ -164,20 +173,47 @@ void
 MruCore::setInputPlugin(InputPlugin::Pointer plugin)
 {
   input_plugin = plugin;
+  if (input_plugin)
+    input_plugin->Init(this);
+}
+
+std::list<std::string>
+MruCore::getAvailableMetatags(void)
+{
+  MetatagPlugin::DynamicManager::FactoryList metatag_factory_list = metatag_plugin_manager->getFactoryList();
+  std::list<std::string> result_list(metatag_factory_list.size());
+  MetatagPlugin::DynamicManager::FactoryList::iterator i = metatag_factory_list.begin();
+  for(; i != metatag_factory_list.end(); ++i)
+    result_list.push_back((*i)->getId());
+  return result_list;
 }
 
 /* ------------------------------------------------------------------------- */
 
 void
+MruCore::setMetatagExpression(const UnicodeString &expression)
+{
+  setMetatagExpression(Metatag::Expression::parse(expression));
+}
+
+void
 MruCore::setMetatagExpression(Metatag::Expression::Pointer expression)
 {
-
+  assert(expression);
+  metatag_expression = expression;
 }
 
 Metatag::Expression::Pointer
 MruCore::getMetatagExpression(void)
 {
-  return Metatag::Expression::Pointer();
+  assert(metatag_expression);
+  return metatag_expression;
+}
+
+boost::property_tree::ptree &
+MruCore::getConfigTree(void)
+{
+  return reg;
 }
 
 void
@@ -185,8 +221,6 @@ MruCore::resetState(void)
 {
 
 }
-
-/* ------------------------------------------------------------------------- */
 
 void
 MruCore::startRename(void)
@@ -200,14 +234,64 @@ MruCore::stopRename(void)
 
 /* ------------------------------------------------------------------------- */
 
+MruCore::GlobFilterPredicate::Pointer
+MruCore::GlobFilterPredicate::create(const UnicodeString &glob_expression)
+{
+  return boost::make_shared<GlobFilterPredicate>(glob_expression);
+}
+
+MruCore::GlobFilterPredicate::GlobFilterPredicate(const UnicodeString &glob_expression)
+  : matcher_status(U_ZERO_ERROR), matcher(glob_expression, 0, matcher_status)
+{
+  if(U_FAILURE(matcher_status)) {
+    VAL(glob_expression);
+    throw MruException(u_errorName(matcher_status));
+  }
+}
+
+bool
+MruCore::GlobFilterPredicate::operator()(const FilePath &path)
+{
+  matcher.reset(glue_cast<UnicodeString>(path));
+
+  bool result = matcher.matches(matcher_status);
+  if(U_FAILURE(matcher_status)) {
+    VAL(path);
+    throw MruException(u_errorName(matcher_status));
+  }
+  if (result)
+    return true;
+
+  matcher.reset(glue_cast<UnicodeString>(path.filename()));
+  result = matcher.matches(matcher_status);
+  if(U_FAILURE(matcher_status)) {
+    VAL(path);
+    throw MruException(u_errorName(matcher_status));
+  }
+  return result;
+}
+
+/* ------------------------------------------------------------------------- */
+
 FileIterator::Pointer
-MruCore::getIterator(void)
+MruCore::getDirectoryIterator(void)
 {
   assert(input_plugin);
   try {
-    return input_plugin->getFileIterator(getDirectory());
-  } catch(...) {
-    ERR("Couldn't get directory iterator for: " << getDirectory());
+    input_plugin->includeFiles(reg.get<bool>("run.include.files"));
+    input_plugin->includeDirectories(reg.get<bool>("run.include.directories"));
+    input_plugin->searchRecursively(reg.get<bool>("run.search.recursively"));
+    FileIterator::Pointer file_iterator = input_plugin->getFileIterator(getDirectory());
+
+    if (file_filter_predicate)
+      file_iterator = FilteringFileIterator::wrap(file_iterator, file_filter_predicate);
+
+    if (sorting_expression)
+      return file_iterator;
+
+    return file_iterator;
+  } catch(InputPlugin::Exception &ie) {
+    ERR("Couldn't get directory iterator for: " << getDirectory() << " - " << ie.getMessage());
     return FileIterator::Pointer();
   }
 }
@@ -233,6 +317,41 @@ const FilePath
 MruCore::getDirectory(void) const
 {
   return reg.get<FilePath>("run.directory");
+}
+
+/* ------------------------------------------------------------------------- */
+
+void
+MruCore::setFileFilter(const UnicodeString &filter_expression)
+{
+  file_filter_glob = filter_expression;
+  if (filter_expression.isEmpty())
+    file_filter_predicate.reset();
+  else
+    file_filter_predicate = GlobFilterPredicate::create(filter_expression);
+  SignalFileFilterChanged(file_filter_glob);
+}
+
+const UnicodeString
+MruCore::getFileFilter(void)
+{
+  return file_filter_glob;
+}
+
+/* ------------------------------------------------------------------------- */
+
+void
+MruCore::setSortExpression(const UnicodeString &sort_expression)
+{
+  sorting_expression = Metatag::Expression::parse(sort_expression);
+  SignalSortExpressionChanged(getSortExpression());
+}
+
+const UnicodeString
+MruCore::getSortExpression(void)
+{
+  assert(sorting_expression);
+  return sorting_expression->text();
 }
 
 } /* namespace mru */
