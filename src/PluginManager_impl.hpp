@@ -62,6 +62,13 @@ PluginManager<PluginInterface, IdType>::getFactoryList(void)
   return factory_list;
 }
 
+template<typename PluginInterface, typename IdType>
+const std::map<IdType, typename PluginManager<PluginInterface, IdType>::AbstractPluginFactory::Pointer> &
+PluginManager<PluginInterface, IdType>::getFactoryMap(void)
+{
+  return factory_map;
+}
+
 } /* namespace mru */
 
 #endif /* PLUGIN_MANAGER_IMPL_HPP */

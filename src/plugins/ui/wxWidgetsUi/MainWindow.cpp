@@ -54,8 +54,9 @@ MainWindow::MainWindow(MruCore *mru_core)
     std::list<std::string> plugins = m_core->getAvailableMetatags();
     std::list<wxString> wx_plugins; //CHECK: useless?
     for(std::list<std::string>::iterator i = plugins.begin(); i != plugins.end(); ++i) {
-      wx_plugins.push_back(glue_cast<wxString>(*i));
-      m_metatag_listbox->InsertItems(1, &wx_plugins.back(), 0);
+      VAL(*i);
+      wxString metatag_name = glue_cast<wxString>(*i);
+      m_metatag_listbox->InsertItems(1, &metatag_name, 0);
     }
 
     Connect(m_metatag_listbox->GetId(), wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler(MainWindow::OnMetatagListClick));
@@ -195,10 +196,10 @@ MainWindow::MainWindow(MruCore *mru_core)
   RENAME_STOPPED_ID = wxNewId();
   RENAME_ERROR_ID = wxNewId();
 
-  m_core->SignalRenameStarted.connect(sigc::mem_fun(this, &MainWindow::OnRenameStartedEvent));
-  m_core->SignalRenameStopped.connect(sigc::mem_fun(this, &MainWindow::OnRenameStoppedEvent));
-  m_core->SignalRenameError.connect(sigc::mem_fun(this, &MainWindow::OnRenameErrorEvent));
-  m_core->SignalFilenameChange.connect(sigc::mem_fun(this, &MainWindow::OnFileRenamed));
+  SignalRenameStartedConnection = m_core->SignalRenameStarted.connect(sigc::mem_fun(this, &MainWindow::OnRenameStartedEvent));
+  SignalRenameStoppedConnection = m_core->SignalRenameStopped.connect(sigc::mem_fun(this, &MainWindow::OnRenameStoppedEvent));
+  SignalRenameErrorConnection = m_core->SignalRenameError.connect(sigc::mem_fun(this, &MainWindow::OnRenameErrorEvent));
+  SignalFilenameChangeConnection =  m_core->SignalFilenameChange.connect(sigc::mem_fun(this, &MainWindow::OnFileRenamed));
 
   Connect(wxID_ANY, RENAME_STARTED_ID ,wxCommandEventHandler(MainWindow::OnRenameStarted));
   Connect(wxID_ANY, RENAME_STOPPED_ID ,wxCommandEventHandler(MainWindow::OnRenameStopped));
@@ -210,7 +211,12 @@ MainWindow::MainWindow(MruCore *mru_core)
 }
 
 MainWindow::~MainWindow(void)
-{ }
+{
+  SignalRenameStartedConnection.disconnect();
+  SignalRenameStoppedConnection.disconnect();
+  SignalRenameErrorConnection.disconnect();
+  SignalFilenameChangeConnection.disconnect();
+}
 
 /* ------------------------------------------------------------------------- */
 
@@ -287,6 +293,9 @@ MainWindow::fill_filelist(void)
       after_entry.SetBackgroundColour(wxColour(210, 0, 0));
       after_entry.SetText(glue_cast<wxString>(me.getMessage()));
     }
+    //catch(std::exception &e) {
+    //  ERR(e.what());
+    //}
 
     if(!m_file_listctrl->SetItem(after_entry)) {
       WARN("SetItem failed");
@@ -421,23 +430,22 @@ void
 MainWindow::OnMetatagTextCtrlChange(wxCommandEvent &evt)
 {
   FO("MainWindow::OnMetatagTextCtrlChange(wxCommandEvent &evt)");
+  try {
+    last_good_expression = m_core->getMetatagExpression()->text();  
+    m_core->setMetatagExpression(glue_cast<UnicodeString>(m_metatag_textctrl->GetValue()));
+    m_metatag_textctrl->SetBackgroundColour(wxColour(255, 255, 255));
+  } catch(Metatag::Expression::Exception &mee) {
+    m_metatag_textctrl->SetBackgroundColour(wxColour(250, 50, 0));
+    WARN("MetatagExpressionException: " << glue_cast<std::string>(mee.getMessage()));
+    m_core->setMetatagExpression(last_good_expression);
+  } catch(Metatag::MetatagBase::Exception &me) {
+    m_metatag_textctrl->SetBackgroundColour(wxColour(250, 250, 0));
+    WARN("MetatagException: " << glue_cast<std::string>(me.getMessage()));
+    m_core->setMetatagExpression(last_good_expression);
+  }
+
   if(m_auto_preview_checkbox->GetValue()) {
-    try {
-      //m_core->setMetatagExpression(glue_cast<UnicodeString>(m_metatag_textctrl->GetValue())); //FIXME
-      fill_filelist();
-      last_good_expression = m_core->getMetatagExpression()->text();  
-      m_metatag_textctrl->SetBackgroundColour(wxColour(255, 255, 255));
-    } catch(Metatag::Expression::Exception &mee) {
-      m_metatag_textctrl->SetBackgroundColour(wxColour(250, 50, 0));
-      WARN("MetatagExpressionException: " << glue_cast<std::string>(mee.getMessage()));
-      //m_core->set_metatag_expression(last_good_expression); //FIXME
-      fill_filelist();
-    } catch(MetatagPlugin::Exception &me) {
-      m_metatag_textctrl->SetBackgroundColour(wxColour(250, 250, 0));
-      WARN("MetatagException: " << glue_cast<std::string>(me.getMessage()));
-      //m_core->setMetatagExpression(last_good_expression); //FIXME
-      fill_filelist();
-    }
+    fill_filelist();
   }
 }
 

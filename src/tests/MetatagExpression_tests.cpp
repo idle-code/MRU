@@ -53,7 +53,7 @@ public:
   };
   friend class Factory;
 public:
-  TestMetatag(void) : MetatagBase("Tag") { }
+  TestMetatag(void) { }
 
   void
   initialize(const UnicodeString &arguments)

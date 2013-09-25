@@ -70,10 +70,10 @@ public: // configuration
 public: // ranaming process
   void resetState(void);
   void startRename(void);
-  sigc::signal<void> SignalRenameStarted;
   void stopRename(void);
+  
+  sigc::signal<void> SignalRenameStarted;
   sigc::signal<void> SignalRenameStopped;
-
   sigc::signal<void, MruException &> SignalRenameError;
   sigc::signal<void, FilePath, FilePath> SignalFilenameChange;
 

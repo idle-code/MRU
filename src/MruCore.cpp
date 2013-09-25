@@ -33,6 +33,10 @@ MruCore::~MruCore(void)
 {
   FO("MruCore::~MruCore(void)");
   saveConfiguration();
+
+  ui_plugin.reset();
+  output_plugin.reset();
+  input_plugin.reset();
 }
 
 void
@@ -81,6 +85,8 @@ MruCore::start(int argc, char **argv)
       throw Exception("No valid UI plugin specified");
     setUiPlugin(ui_plugin);
   }
+
+  loadAllModulesIn<MetatagPlugin>(reg.get<std::string>("plugin.tags.directory"), metatag_plugin_manager);
 
   return getUiPlugin()->start(argc, argv);
 }
@@ -181,10 +187,11 @@ std::list<std::string>
 MruCore::getAvailableMetatags(void)
 {
   MetatagPlugin::DynamicManager::FactoryList metatag_factory_list = metatag_plugin_manager->getFactoryList();
-  std::list<std::string> result_list(metatag_factory_list.size());
+  std::list<std::string> result_list;
   MetatagPlugin::DynamicManager::FactoryList::iterator i = metatag_factory_list.begin();
   for(; i != metatag_factory_list.end(); ++i)
     result_list.push_back((*i)->getId());
+  VAL(result_list.size());
   return result_list;
 }
 
@@ -196,10 +203,43 @@ MruCore::setMetatagExpression(const UnicodeString &expression)
   setMetatagExpression(Metatag::Expression::parse(expression));
 }
 
+class MetatagPluginToMetatagFactoryConverter : public Metatag::AbstractFactory<Metatag::MetatagBase> {
+public:
+  static Pointer create(AbstractPluginFactory<MetatagPlugin>::Pointer plugin_factory)
+  {
+    return boost::make_shared<MetatagPluginToMetatagFactoryConverter>(plugin_factory);
+  }
+
+  MetatagPluginToMetatagFactoryConverter(AbstractPluginFactory<MetatagPlugin>::Pointer plugin_factory)
+    : plugin_factory(plugin_factory)
+  { }
+
+  Metatag::MetatagBase::Pointer
+  create(void)
+  {
+    return plugin_factory->createPlugin();
+  }
+
+private:
+  AbstractPluginFactory<MetatagPlugin>::Pointer plugin_factory;
+};
+
 void
 MruCore::setMetatagExpression(Metatag::Expression::Pointer expression)
 {
+  FO("MruCore::setMetatagExpression(Metatag::Expression::Pointer expression)");
   assert(expression);
+  VAL(expression->text());
+
+  Metatag::Expression::FactoryMap factory_map;
+  MetatagPlugin::DynamicManager::FactoryMap::const_iterator i = metatag_plugin_manager->getFactoryMap().begin();
+  MetatagPlugin::DynamicManager::FactoryMap::const_iterator i_end = metatag_plugin_manager->getFactoryMap().end();
+  for(; i != i_end; ++i) {
+    factory_map.insert(std::make_pair(glue_cast<UnicodeString>((*i).first), MetatagPluginToMetatagFactoryConverter::create((*i).second)));
+  }
+
+  expression->bindFactoryMap(factory_map);
+
   metatag_expression = expression;
 }
 
@@ -299,9 +339,10 @@ MruCore::getDirectoryIterator(void)
 FilePath
 MruCore::generateNewFilepath(const FileIterator::Pointer file_iterator)
 {
+  FO("MruCore::generateNewFilepath(const FileIterator::Pointer file_iterator)");
   assert(file_iterator && "file_iterator == NULL");
-
-  return FilePath();
+  assert(metatag_expression && "Metatag expression not specified");
+  return glue_cast<FilePath>(metatag_expression->evaluate(file_iterator));
 }
 
 /* ------------------------------------------------------------------------- */

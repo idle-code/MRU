@@ -7,10 +7,10 @@
 #include "plugins/MetatagPlugin.hpp"
 
 METATAG_EXPORTS_START
-  EXPORT_METATAG_PLUGIN_FACTORY(mru::CountMetatag::Factory::create())
-  EXPORT_METATAG_PLUGIN_FACTORY(mru::ExtMetatag::Factory::create())
-  EXPORT_METATAG_PLUGIN_FACTORY(mru::NameMetatag::Factory::create())
-  EXPORT_METATAG_PLUGIN_FACTORY(mru::DirMetatag::Factory::create())
-  EXPORT_METATAG_PLUGIN_FACTORY(mru::TextCaseMetatag::Factory::create())
+  EXPORT_METATAG_PLUGIN_FACTORY(mru::CountMetatag, "Count")
+  EXPORT_METATAG_PLUGIN_FACTORY(mru::ExtMetatag, "Ext")
+  EXPORT_METATAG_PLUGIN_FACTORY(mru::NameMetatag, "Name")
+  EXPORT_METATAG_PLUGIN_FACTORY(mru::DirMetatag, "Dir")
+  EXPORT_METATAG_PLUGIN_FACTORY(mru::TextCaseMetatag, "TextCase")
 METATAG_EXPORTS_END
 
