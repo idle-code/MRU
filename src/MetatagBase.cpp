@@ -4,18 +4,11 @@
 namespace mru {
 namespace Metatag {
 
-MetatagBase::MetatagBase(const UnicodeString &name)
-  : name(name)
+MetatagBase::MetatagBase(void)
 { }
 
 MetatagBase::~MetatagBase(void)
 { }
-
-const UnicodeString &
-MetatagBase::getName(void) const
-{
-  return name;
-}
 
 void
 MetatagBase::reset(void)
@@ -28,6 +21,11 @@ MetatagBase::reset(void)
 MetatagBase::Exception::Exception(const UnicodeString &tag_name, const UnicodeString &message)
   : std::runtime_error(glue_cast<std::string>(message).c_str()),
     tag_name(tag_name), message(message)
+{ }
+
+MetatagBase::Exception::Exception(const UnicodeString &message)
+  : std::runtime_error(glue_cast<std::string>(message).c_str()),
+    message(message)
 { }
 
 MetatagBase::Exception::~Exception(void) throw()

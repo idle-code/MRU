@@ -24,6 +24,8 @@ MruCore::loadDefaultConfiguration(void)
   reg.put("plugin.ui", "mru::wxWidgetsUi");
   reg.put<std::string>("plugin.ui.directory", (plugins_directory_root / "ui").generic_string());
 
+  reg.put<std::string>("plugin.tags.directory", (plugins_directory_root / "tags").generic_string());
+
   char *current_directory = new char[MAXPATHLEN];
   if (NULL != getcwd(current_directory, MAXPATHLEN))
     reg.put<std::string>("run.directory", current_directory);

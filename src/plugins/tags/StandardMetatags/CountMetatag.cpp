@@ -28,7 +28,7 @@ CountMetatag::UnicodeStringToInt(const UnicodeString &a_value)
   fmt->parse(a_value, parse_result, status);
   if(U_FAILURE(status)) {
     ERR("Error while parsing start parameter");
-    throw MetatagBase::Exception(getName(), glue_cast<UnicodeString>("Bad argument parameter: ") + a_value);
+    throw MetatagBase::Exception(glue_cast<UnicodeString>("Bad argument parameter: ") + a_value);
   }
   delete fmt;
 
@@ -46,7 +46,7 @@ CountMetatag::initialize(const UnicodeString &a_arguments)
   int param_count = regex.split(a_arguments, params, 2, status);
   if(status != U_ZERO_ERROR) {
     ERR("Error status from regex.split: " << status);
-    throw MetatagBase::Exception(getName(), glue_cast<UnicodeString>("ICU Regex split error code: ") + glue_cast<UnicodeString>((int) status));
+    throw MetatagBase::Exception(glue_cast<UnicodeString>("ICU Regex split error code: ") + glue_cast<UnicodeString>((int) status));
   }
   
   for(int i = 0; i < param_count; ++i) {
@@ -58,7 +58,7 @@ CountMetatag::initialize(const UnicodeString &a_arguments)
       //VAL(glue_cast<std::string>(params[i].tempSubString(step_param_prefix.length())));
       m_step = UnicodeStringToInt(params[i].tempSubString(step_param_prefix.length()));
     } else
-      throw MetatagBase::Exception(getName(), glue_cast<UnicodeString>("Unknown argument: ") + params[i]);
+      throw MetatagBase::Exception(glue_cast<UnicodeString>("Unknown argument: ") + params[i]);
   }
   //VAL(m_start);
   //VAL(m_step);

@@ -85,6 +85,7 @@ public:
   static Pointer create(void);
 
   typedef std::list<typename AbstractPluginFactory::Pointer> FactoryList;
+  typedef std::map<IdType, typename AbstractPluginFactory::Pointer> FactoryMap;
   typedef void (*DestroyFunction)(AbstractPluginFactory *factory_pointer);
 public:
   PluginManager(void);
@@ -93,12 +94,12 @@ public:
   void registerFactory(AbstractPluginFactory *factory_pointer, DestroyFunction destroy_function); 
   PluginPointer createPlugin(const IdType &id);
   FactoryList getFactoryList(void);
+  const FactoryMap& getFactoryMap(void);
 
 protected:
   PluginManager(const PluginManager &); //disabled
   PluginManager& operator=(const PluginManager &); //disabled
 
-  typedef std::map<IdType, typename AbstractPluginFactory::Pointer> FactoryMap;
   FactoryMap factory_map;
 };
 

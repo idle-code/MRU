@@ -82,6 +82,11 @@ private:
   int RENAME_STARTED_ID;
   int RENAME_STOPPED_ID;
   int RENAME_ERROR_ID;
+
+  sigc::connection SignalRenameStartedConnection;
+  sigc::connection SignalRenameStoppedConnection;
+  sigc::connection SignalRenameErrorConnection;
+  sigc::connection SignalFilenameChangeConnection;
 };
 
 } /* namespace mru */

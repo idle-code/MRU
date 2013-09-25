@@ -12,11 +12,10 @@ class MetatagPlugin : public MruPlugin, public Metatag::MetatagBase {
 public:
   typedef PluginManager<MetatagPlugin> Manager;
   typedef DynamicPluginManager<MetatagPlugin> DynamicManager;
-  static const char* getRegisterFunctionName(void) { return "register_metatag_plugins"; }
+  static const char* getRegisterFunctionName(void) { return "registerMetatagFactory"; }
   MODULE_EXCEPTION(MetatagPlugin, MruPlugin::Exception);
 
   MetatagPlugin(void)
-    : MetatagBase(glue_cast<UnicodeString>(name))
   { }
   
   virtual ~MetatagPlugin(void)
@@ -26,19 +25,13 @@ public:
 
 } /* namespace mru */
 
-#define METATAG_FACTORY(MetatagClass) \
-  class Factory : public PluginManager<MetatagClass>::AbstractPluginFactory> { \
-  public: \
-    adsf \
-  };
-
 #define METATAG_EXPORTS_START \
   extern "C" { \
-    void register_metatag_plugins(mru::MetatagPlugin::Manager::Pointer plugin_manager) { \
+    void registerMetatagFactory(mru::MetatagPlugin::Manager *plugin_manager) { \
       assert(plugin_manager);
 
-#define EXPORT_METATAG_PLUGIN_FACTORY(factory) \
-      plugin_manager->registerFactory(factory);
+#define EXPORT_METATAG_PLUGIN_FACTORY(PLUGIN_TYPE, TAG_NAME) \
+      plugin_manager->registerFactory(PLUGIN_TYPE::Factory::allocateFactory(TAG_NAME), &PLUGIN_TYPE::Factory::destroyFactory); \
 
 #define METATAG_EXPORTS_END \
     } \

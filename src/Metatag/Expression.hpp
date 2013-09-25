@@ -45,9 +45,10 @@ private:
   Node::Pointer expression_root;
   Parser::TagEntry::Pointer entry_tree_root;
   FactoryMap metatag_factory_map;
+  UnicodeString expression_text;
 
   Expression(void);
-  Expression(Parser::TagEntry::Pointer expression_root);
+  Expression(Parser::TagEntry::Pointer expression_root, const UnicodeString &expression_text);
 
   Node::Pointer createExpressionTree(Parser::TagEntry::Pointer expression_node, const FactoryMap &factory_map);
   UnicodeString evaluate(const FileIterator::Pointer file_iterator, Node::Pointer node);

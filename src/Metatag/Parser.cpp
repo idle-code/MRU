@@ -91,6 +91,7 @@ Parser::setUpStateMachine(void)
   arguments_text->addTransition(Token(Token::ArgumentListEnd), arguments_end);
 
   arguments_end->addTransition(Token(Token::Text), constant_text);
+  arguments_end->addTransition(Token(Token::MetatagStart), tag_start);
   arguments_end->addTransition(Token(Token::AreaOfEffectStart), aoe_start);
   arguments_end->addTransition(Token(Token::AreaOfEffectEnd), aoe_end);
 
@@ -99,6 +100,7 @@ Parser::setUpStateMachine(void)
   aoe_start->addTransition(Token(Token::AreaOfEffectEnd), aoe_end);
 
   aoe_end->addTransition(Token(Token::Text), constant_text);
+  aoe_end->addTransition(Token(Token::MetatagStart), tag_start);
 
 }
 

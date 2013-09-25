@@ -13,7 +13,7 @@ TextCaseMetatag::initialize(const UnicodeString &a_arguments)
   else if(a_arguments == glue_cast<UnicodeString>("title"))
     m_action = to_title;
   else
-    throw MetatagBase::Exception(getName(), glue_cast<UnicodeString>("Unsupported argument: ") + a_arguments);
+    throw MetatagBase::Exception(glue_cast<UnicodeString>("Unsupported argument: ") + a_arguments);
 }
 
 UnicodeString
@@ -28,7 +28,7 @@ TextCaseMetatag::execute(const FileIterator::Pointer a_file_path, const UnicodeS
     case to_title:
       return area_of_effect.toTitle(NULL);
     default:
-      throw MetatagBase::Exception(getName(), glue_cast<UnicodeString>("Unsupported action: ") + m_action);
+      throw MetatagBase::Exception(glue_cast<UnicodeString>("Unsupported action: ") + m_action);
   }
 }
 

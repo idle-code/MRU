@@ -23,20 +23,18 @@ public:
   class Exception;
   friend class Exception;
 public:
-  MetatagBase(const UnicodeString &name);
-  const UnicodeString& getName(void) const;
+  MetatagBase(void);
   virtual ~MetatagBase(void);
 
   virtual void reset(void);
   virtual void initialize(const UnicodeString &arguments) = 0;
   virtual UnicodeString execute(const FileIterator::Pointer file_path, const UnicodeString &area_of_effect) = 0;
-protected:
-  UnicodeString name;
 };
 
 class MetatagBase::Exception : public std::runtime_error {
 public:
   Exception(const UnicodeString &tag_name, const UnicodeString &message);
+  Exception(const UnicodeString &message);
   ~Exception(void) throw();
   const char* what(void) const throw();
   const UnicodeString& getMessage(void) const throw();

@@ -10,13 +10,11 @@ namespace Metatag {
 Expression::Pointer
 Expression::parse(const UnicodeString &expression_text)
 {
-  FO("Expression::parse(const UnicodeString &expression_text)");
-  VAL(expression_text);
   Parser parser;
   try {
     parser.parse(expression_text);
     Parser::TagEntry::Pointer expression_root = parser.getExpressionRoot();
-    return boost::shared_ptr<Expression>(new Expression(expression_root)); // cannot use make_shared due to private constructor
+    return boost::shared_ptr<Expression>(new Expression(expression_root, expression_text)); // cannot use make_shared due to private constructor
   } catch (Metatag::Parser::Exception pe) {
     throw Exception(pe.getMessage());
   }
@@ -25,14 +23,14 @@ Expression::parse(const UnicodeString &expression_text)
 UnicodeString
 Expression::text(void) const
 {
-  return UnicodeString();
+  return expression_text;
 }
 
 Expression::Expression(void)
 { }
 
-Expression::Expression(Parser::TagEntry::Pointer tag_entry_root)
-  : entry_tree_root(tag_entry_root)
+Expression::Expression(Parser::TagEntry::Pointer tag_entry_root, const UnicodeString &expression_text)
+  : entry_tree_root(tag_entry_root), expression_text(expression_text)
 {
   assert(tag_entry_root);
 }
@@ -62,20 +60,6 @@ Expression::createExpressionTree(Parser::TagEntry::Pointer expression_node, cons
   return new_node;
 }
 
-void
-Expression::bindFactoryMap(const FactoryMap &factory_map)
-{
-  metatag_factory_map = factory_map;
-  if (expression_root)
-    expression_root.reset();
-}
-
-const Expression::FactoryMap &
-Expression::getFactoryMap(void) const
-{
-  return metatag_factory_map;
-}
-
 namespace
 {
 
@@ -95,7 +79,7 @@ public:
   };
 public:
   EchoMetatag(void)
-    : MetatagBase("") { }
+  { }
 
   void
   initialize(const UnicodeString &arguments)
@@ -113,6 +97,22 @@ private:
 };
 
 } /* anonymous namespace */
+
+void
+Expression::bindFactoryMap(const FactoryMap &factory_map)
+{
+  metatag_factory_map = factory_map;
+  if (metatag_factory_map.find(UnicodeString()) == metatag_factory_map.end())
+    metatag_factory_map.insert(std::make_pair(UnicodeString(), boost::make_shared<EchoMetatag::Factory>()));
+  assert(entry_tree_root);
+  expression_root = createExpressionTree(entry_tree_root, metatag_factory_map);
+}
+
+const Expression::FactoryMap &
+Expression::getFactoryMap(void) const
+{
+  return metatag_factory_map;
+}
 
 UnicodeString
 Expression::evaluate(const FileIterator::Pointer file_iterator)
