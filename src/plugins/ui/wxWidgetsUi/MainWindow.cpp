@@ -143,7 +143,7 @@ MainWindow::MainWindow(MruCore *mru_core)
 
     settings_sizer->Add(metatag_sizer, 0, wxEXPAND, 0);
 
-    Connect(m_metatag_load_template_button->GetId(), wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainWindow::OnMetatagLoadTemplateButtonClick));
+    //Connect(m_metatag_load_template_button->GetId(), wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainWindow::OnMetatagLoadTemplateButtonClick));
     Connect(m_metatag_textctrl->GetId(), wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(MainWindow::OnMetatagTextCtrlChange));
   }
 
@@ -203,7 +203,7 @@ MainWindow::MainWindow(MruCore *mru_core)
 
   Connect(wxID_ANY, RENAME_STARTED_ID ,wxCommandEventHandler(MainWindow::OnRenameStarted));
   Connect(wxID_ANY, RENAME_STOPPED_ID ,wxCommandEventHandler(MainWindow::OnRenameStopped));
-  //Connect(wxID_ANY, RENAME_ERROR_ID ,wxCommandEventHandler(MainWindow::OnRenameError));
+  Connect(wxID_ANY, RENAME_ERROR_ID ,wxCommandEventHandler(MainWindow::OnRenameError));
 
   SetSizer(vsizer);
 
@@ -226,7 +226,6 @@ MainWindow::fill_filelist(void)
   FO("MainWindow::fill_filelist(void)");
 
   m_file_listctrl->ClearAll();
-
   FileIterator::Pointer dir_iter = m_core->getDirectoryIterator();
   if (!dir_iter)
     return;
@@ -291,6 +290,10 @@ MainWindow::fill_filelist(void)
     } catch(MetatagPlugin::Exception &me) {
       after_entry.SetBackgroundColour(wxColour(210, 0, 0));
       after_entry.SetText(glue_cast<wxString>(me.getMessage()));
+    } catch (MruException &e) {
+      ERR(e.getMessage());
+    } catch (std::exception &e) {
+      ERR("Other exception" << e.what());
     }
 
     if(!m_file_listctrl->SetItem(after_entry)) {
@@ -402,13 +405,6 @@ MainWindow::OnResetOnDirectoryChangeCheckboxClick(wxCommandEvent &evt)
 }
 
 void
-MainWindow::OnMetatagLoadTemplateButtonClick(wxCommandEvent &evt)
-{
-  FO("MainWindow::OnMetatagLoadTemplateButtonClick(wxCommandEvent &evt)");
-
-}
-
-void
 MainWindow::OnSourceDirectoryMaskTextCtrlChange(wxCommandEvent &evt)
 {
   FO("MainWindow::OnSourceDirectoryMaskTextCtrlChange(wxCommandEvent &evt)");
@@ -475,7 +471,7 @@ void
 MainWindow::OnStartButtonClick(wxCommandEvent &evt)
 {
   FO("MainWindow::OnStartButtonClick(wxCommandEvent &evt)");
-  ///TODO: implement
+  m_core->startRename();
 }
 
 void
@@ -491,8 +487,6 @@ MainWindow::OnRenameStartedEvent(void)
   FO("MainWindow::OnRenameStartedEvent(void)");
   wxCommandEvent evt(RENAME_STARTED_ID, wxID_ANY); 
   wxEvtHandler *window = MainWindow::get_instance();
-  VAL(this);
-  VAL(MainWindow::get_instance());
   wxPostEvent(window, evt);
 }
 
@@ -525,6 +519,7 @@ MainWindow::OnRenameStoppedEvent(void)
   wxCommandEvent evt(RENAME_STOPPED_ID, wxID_ANY); 
   wxEvtHandler *window = MainWindow::get_instance();
   wxPostEvent(window, evt);
+  fill_filelist();
 }
 
 void
@@ -555,7 +550,8 @@ void
 MainWindow::OnFileRenamed(FilePath before, FilePath after)
 {
   FO("OnFileRenamed(FilePath before, FilePath after)");
-  
+  VAL(before);
+  VAL(after);
 }
 
 void
@@ -572,15 +568,15 @@ MainWindow::OnRenameErrorEvent(const MruException &exception)
   }
 }
 
-//void
-//MainWindow::OnRenameError(wxCommandEvent &event)
-//{
-//  FO("OnRenameError(const UnicodeString &message)");
-//  wxMessageDialog *error_messagebox = new wxMessageDialog(this, glue_cast<wxString>(event.GetString()) + wxT("\n\nContinue rename?"), wxT("Rename error occured"), wxYES_NO | wxNO_DEFAULT);
-//  if(wxID_NO == error_messagebox->ShowModal()) {
-//    m_core->stop_rename();
-//  }
-//}
+void
+MainWindow::OnRenameError(wxCommandEvent &event)
+{
+  FO("OnRenameError(const UnicodeString &message)");
+  wxMessageDialog *error_messagebox = new wxMessageDialog(this, glue_cast<wxString>(event.GetString()) + wxT("\n\nContinue rename?"), wxT("Rename error occured"), wxYES_NO | wxNO_DEFAULT);
+  if(wxID_NO == error_messagebox->ShowModal()) {
+    m_core->stopRename();
+  }
+}
 
 } /* namespace mru */
 
