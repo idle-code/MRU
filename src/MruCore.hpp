@@ -103,17 +103,18 @@ private:
   Metatag::Expression::Pointer metatag_expression;
   Metatag::Expression::Pointer sorting_expression;
   UnicodeString file_filter_glob;
-  class GlobFilterPredicate : public FilteringFileIterator::FilterPredicate {
+
+  class RegexFilterPredicate : public FilteringFileIterator::FilterPredicate {
   public:
-    typedef boost::shared_ptr<GlobFilterPredicate> Pointer;
+    typedef boost::shared_ptr<RegexFilterPredicate> Pointer;
     static Pointer create(const UnicodeString &glob_expression);
-    GlobFilterPredicate(const UnicodeString &glob_expression);
+    RegexFilterPredicate(const UnicodeString &glob_expression);
     bool operator()(const FilePath &path);
   private:
     UErrorCode matcher_status;
     icu::RegexMatcher matcher;
   };
-  GlobFilterPredicate::Pointer file_filter_predicate;
+  RegexFilterPredicate::Pointer file_filter_predicate;
 };
 
 } /* namespace mru */

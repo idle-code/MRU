@@ -36,7 +36,7 @@ CountMetatag::UnicodeStringToInt(const UnicodeString &a_value)
 }
 
 void
-CountMetatag::initialize(const UnicodeString &a_arguments)
+CountMetatag::initialize(MruCore *core, const UnicodeString &a_arguments)
 {
   FO("CountMetatag::initialize(const UnicodeString &a_arguments)");
 
@@ -66,7 +66,7 @@ CountMetatag::initialize(const UnicodeString &a_arguments)
 }
 
 UnicodeString
-CountMetatag::execute(const FileIterator::Pointer a_file_path, const UnicodeString &a_area_of_effect)
+CountMetatag::execute(const FilePath &, const UnicodeString &a_area_of_effect)
 {
   int value = m_counter; 
   m_counter += m_step; 

@@ -26,7 +26,7 @@ MetatagExpression_tests::empty_expr(void)
 {
   expr = Metatag::Expression::parse(UnicodeString());
   CPPUNIT_ASSERT(expr);
-  CPPUNIT_ASSERT_EQUAL(UnicodeString(), expr->evaluate(file_iterator));
+  CPPUNIT_ASSERT_EQUAL(UnicodeString(), expr->evaluate(file_iterator->getCurrent()));
 }
 
 void
@@ -37,7 +37,7 @@ MetatagExpression_tests::static_expr(void)
   expr = Metatag::Expression::parse(expr_str);
   CPPUNIT_ASSERT(expr);
 
-  CPPUNIT_ASSERT_EQUAL(expr_str, expr->evaluate(file_iterator));
+  CPPUNIT_ASSERT_EQUAL(expr_str, expr->evaluate(file_iterator->getCurrent()));
 }
 
 class TestMetatag : public Metatag::MetatagBase {
@@ -62,7 +62,7 @@ public:
   }
 
   UnicodeString
-  execute(const FileIterator::Pointer file_iterator , const UnicodeString &area_of_effect)
+  execute(const FilePath &, const UnicodeString &area_of_effect)
   {
     return arguments + "<" + area_of_effect + ">";
   }
@@ -82,7 +82,7 @@ MetatagExpression_tests::flat_expr(void)
   factory_map.insert(std::make_pair("Tag", boost::make_shared<TestMetatag::Factory>()));
   expr->bindFactoryMap(factory_map);
 
-  CPPUNIT_ASSERT_EQUAL(glue_cast<UnicodeString>("[]<>"), expr->evaluate(file_iterator));
+  CPPUNIT_ASSERT_EQUAL(glue_cast<UnicodeString>("[]<>"), expr->evaluate(file_iterator->getCurrent()));
 }
 
 void
@@ -97,7 +97,7 @@ MetatagExpression_tests::nested_expr(void)
   factory_map.insert(std::make_pair("Tag", boost::make_shared<TestMetatag::Factory>()));
   expr->bindFactoryMap(factory_map);
 
-  CPPUNIT_ASSERT_EQUAL(glue_cast<UnicodeString>("Text with spaces []<yet another [   ]<> token >.ext"), expr->evaluate(file_iterator));
+  CPPUNIT_ASSERT_EQUAL(glue_cast<UnicodeString>("Text with spaces []<yet another [   ]<> token >.ext"), expr->evaluate(file_iterator->getCurrent()));
 }
 
 void
@@ -120,7 +120,7 @@ MetatagExpression_tests::escaped_expr(void)
   factory_map.insert(std::make_pair("Tag", boost::make_shared<TestMetatag::Factory>()));
   expr->bindFactoryMap(factory_map);
 
-  CPPUNIT_ASSERT_EQUAL(glue_cast<UnicodeString>("Some(text) here, but not [there]<>"), expr->evaluate(file_iterator));
+  CPPUNIT_ASSERT_EQUAL(glue_cast<UnicodeString>("Some(text) here, but not [there]<>"), expr->evaluate(file_iterator->getCurrent()));
 }
 
 void

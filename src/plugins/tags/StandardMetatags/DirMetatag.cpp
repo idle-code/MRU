@@ -1,21 +1,20 @@
 #include "DirMetatag.hpp"
+#include "make_relative_fix.hpp"
+#include "MruCore.hpp"
 
 namespace mru
 {
 
 void
-DirMetatag::initialize(const UnicodeString &a_arguments)
+DirMetatag::initialize(MruCore *core, const UnicodeString &a_arguments)
 {
-
+  this->core = core;
 }
 
 UnicodeString
-DirMetatag::execute(const FileIterator::Pointer a_file_path, const UnicodeString &a_area_of_effect)
+DirMetatag::execute(const FilePath &a_file_path, const UnicodeString &a_area_of_effect)
 {
-  if(bfs::is_empty(a_file_path->getCurrent().parent_path()) == 0)
-    return UnicodeString();
-  else
-    return glue_cast<UnicodeString>(a_file_path->getCurrent().parent_path()) + glue_cast<UnicodeString>("/");
+  return glue_cast<UnicodeString>(bfs::make_relative(core->getDirectory(), a_file_path.parent_path()));
 }
 
 } /* namespace mru */

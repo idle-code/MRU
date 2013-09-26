@@ -10,6 +10,9 @@
 class MetatagExpression_tests; //forward declaration for tests
 
 namespace mru {
+
+class MruCore; //forward declaration
+
 namespace Metatag {
 
 /* ------------------------------------------------------------------------- */
@@ -28,10 +31,11 @@ public:
 
   UnicodeString text(void) const;
 
-  void bindFactoryMap(const FactoryMap &factory_map);
+  void bindFactoryMap(const FactoryMap &factory_map, MruCore *core);
   const FactoryMap& getFactoryMap(void) const;
 
-  UnicodeString evaluate(const FileIterator::Pointer file_iterator);
+  void reset(void);
+  UnicodeString evaluate(const FilePath &file_iterator);
 
 private:
   struct Node {
@@ -46,12 +50,14 @@ private:
   Parser::TagEntry::Pointer entry_tree_root;
   FactoryMap metatag_factory_map;
   UnicodeString expression_text;
+  MruCore *core;
 
   Expression(void);
   Expression(Parser::TagEntry::Pointer expression_root, const UnicodeString &expression_text);
 
+  void reset(Node::Pointer node_to_reset);
   Node::Pointer createExpressionTree(Parser::TagEntry::Pointer expression_node, const FactoryMap &factory_map);
-  UnicodeString evaluate(const FileIterator::Pointer file_iterator, Node::Pointer node);
+  UnicodeString evaluate(const FilePath &file_path, Node::Pointer node);
 };
 
 /* ------------------------------------------------------------------------- */

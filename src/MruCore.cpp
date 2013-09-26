@@ -238,7 +238,7 @@ MruCore::setMetatagExpression(Metatag::Expression::Pointer expression)
     factory_map.insert(std::make_pair(glue_cast<UnicodeString>((*i).first), MetatagPluginToMetatagFactoryConverter::create((*i).second)));
   }
 
-  expression->bindFactoryMap(factory_map);
+  expression->bindFactoryMap(factory_map, this);
 
   metatag_expression = expression;
 }
@@ -259,7 +259,10 @@ MruCore::getConfigTree(void)
 void
 MruCore::resetState(void)
 {
-
+  if (metatag_expression)
+    metatag_expression->reset();
+  if (sorting_expression)
+    sorting_expression->reset();
 }
 
 void
@@ -274,13 +277,13 @@ MruCore::stopRename(void)
 
 /* ------------------------------------------------------------------------- */
 
-MruCore::GlobFilterPredicate::Pointer
-MruCore::GlobFilterPredicate::create(const UnicodeString &glob_expression)
+MruCore::RegexFilterPredicate::Pointer
+MruCore::RegexFilterPredicate::create(const UnicodeString &glob_expression)
 {
-  return boost::make_shared<GlobFilterPredicate>(glob_expression);
+  return boost::make_shared<RegexFilterPredicate>(glob_expression);
 }
 
-MruCore::GlobFilterPredicate::GlobFilterPredicate(const UnicodeString &glob_expression)
+MruCore::RegexFilterPredicate::RegexFilterPredicate(const UnicodeString &glob_expression)
   : matcher_status(U_ZERO_ERROR), matcher(glob_expression, 0, matcher_status)
 {
   if(U_FAILURE(matcher_status)) {
@@ -290,7 +293,7 @@ MruCore::GlobFilterPredicate::GlobFilterPredicate(const UnicodeString &glob_expr
 }
 
 bool
-MruCore::GlobFilterPredicate::operator()(const FilePath &path)
+MruCore::RegexFilterPredicate::operator()(const FilePath &path)
 {
   matcher.reset(glue_cast<UnicodeString>(path));
 
@@ -339,10 +342,12 @@ MruCore::getDirectoryIterator(void)
 FilePath
 MruCore::generateNewFilepath(const FileIterator::Pointer file_iterator)
 {
-  FO("MruCore::generateNewFilepath(const FileIterator::Pointer file_iterator)");
   assert(file_iterator && "file_iterator == NULL");
   assert(metatag_expression && "Metatag expression not specified");
-  return glue_cast<FilePath>(metatag_expression->evaluate(file_iterator));
+  if(reg.get<bool>("run.work_on.directories"))
+    return getDirectory() / glue_cast<FilePath>(metatag_expression->evaluate(file_iterator->getCurrent()));
+  else
+    return file_iterator->getCurrent().parent_path() / glue_cast<FilePath>(metatag_expression->evaluate(file_iterator->getCurrent()));
 }
 
 /* ------------------------------------------------------------------------- */
@@ -369,7 +374,7 @@ MruCore::setFileFilter(const UnicodeString &filter_expression)
   if (filter_expression.isEmpty())
     file_filter_predicate.reset();
   else
-    file_filter_predicate = GlobFilterPredicate::create(filter_expression);
+    file_filter_predicate = RegexFilterPredicate::create(filter_expression);
   SignalFileFilterChanged(file_filter_glob);
 }
 

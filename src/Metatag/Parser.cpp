@@ -101,7 +101,6 @@ Parser::setUpStateMachine(void)
 
   aoe_end->addTransition(Token(Token::Text), constant_text);
   aoe_end->addTransition(Token(Token::MetatagStart), tag_start);
-
 }
 
 Parser::~Parser(void)
