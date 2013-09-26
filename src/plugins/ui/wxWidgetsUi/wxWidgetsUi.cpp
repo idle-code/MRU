@@ -20,13 +20,17 @@ wxWidgetsUi::start(int a_argc, char *a_argv[])
 {
   FO("wxWidgetsUi::start(int a_argc, char *a_argv[])");
   
-  detail::wxWidgetsUiApp *app = new detail::wxWidgetsUiApp(getCore());
-  wxApp::SetInstance(app);
-  int result = wxEntry(a_argc, a_argv);
-  VAL(result);
-  delete app;
-
-  return result;
+  try {
+    detail::wxWidgetsUiApp *app = new detail::wxWidgetsUiApp(getCore());
+    wxApp::SetInstance(app);
+    int result = wxEntry(a_argc, a_argv);
+    VAL(result);
+    delete app;
+    return result;
+  } catch (MruException &e) {
+    ERR(e.getMessage());
+    return -1;
+  }
 }
 
 /* ------------------------------------------------------------------------- */

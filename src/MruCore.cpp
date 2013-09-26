@@ -26,7 +26,6 @@ MruCore::MruCore(void)
   ui_plugin_manager = UiPlugin::DynamicManager::create();
   metatag_plugin_manager = MetatagPlugin::DynamicManager::create();
 
-  loadDefaultConfiguration();
 }
 
 MruCore::~MruCore(void)
@@ -42,7 +41,7 @@ MruCore::~MruCore(void)
 void
 MruCore::saveConfiguration(void)
 {
-  FilePath configuration_file = reg.get<FilePath>("configuration_file");
+  FilePath configuration_file = reg.get<FilePath>("configuration_file", "mru_config.xml");
   MSG("Saving configuration to: " << glue_cast<std::string>(configuration_file));
   try {
     boost::property_tree::write_xml(glue_cast<std::string>(configuration_file), reg, std::locale(), boost::property_tree::xml_parser::xml_writer_make_settings(' ', 2));
@@ -56,12 +55,14 @@ MruCore::start(int argc, char **argv)
 {
   FO("MruCore::start(void)");
 
-  metatag_expression = Metatag::Expression::parse(glue_cast<UnicodeString>(reg.get<std::string>("run.metatag.expression")));
+  loadConfiguration(reg.get<std::string>("configuration_file", "mru_config.xml"));
+  loadDefaultConfiguration();
 
   loadAllModulesIn<InputPlugin>(reg.get<std::string>("plugin.input.directory"), input_plugin_manager);
   loadAllModulesIn<OutputPlugin>(reg.get<std::string>("plugin.output.directory"), output_plugin_manager);
   loadAllModulesIn<UiPlugin>(reg.get<std::string>("plugin.ui.directory"), ui_plugin_manager);
 
+  VAL(reg.get<std::string>("plugin.input"));
   if (!getInputPlugin()) {
     InputPlugin::Pointer input_plugin = input_plugin_manager->createPlugin(reg.get<std::string>("plugin.input"));
 
@@ -87,6 +88,8 @@ MruCore::start(int argc, char **argv)
   }
 
   loadAllModulesIn<MetatagPlugin>(reg.get<std::string>("plugin.tags.directory"), metatag_plugin_manager);
+
+  setMetatagExpression(glue_cast<UnicodeString>(reg.get<std::string>("run.metatag.expression")));
 
   return getUiPlugin()->start(argc, argv);
 }
@@ -134,7 +137,7 @@ MruCore::loadConfiguration(const FilePath &configuration_file)
   FO("MruCore::loadConfiguration(void)");
   MSG("Reading configuration from: " << configuration_file);
   try {
-    boost::property_tree::read_xml(reg.get<std::string>("configuration_file"), reg);
+    boost::property_tree::read_xml(glue_cast<std::string>(configuration_file), reg, boost::property_tree::xml_parser::trim_whitespace);
     reg.put("configuration_file", configuration_file.generic_string());
   } catch (boost::property_tree::file_parser_error &fpe) { //FIXME: catch (and ignore) proper exception
     WARN("Couldn't read configuration from: " << fpe.filename() << ": " << fpe.message() << " (at " << fpe.line() << ")");
@@ -268,11 +271,38 @@ MruCore::resetState(void)
 void
 MruCore::startRename(void)
 {
+  FO("MruCore::startRename(void)");
+  FileIterator::Pointer dir_iter = getDirectoryIterator();
+  FilePath new_path, old_path, previous_directory;
+  resetState();
+  SignalRenameStarted();
+  for (; !dir_iter->atEnd(); dir_iter->next()) {
+    try {
+      old_path = dir_iter->getCurrent();
+      if (reg.get<bool>("run.reset_on_directory_change") &&
+          previous_directory != old_path.parent_path())
+      {
+        resetState();
+        previous_directory = old_path.parent_path();
+      }
+      new_path = generateNewFilepath(dir_iter);
+      output_plugin->move(old_path, new_path);
+    } catch(MetatagPlugin::Exception &me) {
+      ERR("Other exception" << me.what());
+    } catch (MruException &e) {
+      ERR("Other exception" << e.getMessage());
+      SignalRenameError(e);
+    } catch (std::exception &e) {
+      ERR("Other exception" << e.what());
+    }
+  }
+  SignalRenameStopped();
 }
 
 void
 MruCore::stopRename(void)
 {
+  FO("MruCore::stopRename(void)");
 }
 
 /* ------------------------------------------------------------------------- */
