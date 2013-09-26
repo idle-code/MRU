@@ -5,6 +5,9 @@
 #include "FileIterator.hpp"
 
 namespace mru {
+
+class MruCore; //forward declaration
+
 namespace Metatag {
 
 template<typename Base>
@@ -27,8 +30,8 @@ public:
   virtual ~MetatagBase(void);
 
   virtual void reset(void);
-  virtual void initialize(const UnicodeString &arguments) = 0;
-  virtual UnicodeString execute(const FileIterator::Pointer file_path, const UnicodeString &area_of_effect) = 0;
+  virtual void initialize(MruCore *core, const UnicodeString &arguments) = 0;
+  virtual UnicodeString execute(const FilePath &file_path, const UnicodeString &area_of_effect) = 0;
 };
 
 class MetatagBase::Exception : public std::runtime_error {

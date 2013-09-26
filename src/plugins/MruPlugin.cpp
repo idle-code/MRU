@@ -14,6 +14,7 @@ MruPlugin::~MruPlugin(void)
 bool
 MruPlugin::Init(MruCore *mru_core)
 {
+  assert(mru_core);
   if(mru_core == NULL)
     return false;
 
@@ -24,6 +25,7 @@ MruPlugin::Init(MruCore *mru_core)
 MruCore *
 MruPlugin::getCore(void)
 {
+  assert(core);
   return core;
 }
 

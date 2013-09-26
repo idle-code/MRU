@@ -14,7 +14,7 @@ glue_cast<UnicodeString, TagLib::String>(const TagLib::String &a_value)
 }
 
 void
-AudioMetatag::initialize(const UnicodeString &a_arguments)
+AudioMetatag::initialize(MruCore *, const UnicodeString &a_arguments)
 {
   //FO("AudioMetatag::initialize(const UnicodeString &a_arguments)");
 
@@ -33,10 +33,10 @@ AudioMetatag::initialize(const UnicodeString &a_arguments)
 }
 
 UnicodeString
-AudioMetatag::execute(const FileIterator::Pointer a_file_path, const UnicodeString &a_area_of_effect)
+AudioMetatag::execute(const FilePath &a_file_path, const UnicodeString &a_area_of_effect)
 {
   //FO("AudioMetatag::execute(const FileIterator &a_file_path, const UnicodeString &a_area_of_effect)");
-  TagLib::FileRef file(a_file_path->getCurrent().string().c_str());
+  TagLib::FileRef file(a_file_path.string().c_str());
   if(file.isNull())
     throw MetatagBase::Exception(glue_cast<UnicodeString>("Metadata not found - bad file type?"));
 

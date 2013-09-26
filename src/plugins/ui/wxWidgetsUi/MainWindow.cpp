@@ -266,10 +266,10 @@ MainWindow::fill_filelist(void)
     before_entry.SetId(i);
     before_entry.SetColumn(0);
 
-    //if(m_core->getConfigTree().get<bool>("run.work_on.directories"))
+    if(m_core->getConfigTree().get<bool>("run.work_on.directories"))
+      before_entry.SetText(glue_cast<wxString>(bfs::make_relative(m_core->getDirectory(), glue_cast<FilePath>(dir_iter->getCurrent()))));
+    else
       before_entry.SetText(glue_cast<wxString>(dir_iter->getCurrent().filename()));
-    //else
-    //  before_entry.SetText(glue_cast<wxString>(dir_iter->getCurrent().bare_filename()));
 
     if(m_file_listctrl->InsertItem(before_entry) == -1) {
       WARN("InsertItem failed");
@@ -279,11 +279,10 @@ MainWindow::fill_filelist(void)
     after_entry.SetId(i);
     after_entry.SetColumn(1);
 
-    //if(m_core->include_directories())
     try {
       FilePath new_path = m_core->generateNewFilepath(dir_iter);
       if(m_core->getConfigTree().get<bool>("run.work_on.directories"))
-        new_path = bfs::make_relative(glue_cast<FilePath>(dir_iter->getCurrent().parent_path()), glue_cast<FilePath>(new_path));
+        new_path = bfs::make_relative(m_core->getDirectory(), new_path);
       else if(!bfs::is_directory(new_path))
         new_path = new_path.filename();
       else
@@ -293,14 +292,10 @@ MainWindow::fill_filelist(void)
       after_entry.SetBackgroundColour(wxColour(210, 0, 0));
       after_entry.SetText(glue_cast<wxString>(me.getMessage()));
     }
-    //catch(std::exception &e) {
-    //  ERR(e.what());
-    //}
 
     if(!m_file_listctrl->SetItem(after_entry)) {
       WARN("SetItem failed");
     }
-    //m_file_listctrl->InsertItem(i, wxT("TEST"));
   }
 }
 

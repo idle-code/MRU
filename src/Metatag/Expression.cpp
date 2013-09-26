@@ -48,7 +48,7 @@ Expression::createExpressionTree(Parser::TagEntry::Pointer expression_node, cons
 
   new_node->metatag = (*metatag_factory).second->create();
   assert(new_node->metatag);
-  new_node->metatag->initialize(expression_node->arguments);
+  new_node->metatag->initialize(core, expression_node->arguments);
 
   for(Parser::TagEntry::MemberList::const_iterator i = expression_node->areaOfEffectMembers.begin();
       i != expression_node->areaOfEffectMembers.end();
@@ -82,13 +82,13 @@ public:
   { }
 
   void
-  initialize(const UnicodeString &arguments)
+  initialize(MruCore *, const UnicodeString &arguments)
   {
     text = arguments;
   }
 
   UnicodeString
-  execute(const FileIterator::Pointer file_iterator, const UnicodeString &area_of_effect)
+  execute(const FilePath &, const UnicodeString &area_of_effect)
   {
     return text + area_of_effect;
   }
@@ -99,8 +99,10 @@ private:
 } /* anonymous namespace */
 
 void
-Expression::bindFactoryMap(const FactoryMap &factory_map)
+Expression::bindFactoryMap(const FactoryMap &factory_map, MruCore *core)
 {
+  this->core = core;
+  assert(this->core);
   metatag_factory_map = factory_map;
   if (metatag_factory_map.find(UnicodeString()) == metatag_factory_map.end())
     metatag_factory_map.insert(std::make_pair(UnicodeString(), boost::make_shared<EchoMetatag::Factory>()));
@@ -114,10 +116,31 @@ Expression::getFactoryMap(void) const
   return metatag_factory_map;
 }
 
-UnicodeString
-Expression::evaluate(const FileIterator::Pointer file_iterator)
+void
+Expression::reset(void)
 {
-  assert(file_iterator);
+  if (expression_root)
+    reset(expression_root);
+}
+
+void
+Expression::reset(Expression::Node::Pointer node_to_reset)
+{
+  assert(node_to_reset);
+  if (node_to_reset->metatag)
+    node_to_reset->metatag->reset();
+
+  for (Node::MemberList::const_iterator i = node_to_reset->areaOfEffectMembers.begin();
+       i != node_to_reset->areaOfEffectMembers.end();
+       ++i)
+  {
+    reset(*i);
+  }
+}
+
+UnicodeString
+Expression::evaluate(const FilePath &file_path)
+{
   assert(entry_tree_root);
 
   if (metatag_factory_map.find(UnicodeString()) == metatag_factory_map.end())
@@ -127,22 +150,21 @@ Expression::evaluate(const FileIterator::Pointer file_iterator)
     expression_root = createExpressionTree(entry_tree_root, metatag_factory_map);
   assert(expression_root);
 
-  return evaluate(file_iterator, expression_root);
+  return evaluate(file_path, expression_root);
 }
 
 UnicodeString
-Expression::evaluate(const FileIterator::Pointer file_iterator, Node::Pointer node)
+Expression::evaluate(const FilePath &file_path, Node::Pointer node)
 {
-  assert(file_iterator);
   UnicodeString area_of_effect_text;
   for (Node::MemberList::const_iterator i = node->areaOfEffectMembers.begin();
        i != node->areaOfEffectMembers.end();
        ++i)
   {
-    area_of_effect_text += evaluate(file_iterator, *i);
+    area_of_effect_text += evaluate(file_path, *i);
   } 
 
-  return node->metatag->execute(file_iterator, area_of_effect_text);
+  return node->metatag->execute(file_path, area_of_effect_text);
 }
 
 } /* namespace Metatag */

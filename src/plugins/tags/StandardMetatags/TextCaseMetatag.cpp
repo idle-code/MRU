@@ -4,7 +4,7 @@ namespace mru
 {
 
 void
-TextCaseMetatag::initialize(const UnicodeString &a_arguments)
+TextCaseMetatag::initialize(MruCore *core, const UnicodeString &a_arguments)
 {
   if(a_arguments == glue_cast<UnicodeString>("upper"))
     m_action = to_upper;
@@ -17,7 +17,7 @@ TextCaseMetatag::initialize(const UnicodeString &a_arguments)
 }
 
 UnicodeString
-TextCaseMetatag::execute(const FileIterator::Pointer a_file_path, const UnicodeString &a_area_of_effect)
+TextCaseMetatag::execute(const FilePath &a_file_path, const UnicodeString &a_area_of_effect)
 {
   UnicodeString area_of_effect = a_area_of_effect;
   switch(m_action) {
