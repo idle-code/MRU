@@ -58,7 +58,7 @@ void
 PluginManager_tests::factory_list(void)
 {
   std::list<TestPluginManager::AbstractPluginFactory::Pointer> factory_list = manager->getFactoryList();
-  CPPUNIT_ASSERT_EQUAL(2u, factory_list.size());
+  CPPUNIT_ASSERT(2u == factory_list.size());
   TestPluginManager::AbstractPluginFactory::Pointer first_factory = factory_list.front();
   TestPluginManager::AbstractPluginFactory::Pointer second_factory = factory_list.back();
 

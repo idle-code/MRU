@@ -21,7 +21,7 @@ DynamicPluginManager_tests::load_existing(void)
   CPPUNIT_ASSERT(loaded_module);
 
   DynamicTestPluginManager::FactoryList factory_list = manager->getFactoryList();
-  CPPUNIT_ASSERT_EQUAL(2u, factory_list.size());
+  CPPUNIT_ASSERT(2u == factory_list.size());
 }
 
 void
@@ -35,7 +35,7 @@ DynamicPluginManager_tests::load_loaded(void)
   CPPUNIT_ASSERT(loaded_module1 == loaded_module2);
 
   DynamicTestPluginManager::FactoryList factory_list = manager->getFactoryList();
-  CPPUNIT_ASSERT_EQUAL(2u, factory_list.size());
+  CPPUNIT_ASSERT(2u == factory_list.size());
 }
 
 #ifdef SINGLE_TEST_MODE

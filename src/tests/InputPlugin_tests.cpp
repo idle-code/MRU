@@ -71,7 +71,7 @@ struct SimpleComparer : public SortingFileIterator::SortComparator
 {
   int operator()(const FilePath &path_a, const FilePath &path_b)
   {
-    return path_a < path_b;
+    return path_a < path_b ? 1 : -1;
   }
 };
 
