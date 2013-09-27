@@ -44,7 +44,7 @@ SortingIterator_test::getIterator(void)
 /* ------------------------------------------------------------------------- */
 
 SORT_COMPARATOR(DummyComparer,
-  return 0;
+  return -1;
 )
 
 void
@@ -77,7 +77,8 @@ SortingIterator_test::no_sort(void)
 /* ------------------------------------------------------------------------- */
 
 SORT_COMPARATOR(DescendingComparer,
-  return path_a < path_b;
+  if (path_a == path_b) return 0;
+  return path_a < path_b ? 1 : -1;
 )
 
 void
@@ -126,7 +127,8 @@ SortingIterator_test::descending_sort(void)
 /* ------------------------------------------------------------------------- */
 
 SORT_COMPARATOR(AscendingComparer,
-  return path_a.string() > path_b.string();
+  if (path_a == path_b) return 0;
+  return path_a.string() > path_b.string() ? 1 : -1;
 )
 
 void
@@ -178,11 +180,11 @@ SORT_COMPARATOR(LengthComparer,
   int a_len = path_a.string().length(); 
   int b_len = path_b.string().length(); 
   if(a_len < b_len)
-    return true;
+    return 1;
   else if(a_len > b_len)
-    return false;
+    return -1;
   else // a_len == b_len
-    return path_a.string() < path_b.string();
+    return path_a.string() < path_b.string() ? 1 : -1;
 )
 
 void
