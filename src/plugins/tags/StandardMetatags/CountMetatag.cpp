@@ -11,7 +11,6 @@ CountMetatag::CountMetatag(void)
 void
 CountMetatag::reset(void)
 {
-  FO("CountMetatag::reset(void)");
   m_counter = m_start;
 }
 
@@ -38,8 +37,6 @@ CountMetatag::UnicodeStringToInt(const UnicodeString &a_value)
 void
 CountMetatag::initialize(MruCore *core, const UnicodeString &a_arguments)
 {
-  FO("CountMetatag::initialize(const UnicodeString &a_arguments)");
-
   UErrorCode status = U_ZERO_ERROR;
   icu::RegexMatcher regex("\\ *,\\ *", 0, status);
   UnicodeString params[2];

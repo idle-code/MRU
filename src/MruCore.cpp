@@ -6,17 +6,16 @@
 #include "plugins/InputPlugin.hpp"
 #include "plugins/OutputPlugin.hpp"
 #include "plugins/UiPlugin.hpp"
+#include "MetatagPluginConverter.hpp"
 
 #include "DllModule.hpp"
 #include "BsdDllModule.hpp"
 
 #include "Metatag/Parser.hpp"
 
-
 #include <boost/property_tree/xml_parser.hpp>
 
 namespace mru {
-
 
 MruCore::MruCore(void)
 {
@@ -25,7 +24,8 @@ MruCore::MruCore(void)
   output_plugin_manager = OutputPlugin::DynamicManager::create();
   ui_plugin_manager = UiPlugin::DynamicManager::create();
   metatag_plugin_manager = MetatagPlugin::DynamicManager::create();
-
+  
+  rename_stopped = true;
 }
 
 MruCore::~MruCore(void)
@@ -62,7 +62,6 @@ MruCore::start(int argc, char **argv)
   loadAllModulesIn<OutputPlugin>(reg.get<std::string>("plugin.output.directory"), output_plugin_manager);
   loadAllModulesIn<UiPlugin>(reg.get<std::string>("plugin.ui.directory"), ui_plugin_manager);
 
-  VAL(reg.get<std::string>("plugin.input"));
   if (!getInputPlugin()) {
     InputPlugin::Pointer input_plugin = input_plugin_manager->createPlugin(reg.get<std::string>("plugin.input"));
 
@@ -89,6 +88,13 @@ MruCore::start(int argc, char **argv)
 
   loadAllModulesIn<MetatagPlugin>(reg.get<std::string>("plugin.tags.directory"), metatag_plugin_manager);
 
+  MetatagPlugin::DynamicManager::FactoryMap::const_iterator i = metatag_plugin_manager->getFactoryMap().begin();
+  MetatagPlugin::DynamicManager::FactoryMap::const_iterator i_end = metatag_plugin_manager->getFactoryMap().end();
+  for(; i != i_end; ++i) {
+    factory_map.insert(std::make_pair(glue_cast<UnicodeString>((*i).first), MetatagPluginToMetatagFactoryConverter::create((*i).second)));
+  }
+
+  setSortExpression(glue_cast<UnicodeString>(reg.get<std::string>("run.sort.expression")));
   setMetatagExpression(glue_cast<UnicodeString>(reg.get<std::string>("run.metatag.expression")));
 
   return getUiPlugin()->start(argc, argv);
@@ -194,63 +200,7 @@ MruCore::getAvailableMetatags(void)
   MetatagPlugin::DynamicManager::FactoryList::iterator i = metatag_factory_list.begin();
   for(; i != metatag_factory_list.end(); ++i)
     result_list.push_back((*i)->getId());
-  VAL(result_list.size());
   return result_list;
-}
-
-/* ------------------------------------------------------------------------- */
-
-void
-MruCore::setMetatagExpression(const UnicodeString &expression)
-{
-  setMetatagExpression(Metatag::Expression::parse(expression));
-}
-
-class MetatagPluginToMetatagFactoryConverter : public Metatag::AbstractFactory<Metatag::MetatagBase> {
-public:
-  static Pointer create(AbstractPluginFactory<MetatagPlugin>::Pointer plugin_factory)
-  {
-    return boost::make_shared<MetatagPluginToMetatagFactoryConverter>(plugin_factory);
-  }
-
-  MetatagPluginToMetatagFactoryConverter(AbstractPluginFactory<MetatagPlugin>::Pointer plugin_factory)
-    : plugin_factory(plugin_factory)
-  { }
-
-  Metatag::MetatagBase::Pointer
-  create(void)
-  {
-    return plugin_factory->createPlugin();
-  }
-
-private:
-  AbstractPluginFactory<MetatagPlugin>::Pointer plugin_factory;
-};
-
-void
-MruCore::setMetatagExpression(Metatag::Expression::Pointer expression)
-{
-  FO("MruCore::setMetatagExpression(Metatag::Expression::Pointer expression)");
-  assert(expression);
-  VAL(expression->text());
-
-  Metatag::Expression::FactoryMap factory_map;
-  MetatagPlugin::DynamicManager::FactoryMap::const_iterator i = metatag_plugin_manager->getFactoryMap().begin();
-  MetatagPlugin::DynamicManager::FactoryMap::const_iterator i_end = metatag_plugin_manager->getFactoryMap().end();
-  for(; i != i_end; ++i) {
-    factory_map.insert(std::make_pair(glue_cast<UnicodeString>((*i).first), MetatagPluginToMetatagFactoryConverter::create((*i).second)));
-  }
-
-  expression->bindFactoryMap(factory_map, this);
-
-  metatag_expression = expression;
-}
-
-Metatag::Expression::Pointer
-MruCore::getMetatagExpression(void)
-{
-  assert(metatag_expression);
-  return metatag_expression;
 }
 
 boost::property_tree::ptree &
@@ -272,37 +222,63 @@ void
 MruCore::startRename(void)
 {
   FO("MruCore::startRename(void)");
-  FileIterator::Pointer dir_iter = getDirectoryIterator();
+  if (!rename_stopped) {
+    WARN("Renamer thread already running");
+    return;
+  }
+  rename_stopped = false;
+  if (0 < pthread_create(&renamer_thread, NULL, &MruCore::renamer_main, (void*)this)) {
+    ERR("Cannot create renamer thread");
+  }
+}
+
+void *
+MruCore::renamer_main(void *core_ptr)
+{
+  FO("MruCore::renamer_main(void *core_ptr)");
+  assert(core_ptr);
+  MruCore *core = (MruCore*)core_ptr;
+
   FilePath new_path, old_path, previous_directory;
-  resetState();
-  SignalRenameStarted();
-  for (; !dir_iter->atEnd(); dir_iter->next()) {
+
+  FileIterator::Pointer dir_iter = core->getDirectoryIterator();
+  core->SignalRenameStarted();
+  for (; !core->rename_stopped && !dir_iter->atEnd(); dir_iter->next()) {
     try {
       old_path = dir_iter->getCurrent();
-      if (reg.get<bool>("run.reset_on_directory_change") &&
+      if (core->reg.get<bool>("run.reset_on_directory_change") &&
           previous_directory != old_path.parent_path())
       {
-        resetState();
+        core->resetState();
         previous_directory = old_path.parent_path();
       }
-      new_path = generateNewFilepath(dir_iter);
-      output_plugin->move(old_path, new_path);
-    } catch(MetatagPlugin::Exception &me) {
-      ERR("Other exception" << me.what());
+      new_path = core->generateNewFilepath(dir_iter);
+      core->output_plugin->move(old_path, new_path);
+      core->SignalFilenameChange(old_path, new_path);
+
     } catch (MruException &e) {
-      ERR("Other exception" << e.getMessage());
-      SignalRenameError(e);
+      ERR("Mru exception: " << e.getMessage());
+      core->SignalRenameError(e);
     } catch (std::exception &e) {
       ERR("Other exception" << e.what());
     }
   }
-  SignalRenameStopped();
+  core->rename_stopped = true;
+  core->SignalRenameStopped();
+  
+  pthread_exit(NULL);
 }
 
 void
 MruCore::stopRename(void)
 {
   FO("MruCore::stopRename(void)");
+  if (rename_stopped) {
+    WARN("Renamer thread already stopped");
+    return; 
+  }
+  rename_stopped = true;
+  pthread_join(renamer_thread, NULL);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -350,6 +326,7 @@ FileIterator::Pointer
 MruCore::getDirectoryIterator(void)
 {
   assert(input_plugin);
+  resetState();
   try {
     input_plugin->includeFiles(reg.get<bool>("run.include.files"));
     input_plugin->includeDirectories(reg.get<bool>("run.include.directories"));
@@ -360,7 +337,7 @@ MruCore::getDirectoryIterator(void)
       file_iterator = FilteringFileIterator::wrap(file_iterator, file_filter_predicate);
 
     if (sorting_expression)
-      return file_iterator;
+      file_iterator = SortingFileIterator::wrap(file_iterator, sort_comparator);
 
     return file_iterator;
   } catch(InputPlugin::Exception &ie) {
@@ -413,22 +390,85 @@ MruCore::getFileFilter(void)
 {
   return file_filter_glob;
 }
+/* ------------------------------------------------------------------------- */
+
+MruCore::MetatagExpressionComparator::Pointer
+MruCore::MetatagExpressionComparator::create(Metatag::Expression::Pointer expression, bool ascending)
+{
+  return boost::make_shared<MetatagExpressionComparator>(expression, ascending);
+}
+
+MruCore::MetatagExpressionComparator::MetatagExpressionComparator(Metatag::Expression::Pointer expression, bool ascending)
+  : expression(expression), ascending(ascending)
+{
+  assert(expression);
+}
+
+int
+MruCore::MetatagExpressionComparator::operator()(const FilePath &first, const FilePath &second)
+{
+  UnicodeString first_hash = expression->evaluate(first);
+  UnicodeString second_hash = expression->evaluate(second);
+  if (first_hash == second_hash)
+    return 0;
+  if (ascending)
+    return first_hash < second_hash ? 1 : -1;
+  else
+    return first_hash > second_hash ? 1 : -1;
+}
+
 
 /* ------------------------------------------------------------------------- */
 
 void
-MruCore::setSortExpression(const UnicodeString &sort_expression)
+MruCore::setSortExpression(const UnicodeString &expression)
 {
-  sorting_expression = Metatag::Expression::parse(sort_expression);
+  setSortExpression(Metatag::Expression::parse(expression));
+}
+
+void
+MruCore::setSortExpression(Metatag::Expression::Pointer expression)
+{
+  assert(expression);
+  VAL(expression->text());
+  expression->bindFactoryMap(factory_map, this);
+  sorting_expression = expression;
+  sort_comparator = MetatagExpressionComparator::create(sorting_expression, (reg.get<std::string>("run.sort.direction") == "ascending"));
   SignalSortExpressionChanged(getSortExpression());
 }
 
-const UnicodeString
+Metatag::Expression::Pointer
 MruCore::getSortExpression(void)
 {
   assert(sorting_expression);
-  return sorting_expression->text();
+  return sorting_expression;
 }
+
+/* ------------------------------------------------------------------------- */
+
+void
+MruCore::setMetatagExpression(const UnicodeString &expression)
+{
+  setMetatagExpression(Metatag::Expression::parse(expression));
+}
+
+void
+MruCore::setMetatagExpression(Metatag::Expression::Pointer expression)
+{
+  assert(expression);
+  VAL(expression->text());
+  expression->bindFactoryMap(factory_map, this);
+  metatag_expression = expression;
+  SignalMetatagExpressionChanged(getMetatagExpression());
+}
+
+Metatag::Expression::Pointer
+MruCore::getMetatagExpression(void)
+{
+  assert(metatag_expression);
+  return metatag_expression;
+}
+
 
 } /* namespace mru */
 

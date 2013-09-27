@@ -54,7 +54,6 @@ MainWindow::MainWindow(MruCore *mru_core)
     std::list<std::string> plugins = m_core->getAvailableMetatags();
     std::list<wxString> wx_plugins; //CHECK: useless?
     for(std::list<std::string>::iterator i = plugins.begin(); i != plugins.end(); ++i) {
-      VAL(*i);
       wxString metatag_name = glue_cast<wxString>(*i);
       m_metatag_listbox->InsertItems(1, &metatag_name, 0);
     }
@@ -122,6 +121,26 @@ MainWindow::MainWindow(MruCore *mru_core)
   }
 
   settings_sizer->Add(-1, 3);
+
+  { // sorting expression:
+    wxBoxSizer *sorting_expression_sizer = new wxBoxSizer(wxHORIZONTAL);
+
+    wxStaticText *sorting_expression_label = new wxStaticText(this, wxID_ANY, wxT("Sort expression:"));
+    m_sorting_expression_textctrl = new wxTextCtrl(this, wxID_ANY, glue_cast<wxString>(m_core->getSortExpression()->text()));
+    m_asc_sort_radio_button = new wxRadioButton(this, wxID_ANY, wxT("Ascending"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
+    m_desc_sort_radio_button = new wxRadioButton(this, wxID_ANY, wxT("Descending"));
+
+    sorting_expression_sizer->Add(sorting_expression_label, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxRIGHT, 3);
+    sorting_expression_sizer->Add(m_sorting_expression_textctrl, 1, wxALIGN_CENTER_VERTICAL | wxRIGHT, 3);
+    sorting_expression_sizer->Add(m_asc_sort_radio_button, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 3);
+    sorting_expression_sizer->Add(m_desc_sort_radio_button, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 3);
+
+    settings_sizer->Add(sorting_expression_sizer, 0, wxEXPAND, 0);
+
+    Connect(m_sorting_expression_textctrl->GetId(), wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(MainWindow::OnSortingExpressionTextCtrlChange));
+    Connect(m_asc_sort_radio_button->GetId(), wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(MainWindow::OnSortingOrderRadioButtonChange));
+    Connect(m_desc_sort_radio_button->GetId(), wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(MainWindow::OnSortingOrderRadioButtonChange));
+  }
 
   { // metatag expression:
     wxBoxSizer *metatag_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -193,15 +212,17 @@ MainWindow::MainWindow(MruCore *mru_core)
   }
 
   RENAME_STARTED_ID = wxNewId();
+  FILE_RENAMED_ID = wxNewId();
   RENAME_STOPPED_ID = wxNewId();
   RENAME_ERROR_ID = wxNewId();
 
   SignalRenameStartedConnection = m_core->SignalRenameStarted.connect(sigc::mem_fun(this, &MainWindow::OnRenameStartedEvent));
   SignalRenameStoppedConnection = m_core->SignalRenameStopped.connect(sigc::mem_fun(this, &MainWindow::OnRenameStoppedEvent));
   SignalRenameErrorConnection = m_core->SignalRenameError.connect(sigc::mem_fun(this, &MainWindow::OnRenameErrorEvent));
-  SignalFilenameChangeConnection =  m_core->SignalFilenameChange.connect(sigc::mem_fun(this, &MainWindow::OnFileRenamed));
+  SignalFilenameChangeConnection =  m_core->SignalFilenameChange.connect(sigc::mem_fun(this, &MainWindow::OnFileRenamedEvent));
 
   Connect(wxID_ANY, RENAME_STARTED_ID ,wxCommandEventHandler(MainWindow::OnRenameStarted));
+  Connect(wxID_ANY, FILE_RENAMED_ID ,wxCommandEventHandler(MainWindow::OnFileRenamed));
   Connect(wxID_ANY, RENAME_STOPPED_ID ,wxCommandEventHandler(MainWindow::OnRenameStopped));
   Connect(wxID_ANY, RENAME_ERROR_ID ,wxCommandEventHandler(MainWindow::OnRenameError));
 
@@ -251,7 +272,6 @@ MainWindow::fill_filelist(void)
   after_column.SetWidth(after_column_width);
   m_file_listctrl->InsertColumn(1, after_column);
 
-  m_core->resetState();
   // fill list:
   for(int i = 0; (i < m_preview_size || m_preview_size == 0) && !dir_iter->atEnd(); ++i, dir_iter->next())
   {
@@ -416,6 +436,41 @@ MainWindow::OnSourceDirectoryMaskTextCtrlChange(wxCommandEvent &evt)
   fill_filelist();
 }
 
+static UnicodeString last_good_sorting_expression;
+void
+MainWindow::OnSortingExpressionTextCtrlChange(wxCommandEvent &evt)
+{
+  FO("MainWindow::OnSortingExpressionTextCtrlChange(wxCommandEvent &evt)");
+  try {
+    last_good_sorting_expression = m_core->getSortExpression()->text();  
+    m_core->setSortExpression(glue_cast<UnicodeString>(m_sorting_expression_textctrl->GetValue()));
+    m_sorting_expression_textctrl->SetBackgroundColour(wxColour(255, 255, 255));
+  } catch(Metatag::Expression::Exception &mee) {
+    m_sorting_expression_textctrl->SetBackgroundColour(wxColour(250, 50, 0));
+    WARN("MetatagExpressionException: " << glue_cast<std::string>(mee.getMessage()));
+    m_core->setSortExpression(last_good_sorting_expression);
+  } catch(Metatag::MetatagBase::Exception &me) {
+    m_sorting_expression_textctrl->SetBackgroundColour(wxColour(250, 250, 0));
+    WARN("MetatagException: " << glue_cast<std::string>(me.getMessage()));
+    m_core->setSortExpression(last_good_sorting_expression);
+  }
+
+  if(m_auto_preview_checkbox->GetValue()) {
+    fill_filelist();
+  }
+}
+
+void
+MainWindow::OnSortingOrderRadioButtonChange(wxCommandEvent &evt)
+{
+  if (m_asc_sort_radio_button->GetValue())
+    m_core->getConfigTree().put<std::string>("run.sort.direction", "ascending");
+  else
+    m_core->getConfigTree().put<std::string>("run.sort.direction", "descending");
+  m_core->setSortExpression(glue_cast<UnicodeString>(m_sorting_expression_textctrl->GetValue()));
+  fill_filelist();
+}
+
 static UnicodeString last_good_expression;
 void
 MainWindow::OnMetatagTextCtrlChange(wxCommandEvent &evt)
@@ -475,6 +530,13 @@ MainWindow::OnStartButtonClick(wxCommandEvent &evt)
 }
 
 void
+MainWindow::OnStopButtonClick(wxCommandEvent &evt)
+{
+  FO("MainWindow::OnStopButtonClick(wxCommandEvent &evt)");
+  m_core->stopRename();
+}
+
+void
 MainWindow::OnPreviewSizeSpinCtrlSpin(wxCommandEvent &evt)
 {
   m_preview_size = m_preview_size_spinctrl->GetValue();
@@ -485,9 +547,11 @@ void
 MainWindow::OnRenameStartedEvent(void)
 {
   FO("MainWindow::OnRenameStartedEvent(void)");
+  //wxCommandEvent evt(RENAME_STARTED_ID, wxID_ANY); 
+  //wxEvtHandler *window = MainWindow::get_instance();
+  //wxPostEvent(window, evt);
   wxCommandEvent evt(RENAME_STARTED_ID, wxID_ANY); 
-  wxEvtHandler *window = MainWindow::get_instance();
-  wxPostEvent(window, evt);
+  ProcessEvent(evt);
 }
 
 void
@@ -499,6 +563,7 @@ MainWindow::OnRenameStarted(wxCommandEvent &event)
   m_include_files_checkbox->Enable(enabled);
   m_work_on_directories_checkbox->Enable(enabled);
   m_metatag_listbox->Enable(enabled);
+  m_sorting_expression_textctrl->Enable(enabled);
   m_metatag_textctrl->Enable(enabled);
   m_metatag_load_template_button->Enable(enabled);
   m_source_directory_button->Enable(enabled);
@@ -510,6 +575,10 @@ MainWindow::OnRenameStarted(wxCommandEvent &event)
   m_reset_on_directory_change->Enable(enabled);
 
   m_start_button->SetLabel(wxT("Stop"));
+  if (!Disconnect(m_start_button->GetId(), wxEVT_COMMAND_BUTTON_CLICKED)) {
+    WARN("Failed to disconnect button events");
+  }
+  Connect(m_start_button->GetId(), wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainWindow::OnStopButtonClick));
 }
 
 void
@@ -517,11 +586,8 @@ MainWindow::OnRenameStoppedEvent(void)
 {
   FO("MainWindow::OnRenameStoppedEvent(void)");
   wxCommandEvent evt(RENAME_STOPPED_ID, wxID_ANY); 
-  wxEvtHandler *window = MainWindow::get_instance();
-  wxPostEvent(window, evt);
-  fill_filelist();
+  ProcessEvent(evt);
 }
-
 void
 MainWindow::OnRenameStopped(wxCommandEvent &event)
 {
@@ -531,6 +597,7 @@ MainWindow::OnRenameStopped(wxCommandEvent &event)
   m_include_files_checkbox->Enable(enabled);
   m_work_on_directories_checkbox->Enable(enabled);
   m_metatag_listbox->Enable(enabled);
+  m_sorting_expression_textctrl->Enable(enabled);
   m_metatag_textctrl->Enable(enabled);
   m_metatag_load_template_button->Enable(enabled);
   m_source_directory_button->Enable(enabled);
@@ -542,32 +609,38 @@ MainWindow::OnRenameStopped(wxCommandEvent &event)
   m_reset_on_directory_change->Enable(enabled);
 
   m_start_button->SetLabel(wxT("Start"));
+  if (!Disconnect(m_start_button->GetId(), wxEVT_COMMAND_BUTTON_CLICKED)) {
+    WARN("Failed to disconnect button events");
+  }
+  Connect(m_start_button->GetId(), wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainWindow::OnStartButtonClick));
 
   fill_filelist();
 }
 
 void
-MainWindow::OnFileRenamed(FilePath before, FilePath after)
+MainWindow::OnFileRenamedEvent(FilePath before, FilePath after)
 {
-  FO("OnFileRenamed(FilePath before, FilePath after)");
+  FO("MainWindow::OnFileRenamedEvent(FilePath before, FilePath after)");
+  wxCommandEvent evt(FILE_RENAMED_ID, wxID_ANY); 
+  ProcessEvent(evt);
   VAL(before);
   VAL(after);
+}
+void
+//MainWindow::OnFileRenamed(FilePath before, FilePath after)
+MainWindow::OnFileRenamed(wxCommandEvent &event)
+{
+  FO("MainWindow::OnFileRenamed(wxCommandEvent &event)");
 }
 
 void
 MainWindow::OnRenameErrorEvent(const MruException &exception)
 {
   FO("MainWindow::OnRenameErrorEvent(void)");
-  //wxCommandEvent evt(RENAME_ERROR_ID, wxID_ANY); 
-  //evt.SetString(glue_cast<wxString>(message));
-  //wxEvtHandler *window = MainWindow::get_instance();
-  //wxPostEvent(window, evt);
-  wxMessageDialog *error_messagebox = new wxMessageDialog(this, glue_cast<wxString>(exception.getMessage()) + wxT("\n\nContinue rename?"), wxT("Rename error occured"), wxYES_NO | wxNO_DEFAULT);
-  if(wxID_NO == error_messagebox->ShowModal()) {
-    m_core->stopRename();
-  }
+  wxCommandEvent evt(RENAME_ERROR_ID, wxID_ANY); 
+  evt.SetString(glue_cast<wxString>(exception.getMessage()));
+  ProcessEvent(evt);
 }
-
 void
 MainWindow::OnRenameError(wxCommandEvent &event)
 {
