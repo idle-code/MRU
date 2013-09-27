@@ -39,7 +39,7 @@ struct SortingFunctor { //IMPROVE: if SortingComparator class could be copied, t
 
   bool operator()(const FilePath &a_path_a, const FilePath &a_path_b)
   {
-    return (*m_comparator)(a_path_a, a_path_b);
+    return (*m_comparator)(a_path_a, a_path_b) >= 0;
   }
   boost::shared_ptr<SortingFileIterator::SortComparator> m_comparator;
 };

@@ -57,18 +57,18 @@ public: // configuration
   sigc::signal<void, UnicodeString> SignalFileFilterChanged;
 
   void setSortExpression(const UnicodeString &filter);
-  const UnicodeString getSortExpression(void);
-  sigc::signal<void, UnicodeString> SignalSortExpressionChanged;
+  void setSortExpression(Metatag::Expression::Pointer expression);
+  Metatag::Expression::Pointer getSortExpression(void);
+  sigc::signal<void, Metatag::Expression::Pointer> SignalSortExpressionChanged;
 
   void setMetatagExpression(const UnicodeString &expression);
   void setMetatagExpression(Metatag::Expression::Pointer expression);
   Metatag::Expression::Pointer getMetatagExpression(void);
-  sigc::signal<void, const Metatag::Expression::Pointer> SignalMetatagExpressionChanged;
+  sigc::signal<void, Metatag::Expression::Pointer> SignalMetatagExpressionChanged;
 
   boost::property_tree::ptree& getConfigTree(void);
 
 public: // ranaming process
-  void resetState(void);
   void startRename(void);
   void stopRename(void);
   
@@ -88,6 +88,7 @@ private:
   template<typename PluginType>
   void loadAllModulesIn(const FilePath &directory, typename PluginType::DynamicManager::Pointer plugin_manager);
   std::list<FilePath> listFilesInDirectory(const FilePath &directory);
+  void resetState(void);
 
 private:
   boost::property_tree::ptree reg;
@@ -100,9 +101,13 @@ private:
   UiPlugin::DynamicManager::Pointer ui_plugin_manager;
   MetatagPlugin::DynamicManager::Pointer metatag_plugin_manager;
 
+  Metatag::Expression::FactoryMap factory_map;
   Metatag::Expression::Pointer metatag_expression;
   Metatag::Expression::Pointer sorting_expression;
   UnicodeString file_filter_glob;
+  volatile bool rename_stopped;
+  pthread_t renamer_thread;
+  static void* renamer_main(void *core);
 
   class RegexFilterPredicate : public FilteringFileIterator::FilterPredicate {
   public:
@@ -115,6 +120,18 @@ private:
     icu::RegexMatcher matcher;
   };
   RegexFilterPredicate::Pointer file_filter_predicate;
+
+  class MetatagExpressionComparator : public SortingFileIterator::SortComparator {
+  public:
+    typedef boost::shared_ptr<MetatagExpressionComparator> Pointer;
+    static Pointer create(Metatag::Expression::Pointer expression, bool ascending);
+    MetatagExpressionComparator(Metatag::Expression::Pointer expression, bool ascending);
+    int operator()(const FilePath &first, const FilePath &second);
+  private:
+    Metatag::Expression::Pointer expression;
+    bool ascending;
+  };
+  MetatagExpressionComparator::Pointer sort_comparator;
 };
 
 } /* namespace mru */

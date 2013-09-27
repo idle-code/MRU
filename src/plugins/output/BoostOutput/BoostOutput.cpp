@@ -40,13 +40,16 @@ BoostOutput::exists(const FilePath &path) const
 void
 BoostOutput::move(const FilePath &source_path, const FilePath &destination_path)
 {
+  if (source_path == destination_path)
+    return;
+
   if (!exists(source_path))
-    throw OutputPlugin::Exception("Cannot move because source path doesn't exists");
+    throw OutputPlugin::Exception(glue_cast<UnicodeString>("Cannot move because source path '") + glue_cast<UnicodeString>(source_path) + "' doesn't exists");
 
   FilePath parent_dir = destination_path.parent_path();
   if (!exists(parent_dir)) {
     if (!createNewPath())
-      throw OutputPlugin::Exception("Cannot move because parent path of specified path doesn't exists");
+      throw OutputPlugin::Exception(glue_cast<UnicodeString>("Cannot move because parent path '") + glue_cast<UnicodeString>(parent_dir) + "' of specified path doesn't exists");
     else
       bfs::create_directories(parent_dir);
   }
@@ -54,7 +57,7 @@ BoostOutput::move(const FilePath &source_path, const FilePath &destination_path)
     if (overrideTarget())
       bfs::remove_all(destination_path);
     else
-      throw OutputPlugin::Exception("Cannot move because target path exists");
+      throw OutputPlugin::Exception(glue_cast<UnicodeString>("Cannot move '") + glue_cast<UnicodeString>(source_path) + "' because target path '" + glue_cast<UnicodeString>(destination_path) + "' exists");
   }
   
   bfs::rename(source_path, destination_path);
@@ -63,6 +66,9 @@ BoostOutput::move(const FilePath &source_path, const FilePath &destination_path)
 void
 BoostOutput::copy(const FilePath &source_path, const FilePath &destination_path)
 {
+  if (source_path == destination_path)
+    return;
+
   if (!exists(source_path))
     throw OutputPlugin::Exception("Cannot move because source path doesn't exists");
 
@@ -87,6 +93,9 @@ BoostOutput::copy(const FilePath &source_path, const FilePath &destination_path)
 void
 BoostOutput::link(const FilePath &source_path, const FilePath &destination_path)
 {
+  if (source_path == destination_path)
+    return;
+
   if (!exists(source_path))
     throw OutputPlugin::Exception("Cannot move because source path doesn't exists");
 

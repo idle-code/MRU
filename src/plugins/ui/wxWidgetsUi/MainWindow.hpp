@@ -25,6 +25,12 @@ private:
   // metatag list
   wxListBox *m_metatag_listbox;
   void OnMetatagListClick(wxCommandEvent &evt); 
+  // sorting expression
+  wxTextCtrl *m_sorting_expression_textctrl;
+  void OnSortingExpressionTextCtrlChange(wxCommandEvent &evt);
+  wxRadioButton *m_asc_sort_radio_button;
+  wxRadioButton *m_desc_sort_radio_button;
+  void OnSortingOrderRadioButtonChange(wxCommandEvent &evt);
   // metatag expression
   wxTextCtrl *m_metatag_textctrl;
   void OnMetatagTextCtrlChange(wxCommandEvent &evt);
@@ -61,14 +67,20 @@ private:
   void OnPreviewButtonClick(wxCommandEvent &evt);
   wxButton *m_start_button;
   void OnStartButtonClick(wxCommandEvent &evt);
+  void OnStopButtonClick(wxCommandEvent &evt);
   wxSpinCtrl *m_preview_size_spinctrl;
   void OnPreviewSizeSpinCtrlSpin(wxCommandEvent &evt);
-
+  
+  // callbacks and their UI-aware handlers
   void OnRenameStartedEvent(void);
-  void OnRenameStoppedEvent(void);
   void OnRenameStarted(wxCommandEvent &evt);
+
+  void OnFileRenamedEvent(FilePath before, FilePath after);
+  void OnFileRenamed(wxCommandEvent &evt);
+
+  void OnRenameStoppedEvent(void);
   void OnRenameStopped(wxCommandEvent &evt);
-  void OnFileRenamed(FilePath before, FilePath after);
+
   void OnRenameErrorEvent(const MruException &exception);
   void OnRenameError(wxCommandEvent &evt);
 
@@ -80,6 +92,7 @@ private:
   MruCore* m_core;
   int m_preview_size;
   int RENAME_STARTED_ID;
+  int FILE_RENAMED_ID;
   int RENAME_STOPPED_ID;
   int RENAME_ERROR_ID;
 

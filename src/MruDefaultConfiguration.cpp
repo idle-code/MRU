@@ -38,6 +38,8 @@ void
 MruCore::loadDefaultConfiguration(void)
 {
   //putOptional(reg, "configuration_file", "./mru_config.xml");
+  putOptional(reg, "run.sort.expression", "%Name()%Ext()");
+  putOptional(reg, "run.sort.direction", "ascending");
   putOptional(reg, "run.metatag.expression", "%Name()%Ext()");
 
   //reg.put("plugin.directory", "/usr/local/lib/mru");
