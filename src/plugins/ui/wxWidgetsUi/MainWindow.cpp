@@ -145,7 +145,7 @@ MainWindow::MainWindow(MruCore *mru_core)
   { // metatag expression:
     wxBoxSizer *metatag_sizer = new wxBoxSizer(wxHORIZONTAL);
 
-    wxStaticText *metatag_label = new wxStaticText(this, wxID_ANY, wxT("Expression:"));
+    wxStaticText *metatag_label = new wxStaticText(this, wxID_ANY, wxT("Rename expression:"));
     m_metatag_textctrl = new wxTextCtrl(this, wxID_ANY, glue_cast<wxString>(m_core->getMetatagExpression()->text()));
     //wxTextAttr style = m_metatag_textctrl->GetDefaultStyle();
     //wxFont font = style.GetFont();

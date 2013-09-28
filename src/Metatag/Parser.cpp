@@ -70,6 +70,7 @@ Parser::setUpStateMachine(void)
   aoe_start->onEntry.connect(sigc::mem_fun(this, &Parser::subExpressionStart));
 
   aoe_end->onEntry.connect(sigc::mem_fun(this, &Parser::subExpressionEnd));
+  aoe_end->onRepeat.connect(sigc::mem_fun(this, &Parser::subExpressionEnd));
 
   // define transition rules
   start->addTransition(Token(Token::Text), constant_text);
@@ -101,6 +102,7 @@ Parser::setUpStateMachine(void)
 
   aoe_end->addTransition(Token(Token::Text), constant_text);
   aoe_end->addTransition(Token(Token::MetatagStart), tag_start);
+  aoe_end->addTransition(Token(Token::AreaOfEffectEnd), aoe_end);
 }
 
 Parser::~Parser(void)
