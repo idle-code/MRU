@@ -49,16 +49,13 @@ CountMetatag::initialize(MruCore *core, const UnicodeString &a_arguments)
   for(int i = 0; i < param_count; ++i) {
     params[i] = params[i].trim();
     if(params[i].startsWith(start_param_prefix)) {
-      //VAL(glue_cast<std::string>(params[i].tempSubString(start_param_prefix.length())));
       m_start = UnicodeStringToInt(params[i].tempSubString(start_param_prefix.length()));
     } else if(params[i].startsWith(step_param_prefix)) {
-      //VAL(glue_cast<std::string>(params[i].tempSubString(step_param_prefix.length())));
       m_step = UnicodeStringToInt(params[i].tempSubString(step_param_prefix.length()));
     } else
       throw MetatagBase::Exception(glue_cast<UnicodeString>("Unknown argument: ") + params[i]);
   }
-  //VAL(m_start);
-  //VAL(m_step);
+
   m_counter = m_start;
 }
 
