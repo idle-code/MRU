@@ -36,9 +36,13 @@ MainWindow::MainWindow(MruCore *mru_core)
     return;
   }
 
+  wxFont main_font = this->GetFont(); 
+  main_font.SetPointSize(16);
+  this->SetFont(main_font);
+
   wxColour red, green, blue, dark_blue;
-  red.Set(wxT("#ff0000"));
-  green.Set(wxT("#00ff00"));
+  red.Set(wxT("#cf0000"));
+  green.Set(wxT("#00cf00"));
   blue.Set(wxT("#b0b0ff"));
   dark_blue.Set(wxT("#0000ff"));
 
@@ -127,6 +131,11 @@ MainWindow::MainWindow(MruCore *mru_core)
 
     wxStaticText *sorting_expression_label = new wxStaticText(this, wxID_ANY, wxT("Sort expression:"));
     m_sorting_expression_textctrl = new wxTextCtrl(this, wxID_ANY, glue_cast<wxString>(m_core->getSortExpression()->text()));
+    wxTextAttr style = m_sorting_expression_textctrl->GetDefaultStyle();
+    wxFont font = style.GetFont();
+    font.SetPointSize(20);
+    m_sorting_expression_textctrl->SetFont(font);
+
     m_asc_sort_radio_button = new wxRadioButton(this, wxID_ANY, wxT("Ascending"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
     m_desc_sort_radio_button = new wxRadioButton(this, wxID_ANY, wxT("Descending"));
 
@@ -147,22 +156,20 @@ MainWindow::MainWindow(MruCore *mru_core)
 
     wxStaticText *metatag_label = new wxStaticText(this, wxID_ANY, wxT("Rename expression:"));
     m_metatag_textctrl = new wxTextCtrl(this, wxID_ANY, glue_cast<wxString>(m_core->getMetatagExpression()->text()));
-    //wxTextAttr style = m_metatag_textctrl->GetDefaultStyle();
-    //wxFont font = style.GetFont();
-    //font.SetWeight(20);
-    //style.SetFont(font);
-    //m_metatag_textctrl->SetDefaultStyle(style);
+    wxTextAttr style = m_metatag_textctrl->GetDefaultStyle();
+    wxFont font = style.GetFont();
+    font.SetPointSize(20);
+    m_metatag_textctrl->SetFont(font);
+
     m_metatag_load_template_button = new wxButton(this, wxID_ANY, wxT("Load template"));
     m_metatag_load_template_button->Hide();
     m_metatag_load_template_button->SetMinSize(wxSize(-1, 20));
 
     metatag_sizer->Add(metatag_label, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxRIGHT, 3);
     metatag_sizer->Add(m_metatag_textctrl, 1, wxALIGN_CENTER_VERTICAL | wxRIGHT, 3);
-    //metatag_sizer->Add(m_metatag_load_template_button, 0, wxALIGN_CENTER_VERTICAL, 0);
 
     settings_sizer->Add(metatag_sizer, 0, wxEXPAND, 0);
 
-    //Connect(m_metatag_load_template_button->GetId(), wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainWindow::OnMetatagLoadTemplateButtonClick));
     Connect(m_metatag_textctrl->GetId(), wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(MainWindow::OnMetatagTextCtrlChange));
   }
 
@@ -446,7 +453,7 @@ MainWindow::OnSortingExpressionTextCtrlChange(wxCommandEvent &evt)
     m_core->setSortExpression(glue_cast<UnicodeString>(m_sorting_expression_textctrl->GetValue()));
     m_sorting_expression_textctrl->SetBackgroundColour(wxColour(255, 255, 255));
   } catch(Metatag::Expression::Exception &mee) {
-    m_sorting_expression_textctrl->SetBackgroundColour(wxColour(250, 50, 0));
+    m_sorting_expression_textctrl->SetBackgroundColour(wxColour(250, 80, 0));
     WARN("MetatagExpressionException: " << glue_cast<std::string>(mee.getMessage()));
     m_core->setSortExpression(last_good_sorting_expression);
   } catch(Metatag::MetatagBase::Exception &me) {
@@ -481,7 +488,7 @@ MainWindow::OnMetatagTextCtrlChange(wxCommandEvent &evt)
     m_core->setMetatagExpression(glue_cast<UnicodeString>(m_metatag_textctrl->GetValue()));
     m_metatag_textctrl->SetBackgroundColour(wxColour(255, 255, 255));
   } catch(Metatag::Expression::Exception &mee) {
-    m_metatag_textctrl->SetBackgroundColour(wxColour(250, 50, 0));
+    m_metatag_textctrl->SetBackgroundColour(wxColour(250, 80, 0));
     WARN("MetatagExpressionException: " << glue_cast<std::string>(mee.getMessage()));
     m_core->setMetatagExpression(last_good_expression);
   } catch(Metatag::MetatagBase::Exception &me) {
