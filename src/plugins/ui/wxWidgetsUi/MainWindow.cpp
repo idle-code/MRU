@@ -37,7 +37,7 @@ MainWindow::MainWindow(MruCore *mru_core)
   }
 
   wxFont main_font = this->GetFont(); 
-  main_font.SetPointSize(16);
+  main_font.SetPointSize(12);
   this->SetFont(main_font);
 
   wxColour red, green, blue, dark_blue;
@@ -132,9 +132,9 @@ MainWindow::MainWindow(MruCore *mru_core)
     wxStaticText *sorting_expression_label = new wxStaticText(this, wxID_ANY, wxT("Sort expression:"));
     m_sorting_expression_textctrl = new wxTextCtrl(this, wxID_ANY, glue_cast<wxString>(m_core->getSortExpression()->text()));
     wxTextAttr style = m_sorting_expression_textctrl->GetDefaultStyle();
-    wxFont font = style.GetFont();
-    font.SetPointSize(20);
-    m_sorting_expression_textctrl->SetFont(font);
+    //wxFont font = style.GetFont();
+    //font.SetPointSize(20);
+    //m_sorting_expression_textctrl->SetFont(font);
 
     m_asc_sort_radio_button = new wxRadioButton(this, wxID_ANY, wxT("Ascending"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
     m_desc_sort_radio_button = new wxRadioButton(this, wxID_ANY, wxT("Descending"));
@@ -157,9 +157,9 @@ MainWindow::MainWindow(MruCore *mru_core)
     wxStaticText *metatag_label = new wxStaticText(this, wxID_ANY, wxT("Rename expression:"));
     m_metatag_textctrl = new wxTextCtrl(this, wxID_ANY, glue_cast<wxString>(m_core->getMetatagExpression()->text()));
     wxTextAttr style = m_metatag_textctrl->GetDefaultStyle();
-    wxFont font = style.GetFont();
-    font.SetPointSize(20);
-    m_metatag_textctrl->SetFont(font);
+    //wxFont font = style.GetFont();
+    //font.SetPointSize(20);
+    //m_metatag_textctrl->SetFont(font);
 
     m_metatag_load_template_button = new wxButton(this, wxID_ANY, wxT("Load template"));
     m_metatag_load_template_button->Hide();
@@ -292,10 +292,15 @@ MainWindow::fill_filelist(void)
     before_entry.SetId(i);
     before_entry.SetColumn(0);
 
-    if(m_core->getConfigTree().get<bool>("run.work_on.directories"))
-      before_entry.SetText(glue_cast<wxString>(bfs::make_relative(m_core->getDirectory(), glue_cast<FilePath>(dir_iter->getCurrent()))));
-    else
-      before_entry.SetText(glue_cast<wxString>(dir_iter->getCurrent().filename()));
+    try {
+      if(m_core->getConfigTree().get<bool>("run.work_on.directories"))
+        before_entry.SetText(glue_cast<wxString>(bfs::make_relative(m_core->getDirectory(), glue_cast<FilePath>(dir_iter->getCurrent()))));
+      else
+        before_entry.SetText(glue_cast<wxString>(dir_iter->getCurrent().filename()));
+    } catch (std::exception &me) {
+      //ERR(me.getMessage());
+      ERR(me.what());
+    }
 
     if(m_file_listctrl->InsertItem(before_entry) == -1) {
       WARN("InsertItem failed");

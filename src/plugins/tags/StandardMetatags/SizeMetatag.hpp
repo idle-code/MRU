@@ -3,8 +3,7 @@
 
 #include <plugins/MetatagPlugin.hpp>
 
-namespace mru
-{
+namespace mru {
 
 class SizeMetatag : public MetatagPlugin {
 public:

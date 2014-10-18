@@ -255,7 +255,7 @@ MruCore::renamer_main(void *core_ptr)
       new_path = core->generateNewFilepath(dir_iter);
       core->output_plugin->move(old_path, new_path);
       core->SignalFilenameChange(old_path, new_path);
-
+      usleep(10000);
     } catch (MruException &e) {
       ERR("Mru exception: " << e.getMessage());
       core->SignalRenameError(e);
@@ -409,6 +409,7 @@ MruCore::MetatagExpressionComparator::operator()(const FilePath &first, const Fi
 {
   UnicodeString first_hash = expression->evaluate(first);
   UnicodeString second_hash = expression->evaluate(second);
+
   if (first_hash == second_hash)
     return 0;
   if (ascending)

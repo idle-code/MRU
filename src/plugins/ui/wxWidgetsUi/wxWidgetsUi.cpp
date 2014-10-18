@@ -25,10 +25,13 @@ wxWidgetsUi::start(int a_argc, char *a_argv[])
     wxApp::SetInstance(app);
     int result = wxEntry(a_argc, a_argv);
     VAL(result);
-    delete app;
+    //delete app;
     return result;
   } catch (MruException &e) {
     ERR(e.getMessage());
+    return -1;
+  } catch (std::exception &e) {
+    ERR(e.what());
     return -1;
   }
 }
