@@ -27,7 +27,7 @@ FormatMetatag::initialize(MruCore *core, const UnicodeString &arguments)
     throw MetatagBase::Exception(glue_cast<UnicodeString>("ICU Regex split error code: ") + glue_cast<UnicodeString>((int) status));
   }
   
-  VAL(param_count);
+  //VAL(param_count);
   for(int i = 0; i < param_count; ++i) {
     params[i] = params[i].trim();
     if(params[i].startsWith(prefix_size_prefix)) {
@@ -77,7 +77,8 @@ UnicodeString FormatMetatag::execute(const FilePath &, const UnicodeString &area
   try {
     number = boost::lexical_cast<double>(glue_cast<std::string>(str_number));
   } catch (boost::bad_lexical_cast) {
-    throw MetatagBase::Exception(glue_cast<UnicodeString>("Cannot parse '") + area_of_effect + "' as number");
+    return UnicodeString(); //FIXME
+    throw MetatagPlugin::Exception(glue_cast<UnicodeString>("Cannot parse '") + area_of_effect + "' as number");
   }
 
   switch (postfix) {
@@ -101,7 +102,7 @@ UnicodeString FormatMetatag::execute(const FilePath &, const UnicodeString &area
 
   switch (type) {
     case decimal:
-      str_number = glue_cast<UnicodeString>(str(boost::format("%d") % number));
+      str_number = glue_cast<UnicodeString>(str(boost::format("%d") % (long)number));
       break;
     case octal:
       str_number = glue_cast<UnicodeString>(str(boost::format("%o") % (long)number));

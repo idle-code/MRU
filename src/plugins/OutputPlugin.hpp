@@ -19,7 +19,7 @@ public:
   MODULE_EXCEPTION(OutputPlugin, MruPlugin::Exception);
 
   OutputPlugin(void)
-    : create_new_path(false), override_target(false)
+    : create_new_path(true), override_target(false)
   { }
 
   virtual void createDirectory(const FilePath &path) = 0;
