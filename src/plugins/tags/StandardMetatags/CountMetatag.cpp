@@ -20,9 +20,9 @@ static const UnicodeString step_param_prefix = glue_cast<UnicodeString>("step=")
 int
 CountMetatag::UnicodeStringToInt(const UnicodeString &a_value)
 {
-  Formattable parse_result;
+  icu::Formattable parse_result;
   UErrorCode status = U_ZERO_ERROR;
-  NumberFormat *fmt = NumberFormat::createInstance(status);
+  icu::NumberFormat *fmt = icu::NumberFormat::createInstance(status);
 
   fmt->parse(a_value, parse_result, status);
   if(U_FAILURE(status)) {

@@ -2,6 +2,7 @@
 #define MAINWINDOW_HPP
 
 #include <wx/wx.h>
+#include <wx/listctrl.h>
 #include <wx/spinctrl.h>
 #include "MruCore.hpp"
 

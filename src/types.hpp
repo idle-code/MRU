@@ -16,6 +16,8 @@ typedef boost::property_tree::ptree registry;
 typedef boost::property_tree::ptree::key_type name_type;
 typedef boost::filesystem::wpath FilePath;
 namespace bfs = boost::filesystem;
+namespace icu = icu_60;
+typedef icu::UnicodeString UnicodeString;
 
 } /* namespace mru */
 

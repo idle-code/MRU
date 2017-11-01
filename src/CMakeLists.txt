@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.8)
 
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
 #set (CMAKE_CXX_FLAGS "-g -fpermissive -fPIC")
-set (CMAKE_CXX_FLAGS "-g -ferror-limit=3 -fPIC")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -g -ferror-limit=3 -fPIC")
 #set (CMAKE_CXX_FLAGS "-g -ferror-limit=3")
 include_directories ("./")
 include_directories ("/usr/local/include")
@@ -14,11 +14,21 @@ find_package (ICU 50.1 COMPONENTS uc i18n REQUIRED)
 include_directories (${ICU_INCLUDE_DIRS})
 set (LIBS ${LIBS} ${ICU_LIBRARIES})
 
-find_package (SigC++ 2.2 REQUIRED)
+include(FindPkgConfig)
+pkg_check_modules(SigC++ REQUIRED sigc++-2.0)
+#include_directories(${DEPS_INCLUDE_DIRS})
+#target_link_libraries(yourprogram ${DEPS_LIBRARIES})
+
+#find_package (SigC++ 2.2 REQUIRED)
 include_directories (${SigC++_INCLUDE_DIRS})
 set (LIBS ${LIBS} ${SigC++_LIBRARIES})
 
+set(BOOST_ROOT "/usr/local/") # Workaround for custom boost
+set(BOOST_INCLUDEDIR "/usr/local/include/") # Workaround for custom boost
+set(BOOST_LIBRARYDIR "/usr/local/lib/") # Workaround for custom boost
+#set(Boost_USE_STATIC_LIBS ON)
 find_package (Boost COMPONENTS program_options locale system filesystem REQUIRED)
+#find_package (Boost COMPONENTS system filesystem REQUIRED)
 include_directories (${Boost_INCLUDE_DIRS})
 set (LIBS ${LIBS} ${Boost_LIBRARIES})
 

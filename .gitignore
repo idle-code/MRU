@@ -27,6 +27,7 @@ Makefile
 *.toc
 *.dvi
 
+build
 src/.todo
 src/tests/files
 mru

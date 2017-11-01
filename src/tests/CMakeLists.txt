@@ -5,7 +5,6 @@ enable_testing()
 find_package (CppUnit REQUIRED)
 include_directories (${CPPUNIT_INCLUDE_DIRS})
 set (LIBS ${LIBS} ${CPPUNIT_LIBRARIES})
-
 set (LIBS ${LIBS} MruPlugin)
 
 add_definitions (-DSINGLE_TEST_MODE)

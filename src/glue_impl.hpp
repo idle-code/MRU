@@ -5,7 +5,7 @@
 #include <unicode/utypes.h>
 #include <unicode/numfmt.h>
 #include <sstream>
-#include <boost/locale.hpp>
+#include <boost/locale/formatting.hpp>
 
 namespace mru
 {
@@ -52,7 +52,7 @@ template<> inline
 UnicodeString
 glue_cast<UnicodeString, std::string>(const std::string &value)
 {
-  return UnicodeString::fromUTF8(StringPiece(value.c_str()));
+  return UnicodeString::fromUTF8(icu_60::StringPiece(value.c_str()));
   //return UnicodeString(value.c_str(), value.length());
 }
 

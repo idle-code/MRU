@@ -44,7 +44,7 @@ MruCore::saveConfiguration(void)
   FilePath configuration_file = reg.get<FilePath>("configuration_file", "mru_config.xml");
   MSG("Saving configuration to: " << glue_cast<std::string>(configuration_file));
   try {
-    boost::property_tree::write_xml(glue_cast<std::string>(configuration_file), reg, std::locale(), boost::property_tree::xml_parser::xml_writer_make_settings(' ', 2));
+    boost::property_tree::write_xml(glue_cast<std::string>(configuration_file), reg, std::locale());
   } catch (boost::property_tree::file_parser_error &fpe) {
     ERR("Couldn't save configuration file '" << fpe.filename() << "': " << fpe.message() << " (at " << fpe.line() << ")");
   }

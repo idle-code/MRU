@@ -1,6 +1,7 @@
 #ifndef UNICODE_STRING_ITERATOR_HPP
 #define UNICODE_STRING_ITERATOR_HPP
 
+#include "types.hpp"
 #include "Iterator.hpp"
 #include <unicode/uchar.h>
 #include <unicode/unistr.h>
