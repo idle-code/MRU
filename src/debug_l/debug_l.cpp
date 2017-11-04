@@ -14,22 +14,22 @@ std::ostringstream& soss(bool reset) {
 }
 
 void binp(const void* data, int size) {
-	if(size<1 || data==NULL) return;
-	for(int bytes=size-1; bytes>=0; std::cout << " ", bytes--)
-		for(int i=7; i>=0; i--)
-			std::cout << (reinterpret_cast<const unsigned char*>(data)[bytes]&(1<<i) ? "1" : "0");
-	std::cout << std::endl;
+  if(size<1 || data==NULL) return;
+  for(int bytes=size-1; bytes>=0; std::cout << " ", bytes--)
+    for(int i=7; i>=0; i--)
+      std::cout << (reinterpret_cast<const unsigned char*>(data)[bytes]&(1<<i) ? "1" : "0");
+  std::cout << std::endl;
 }
 
 unsigned long from_bin(const char* bin_string) {
-	unsigned long buf=0;
-	int i=0, shift=0;
-	while(bin_string[i+1]!='\0')
-		i++;
-	shift=(sizeof(unsigned long)*8)-1-i;
-	for(; i>=0; i--)
-		buf |= (bin_string[i]=='1' ? (1<<(sizeof(unsigned long)*8)-1-i) : 0);
-	return buf>>shift;
+  unsigned long buf=0;
+  int i=0, shift=0;
+  while(bin_string[i+1]!='\0')
+    i++;
+  shift=(sizeof(unsigned long)*8)-1-i;
+  for(; i>=0; i--)
+    buf |= (bin_string[i]=='1' ? (1<<(((sizeof(unsigned long)*8)-1)-i)) : 0);
+  return buf>>shift;
 }
 
 /* <recorder> */

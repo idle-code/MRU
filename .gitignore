@@ -26,6 +26,7 @@ Makefile
 *.baz
 *.toc
 *.dvi
+*.user
 
 build
 src/.todo
